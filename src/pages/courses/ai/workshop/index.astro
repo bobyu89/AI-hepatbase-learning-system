@@ -11,7 +11,9 @@ const from = (i: number) => aiWorkshopFlow[i][2];
 <Base title={`實體課步驟單｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的步驟單：帶一篇論文，做出${aiWorkshopGoal}。`}>
   <main class="handout">
     <div class="tools">
-      <button type="button" class="btn btn-primary" onclick="window.print()">列印這一頁</button>
+      <a class="btn btn-primary" href={url("/files/ai/step-sheet.docx")} download="AI課_實體課步驟單.docx">下載 Word 版（可打字）</a>
+      <a class="btn btn-quiet" href={url("/files/ai/step-sheet.pdf")} download="AI課_實體課步驟單.pdf">下載 PDF</a>
+      <button type="button" class="btn btn-quiet" onclick="window.print()">列印這一頁</button>
       <a class="btn btn-quiet" href={url("/courses/ai/workshop/prep/")}>課前準備</a>
       <a class="btn btn-quiet" href={url("/courses/ai/workshop/paper/")}>示範論文</a>
       <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
