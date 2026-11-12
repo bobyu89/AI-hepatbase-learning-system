@@ -13,6 +13,29 @@ interface Props {
   current?: "home" | "course" | "ai" | "board";
 }
 const { title, description = site.tagline, darkHead = false, bare = false, current } = Astro.props;
+const courses = {
+  course: {
+    name: "Obsidian 研究筆記課",
+    short: "Obsidian 課",
+    home: url("/courses/obsidian/"),
+    links: [
+      ["白板", url("/courses/obsidian/#board")],
+      ["目錄", url("/courses/obsidian/#lessons")],
+      ["直播與工作坊", url("/courses/obsidian/#events")],
+    ],
+  },
+  ai: {
+    name: "AI 不只是聊天",
+    short: "AI 入門",
+    home: url("/courses/ai/"),
+    links: [
+      ["白板", url("/courses/ai/#board")],
+      ["大綱", url("/courses/ai/#lessons")],
+      ["實體課", url("/courses/ai/#workshop")],
+    ],
+  },
+} as const;
+const course = current === "course" || current === "ai" ? courses[current] : null;
 const fullTitle = title ? `${title}｜${site.name}` : site.name;
 ---
 
@@ -35,29 +58,43 @@ const fullTitle = title ? `${title}｜${site.name}` : site.name;
       } catch {}
     </script>
   </head>
-  <body>
+  <body data-course={current === "ai" ? "ai" : current === "course" ? "obsidian" : undefined}>
     {
       !bare && (
-        <header class="site-head">
-          <a class="brand" href={url("/")}>
+        <header class:list={["site-head", { "in-course": course }]}>
+          <a class="brand" href={course ? course.home : url("/")}>
             <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5.2 6.4c5.6-.9 12.8-.7 19.4.2.5 5.2.3 11.6-.4 17.2-6 .7-12.6.6-18.6-.3-.7-5.6-.9-11.4-.4-17.1Z" fill="var(--card)" />
               <path d="M5.4 11.2c6.2-.5 12.8-.4 19 .2" stroke="var(--rule-red)" />
               <path d="M9 16c3.6-.3 8-.2 11.6.1M9 20.2c2.6-.2 5.4-.2 8 0" stroke="var(--rule)" />
             </svg>
-            <span class="long">{site.name}</span>
-            <span class="short">學習白板</span>
+            <span class="long">{course ? course.name : site.name}</span>
+            <span class="short">{course ? course.short : "學習白板"}</span>
           </a>
-          <nav aria-label="主要">
-            <a href={url("/courses/obsidian/")} aria-current={current === "course" ? "page" : undefined}>
-              <span class="long">Obsidian 研究筆記課</span>
-              <span class="short">Obsidian</span>
-            </a>
-            <a href={url("/courses/ai/")} aria-current={current === "ai" ? "page" : undefined}>
-              <span class="long">AI 不只是聊天</span>
-              <span class="short">AI 入門</span>
-            </a>
-          </nav>
+          {
+            // 每門課的對象不同，所以進到課程裡之後，選單只列這門課自己的頁面
+            course ? (
+              <nav aria-label={course.name}>
+                {course.links.map(([label, href]) => (
+                  <a href={href}>{label}</a>
+                ))}
+                <a class="all" href={url("/")}>
+                  所有課程
+                </a>
+              </nav>
+            ) : (
+              <nav aria-label="課程">
+                <a href={url("/courses/ai/")}>
+                  <span class="long">AI 不只是聊天</span>
+                  <span class="short">AI 入門</span>
+                </a>
+                <a href={url("/courses/obsidian/")}>
+                  <span class="long">Obsidian 研究筆記課</span>
+                  <span class="short">Obsidian</span>
+                </a>
+              </nav>
+            )
+          }
         </header>
       )
     }

@@ -1,7 +1,7 @@
 ---
 import Base from "../../../layouts/Base.astro";
 import Art from "../../../components/Art.astro";
-import CourseMap from "../../../components/CourseMap.astro";
+import AiBoard from "../../../components/boards/AiBoard.astro";
 import {
   aiCourse,
   aiLessons,
@@ -11,15 +11,9 @@ import {
   aiWorkshopGoal,
   aiWorkshopPrep,
   aiPrinciples,
-  aiBoardNodes,
-  aiBoardEdges,
-  aiBoardRegions,
-  AI_BOARD_W,
-  AI_BOARD_H,
 } from "../../../data/ai-course";
 import { url } from "../../../lib/url";
 
-const board = url("/courses/ai/board/");
 const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
 ---
 
@@ -33,7 +27,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           給{aiCourse.audience}。學完之後，你能用 AI 做這學期真的會遇到的三件事：讀懂一份講義、準備一次考試、寫出一份報告的大綱。而且知道什麼時候不能信它，什麼資料不能貼給它。
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href={board}>打開課程白板</a>
+          <a class="btn btn-primary" href="#board">看課程白板</a>
           <a class="btn btn-quiet" href={url("/courses/ai/lessons/0/")}>從第 0 堂開始</a>
         </div>
         <p class="draft">
@@ -43,17 +37,10 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
       </div>
     </section>
 
-    <div class="map wrap">
-      <CourseMap
-        nodes={aiBoardNodes}
-        edges={aiBoardEdges}
-        regions={aiBoardRegions}
-        width={AI_BOARD_W}
-        height={AI_BOARD_H}
-        hrefFor={(n) => (n.kind === "lesson" ? url(`/courses/ai/lessons/${n.no}/`) : url("/courses/ai/workshop/"))}
-        label={`${aiCourse.title}的課程地圖：${aiLessons.length} 堂課與一堂實體課`}
-      />
-    </div>
+    <section class="board-embed" id="board" aria-label="課程白板">
+      <AiBoard embed />
+      <p class="board-hint wrap">拖曳可以移動畫面，點卡片看那一堂的內容。想看大一點，按右上角的「放大看」。</p>
+    </section>
 
     <section class="section lessons" id="lessons">
       <div class="wrap">
@@ -174,15 +161,14 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
     box-shadow: var(--shadow);
     rotate: -0.6deg;
   }
-  .map {
-    padding-block: clamp(1.5rem, 4vw, 3rem);
+  .board-embed {
+    padding-block: clamp(1rem, 3vw, 2rem) clamp(1.5rem, 4vw, 2.5rem);
+    scroll-margin-top: 1rem;
   }
-  .map :global(svg) {
-    max-width: 58rem;
-    margin-inline: auto;
-  }
-  .map :global(figcaption) {
-    text-align: center;
+  .board-hint {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 1rem;
   }
 
   .module {
@@ -298,9 +284,6 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
     }
     .how dl > div {
       grid-template-columns: 1fr;
-    }
-    .map :global(svg) {
-      max-width: none;
     }
   }
 </style>

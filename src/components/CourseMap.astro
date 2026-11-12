@@ -251,6 +251,14 @@ const evLines = (t: string) => (t.length > 10 && t.includes(" ") ? [t.slice(0, t
 
   /* 小螢幕：地圖維持看得清楚的大小，左右滑動 */
   @media (max-width: 720px) {
+    :global(.thumb) .course-map {
+      overflow: visible;
+      margin: 0;
+      padding: 0;
+    }
+    :global(.thumb) svg {
+      width: 100%;
+    }
     .course-map {
       overflow-x: auto;
       margin-inline: calc(-1 * var(--gutter));

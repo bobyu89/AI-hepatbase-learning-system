@@ -2,84 +2,86 @@
 import Base from "../layouts/Base.astro";
 import CourseMap from "../components/CourseMap.astro";
 import Art from "../components/Art.astro";
-import { site } from "../data/site";
-import { aiCourse, aiLessons } from "../data/ai-course";
-import { lessons, stages } from "../data/course";
+import { lessons } from "../data/course";
+import { aiCourse, aiLessons, aiBoardNodes, aiBoardEdges, aiBoardRegions, AI_BOARD_W, AI_BOARD_H } from "../data/ai-course";
 import { url } from "../lib/url";
+
+const aiHome = url("/courses/ai/");
+const obsidianHome = url("/courses/obsidian/");
 ---
 
 <Base current="home" description="把一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。">
   <main>
     <section class="hero">
-      <div class="hero-copy wrap">
+      <div class="wrap">
         <h1>
           把一門課<Art kind="doodle" name="sparkle-trio" size={78} rotate={8} class="spark" /><br />攤開成<span class="scribble">一張白板</span>
         </h1>
-        <div class="hero-side">
-          <p class="lede">
-            每一堂是一張卡片，前後呼應的地方畫成連線。學到哪裡、下一堂是什麼，一眼就看得到。進度記在你的瀏覽器裡，不用登入，也不評分。
-          </p>
-          <div class="actions">
-            <a class="btn btn-primary" href={url("/courses/obsidian/board/")}>
-              打開學習白板
-              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
-                ><path d="M3 9h11M10 4.5 14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
-              >
-            </a>
-            <a class="btn btn-quiet" href={url("/courses/obsidian/")}>先看課程介紹</a>
-          </div>
-        </div>
-      </div>
-      <div class="hero-map">
-        <CourseMap />
+        <p class="lede">
+          每一堂是一張卡片，前後呼應的地方畫成連線。學到哪裡、下一堂是什麼，一眼就看得到。進度記在你的瀏覽器裡，不用登入，也不評分。
+        </p>
+        <p class="ask">
+          <Art kind="doodle" name="arrow-swoop" size={64} rotate={62} class="arrow" />
+          這裡有兩門課，上課的人不一樣。先找到你的那一門。
+        </p>
       </div>
     </section>
 
-    <section class="section course" id="courses">
+    <section class="doors" id="courses" aria-label="課程">
       <div class="wrap">
-        <h2>課程</h2>
-        <article class="feature">
-          <Art name="new" size={98} rotate={9} class="pinned new" />
-          <div class="feature-head">
-            <h3><a href={url("/courses/obsidian/")}>Obsidian 研究筆記課</a></h3>
-            <p class="quote"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
-            <p>
-              給護理領域的研究生與老師。從安裝開始，學會讓筆記互相連結、加上欄位、排成表格與看板，最後把筆記組成報告裡的一段文字。
-            </p>
-          </div>
-          <ol class="stages">
-            {
-              stages.map((s) => (
-                <li>
-                  <strong>{s.name}</strong>
-                  <span>{s.length}</span>
-                  <em>{s.job}</em>
-                </li>
-              ))
-            }
-          </ol>
-          <p class="facts">
-            {lessons.length} 堂預錄課，每堂 10 到 15 分鐘。研究生與老師看同一支影片，做不同的練習。
+        <article class="door ai">
+          <Art name="laptop-open" size={104} rotate={7} class="pinned" />
+          <h2><a href={aiHome}>{aiCourse.title}</a></h2>
+          <p class="for">給護理系大學部的學生</p>
+          <p class="what">
+            {aiCourse.subtitle}。學會用 AI 讀懂一份講義、準備一次考試、寫出一份報告的大綱，並且知道什麼時候不能信它。
           </p>
-          <div class="actions">
-            <a class="btn btn-primary" href={url("/courses/obsidian/board/")}>打開學習白板</a>
-            <a class="btn btn-quiet" href={url("/courses/obsidian/")}>課程介紹</a>
+          <ul class="facts">
+            <li>{aiLessons.length} 堂短課，每堂約 10 分鐘</li>
+            <li>一堂 90 分鐘的實體課，不用先看完短課</li>
+            <li>簡報是初稿，影片還在製作</li>
+          </ul>
+          <div class="thumb">
+            <CourseMap
+              nodes={aiBoardNodes}
+              edges={aiBoardEdges}
+              regions={aiBoardRegions}
+              width={AI_BOARD_W}
+              height={AI_BOARD_H}
+              hrefFor={(n) => (n.kind === "lesson" ? url(`/courses/ai/lessons/${n.no}/`) : url("/courses/ai/#workshop"))}
+              label={`${aiCourse.title}的課程地圖`}
+            />
           </div>
+          <a class="btn btn-primary" href={aiHome}>
+            進入這門課
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+              ><path d="M3 9h11M10 4.5 14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+            >
+          </a>
         </article>
-        <article class="soon">
-          <Art name="wip" size={92} rotate={-7} class="pinned wip" />
-          <h3>
-            <a href={url("/courses/ai/")}>{aiCourse.title}：{aiCourse.subtitle}</a>
-          </h3>
-          <p>
-            給{aiCourse.audience}。{aiLessons.length} 堂短課加一堂 90 分鐘的實體課。簡報是初稿，影片還在製作。
+
+        <article class="door obsidian">
+          <Art name="notebook" size={100} rotate={-7} class="pinned" />
+          <h2><a href={obsidianHome}>Obsidian <span class="nb">研究筆記課</span></a></h2>
+          <p class="for">給護理領域的研究生與老師</p>
+          <p class="what">
+            從安裝開始，學會讓筆記互相連結、加上欄位、排成表格與看板，最後把筆記組成報告裡的一段文字。
           </p>
-          <div class="actions">
-            <a class="btn btn-quiet" href={url("/courses/ai/")}>課程介紹</a>
-            <a class="btn btn-quiet" href={url("/courses/ai/board/")}>打開課程白板</a>
+          <ul class="facts">
+            <li>{lessons.length} 堂短課，每堂 10 到 15 分鐘</li>
+            <li>一場線上直播，一場 3 小時的實體工作坊</li>
+            <li>研究生與老師看同一支影片，做不同的練習</li>
+          </ul>
+          <div class="thumb">
+            <CourseMap />
           </div>
+          <a class="btn btn-primary" href={obsidianHome}>
+            進入這門課
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+              ><path d="M3 9h11M10 4.5 14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+            >
+          </a>
         </article>
-        <p class="more">每一門課都有自己的白板。</p>
       </div>
     </section>
 
@@ -101,11 +103,8 @@ import { url } from "../lib/url";
             </dd>
           </div>
           <div>
-            <dt>兩種身分，兩張練習卡</dt>
-            <dd>
-              選一次身分，之後每一堂會先顯示你的那張卡：<span class="a">研究生做 A 卡</span>，<span class="b">老師做 B 卡</span
-              >。隨時可以換。
-            </dd>
+            <dt>兩門課各上各的</dt>
+            <dd>每門課有自己的白板、自己的進度。進到一門課之後，選單只會出現那門課的頁面。</dd>
           </div>
         </dl>
       </div>
@@ -115,153 +114,121 @@ import { url } from "../lib/url";
 
 <style>
   .hero {
-    overflow: hidden;
-    padding-top: clamp(2rem, 5vw, 4rem);
-  }
-  .hero-copy {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 2rem clamp(2rem, 6vw, 5rem);
-    align-items: end;
+    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
   }
   .hero h1 {
-    font-size: clamp(2.6rem, 6.6vw, 5.5rem);
+    font-size: clamp(2.6rem, 7.4vw, 6rem);
     line-height: 1.2;
-    white-space: nowrap;
   }
   .hero h1 :global(.spark) {
     margin-left: 0.15em;
     vertical-align: 0.25em;
   }
-  .feature :global(.new) {
-    right: -22px;
-    top: -34px;
-  }
-  .hero-side {
-    padding-bottom: 0.6rem;
-  }
   .hero .lede {
+    margin-top: 1.5rem;
     color: var(--ink);
   }
-  .actions {
+  .ask {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-top: 1.75rem;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+    font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+    line-height: 1.5;
   }
-  .hero-map {
-    margin: clamp(2.5rem, 6vw, 4.5rem) auto 0;
-    width: min(100% - 2 * var(--gutter), 72rem);
-    padding-bottom: clamp(1.5rem, 4vw, 3rem);
-  }
-  .hero-map :global(figcaption) {
-    position: absolute;
-    left: 0;
-    top: -0.25rem;
-    margin: 0;
-    transform: translateY(-100%);
+  .ask :global(.arrow) {
+    margin-bottom: -1.4rem;
   }
 
-  /* 現在開的課：一張索引卡 */
-  .feature {
-    position: relative;
-    margin-top: 1.75rem;
+  /* 兩門課是兩張分開的紙：左邊橘色標籤給學生，右邊藍色標籤給研究生與老師 */
+  .doors {
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+  }
+  .doors .wrap {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: 1.5rem clamp(2rem, 6vw, 5rem);
-    padding: clamp(2.6rem, 5vw, 3.6rem) clamp(1.25rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+  }
+  .door {
+    --tab: var(--marker);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(2.9rem, 5vw, 3.6rem) clamp(1.25rem, 3vw, 2.25rem) clamp(1.5rem, 3vw, 2.25rem);
     background:
-      linear-gradient(var(--rule-red), var(--rule-red)) 0 2rem / 100% 2px no-repeat,
+      linear-gradient(var(--tab), var(--tab)) 0 0 / 100% 14px no-repeat,
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 2.2rem / 100% 2px no-repeat,
       var(--card);
     border-radius: 2px;
     box-shadow: var(--shadow);
-    rotate: 0.5deg;
+    transition:
+      rotate 0.25s var(--ease-settle),
+      box-shadow 0.25s ease-out;
   }
-  .feature h3 {
-    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
-    line-height: 1.3;
+  .door.ai {
+    rotate: -0.7deg;
   }
-  .feature h3 a {
+  .door.obsidian {
+    --tab: var(--blue);
+    rotate: 0.6deg;
+    margin-top: clamp(0rem, 3vw, 2.5rem);
+  }
+  .door:hover {
+    rotate: 0deg;
+    box-shadow: var(--shadow-lift);
+  }
+  .door :global(.pinned) {
+    right: clamp(0.5rem, 2vw, 1.5rem);
+    top: -34px;
+  }
+  .door h2 {
+    padding-right: 5.5rem;
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  }
+  .door h2 .nb {
+    white-space: nowrap;
+  }
+  .door h2 a {
     color: var(--ink);
     text-decoration: none;
   }
-  .feature h3 a:hover {
+  .door h2 a:hover {
     color: var(--blue);
   }
-  .quote {
-    margin: 0.75rem 0 1rem;
-    font-size: 1.35rem;
+  .for {
+    align-self: flex-start;
+    margin-top: 0.6rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(transparent 58%, var(--hi) 58% 92%, transparent 92%);
+    padding-inline: 0.15em;
   }
-  .feature-head p:last-child {
-    max-width: var(--measure);
-  }
-  .stages {
-    align-self: start;
-    display: grid;
-    gap: 0;
-  }
-  .stages li {
-    display: grid;
-    grid-template-columns: 6.5em 1fr auto;
-    gap: 0.75rem;
-    align-items: baseline;
-    padding: 0.6rem 0;
-    border-bottom: 1.5px solid var(--rule);
-  }
-  .stages li:first-child {
-    border-top: 1.5px solid var(--rule);
-  }
-  .stages span,
-  .stages em {
-    font-style: normal;
+  .what {
+    margin-top: 0.9rem;
     color: var(--muted);
-  }
-  .stages em {
-    color: var(--blue);
   }
   .facts {
-    grid-column: 1 / -1;
-    color: var(--muted);
+    margin-top: 1rem;
+    border-top: 1.5px solid var(--rule);
   }
-  .feature .actions {
-    grid-column: 1 / -1;
-    margin-top: 0;
+  .facts li {
+    padding: 0.5rem 0;
+    border-bottom: 1.5px solid var(--rule);
   }
-  /* 準備中的課：一張還沒寫完的便利貼 */
-  .soon {
-    position: relative;
-    margin-top: 2.25rem;
-    max-width: 40rem;
-    padding: 1.4rem 5.5rem 1.6rem 1.6rem;
-    background: linear-gradient(to bottom, rgb(255 252 235 / 0.35), transparent 30%), var(--sticky);
-    box-shadow: var(--shadow);
-    rotate: -0.8deg;
+  .thumb {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--linen), var(--desk);
+    border-radius: 2px;
+    box-shadow: inset 0 1px 4px rgb(var(--shade) / 0.25);
   }
-  .soon h3 {
-    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
-    line-height: 1.4;
+  .thumb :global(figcaption) {
+    display: none;
   }
-  .soon h3 a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .soon h3 a:hover {
-    color: var(--blue);
-  }
-  .soon p {
-    margin-top: 0.4rem;
-    color: var(--muted);
-  }
-  .soon .actions {
-    margin-top: 1.1rem;
-  }
-  .soon :global(.wip) {
-    right: -14px;
-    top: -22px;
-  }
-  .more {
-    margin-top: 1.75rem;
-    color: var(--muted);
+  .door .btn {
+    align-self: flex-start;
+    margin-top: auto;
   }
 
   .how dl {
@@ -283,24 +250,17 @@ import { url } from "../lib/url";
     max-width: var(--measure);
     color: var(--muted);
   }
-  .how .a {
-    color: var(--grape);
-    font-weight: 700;
-  }
-  .how .b {
-    color: var(--teal);
-    font-weight: 700;
-  }
 
-  @media (max-width: 820px) {
-    .hero-copy,
-    .feature,
+  @media (max-width: 860px) {
+    .doors .wrap,
     .how dl > div {
       grid-template-columns: 1fr;
     }
-    .hero-map :global(figcaption) {
-      position: static;
-      transform: none;
+    .door.obsidian {
+      margin-top: 1rem;
+    }
+    .ask :global(.arrow) {
+      display: none;
     }
   }
 </style>

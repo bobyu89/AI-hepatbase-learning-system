@@ -14,6 +14,7 @@ const lessonCount = cards.filter((c) => c.dataset.no !== undefined).length;
 // 這張白板屬於哪門課、畫布多大、要不要記錄進度，都寫在頁面上
 const course = app.dataset.course ?? "obsidian";
 const tracksProgress = app.dataset.progress !== "off";
+const embedded = app.dataset.embed !== undefined;
 const BOARD_W = Number(world.dataset.w);
 const BOARD_H = Number(world.dataset.h);
 
@@ -121,7 +122,7 @@ const local = (e: PointerEvent | WheelEvent) => {
 };
 
 canvas.addEventListener("pointerdown", (e) => {
-  if ((e.target as HTMLElement).closest(".tools")) return;
+  if ((e.target as HTMLElement).closest(".board-tools")) return;
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 2) {
     const [a, b] = [...pointers.values()];
@@ -192,6 +193,8 @@ canvas.addEventListener("pointercancel", release);
 canvas.addEventListener(
   "wheel",
   (e) => {
+    // 嵌在課程首頁時，滾輪留給頁面捲動；要縮放就按住 Ctrl，或用工具列
+    if (embedded && !e.ctrlKey && !e.metaKey) return;
     e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
       const p = local(e);
