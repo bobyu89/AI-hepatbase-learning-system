@@ -18,6 +18,8 @@ import {
 } from "../../../data/ai-course";
 import { url } from "../../../lib/url";
 
+const lessonUrl = (n: number) => url(`/courses/ai/lessons/${n}/`);
+const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8.2 14.5 16 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const nodeName = (id: string) => {
   const n = aiBoardNodes.find((x) => x.id === id)!;
   return n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : n.title;
@@ -30,7 +32,7 @@ const linksOf = (id: string) =>
 ---
 
 <Base bare title={`課程白板｜${aiCourse.title}`} description={`${aiCourse.title}的課程白板：${aiLessons.length} 堂課與它們之間的呼應。`}>
-  <div class="app" data-board data-course="ai" data-progress="off" data-view="board">
+  <div class="app" data-board data-course="ai" data-view="board">
     <header class="bar">
       <a class="back" href={url("/courses/ai/")} aria-label="回到課程介紹">
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
@@ -39,7 +41,10 @@ const linksOf = (id: string) =>
         <span>{aiCourse.title}</span>
       </a>
       <h1>課程白板</h1>
-      <p class="progress">大綱版，{aiLessons.length} 堂的內容還在製作</p>
+      <p class="progress" aria-live="polite">
+        <span class="meter" aria-hidden="true"><i data-progress-bar></i></span>
+        <span data-progress-text>學完 0 / {aiLessons.length} 堂</span>
+      </p>
       <div class="view-switch" role="group" aria-label="檢視方式">
         <button type="button" data-view-btn="board" aria-pressed="true">白板</button>
         <button type="button" data-view-btn="list" aria-pressed="false">清單</button>
@@ -89,6 +94,8 @@ const linksOf = (id: string) =>
                 <>
                   <span class="no">{n.no}</span>
                   <span class="title">{n.title}</span>
+                  <Art name="done" size={62} class="badge" />
+                  <span class="visually-hidden" data-state-text />
                 </>
               ) : (
                 <>
@@ -120,14 +127,14 @@ const linksOf = (id: string) =>
       </button>
 
       <section data-panel="intro">
-        <Art name="wip" size={88} rotate={6} class="intro-owl" />
+        <Art name="owl" size={96} rotate={5} class="intro-owl" />
         <h2>這張白板怎麼看</h2>
         <ul class="legend">
           <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="seq"></path></svg>實線是上課順序</li>
           <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="callback"></path></svg>虛線是前後呼應的地方</li>
         </ul>
-        <p>點一張卡片，看那一堂要做什麼。實體課是獨立的一張，不用先看完預錄課。這門課目前是大綱版，每堂的簡報與影片還在製作，所以卡片還不能點進去上課。</p>
-        <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+        <p>點一張卡片，看那一堂要做什麼。卡片可以拖到你順手的位置。實體課是獨立的一張，不用先看完預錄課。</p>
+        <a class="btn btn-primary" data-next-link href={lessonUrl(0)}>開始第 0 堂</a>
       </section>
 
       {
@@ -160,7 +167,16 @@ const linksOf = (id: string) =>
                 </ul>
               </div>
             )}
-            <p class="pending">這一堂的簡報與影片還在製作。</p>
+            <div class="panel-actions">
+              <a class="btn btn-primary" href={lessonUrl(l.no)}>
+                進入第 {l.no} 堂
+              </a>
+              <label class="done">
+                <input type="checkbox" data-done={l.no} />
+                <span class="box" set:html={check} />
+                學完了
+              </label>
+            </div>
           </section>
         ))
       }
@@ -172,6 +188,10 @@ const linksOf = (id: string) =>
           {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
         </ol>
         <p class="pending">把整門課的動作串起來做一次，不用先看完預錄課。帶一份這學期的講義來，下課時帶走{aiWorkshopGoal}。</p>
+        <div class="panel-actions">
+          <a class="btn btn-primary" href={url("/courses/ai/workshop/")}>步驟單</a>
+          <a class="btn btn-quiet" href={url("/courses/ai/workshop/handout/")}>備用講義</a>
+        </div>
       </section>
     </aside>
 
@@ -185,12 +205,16 @@ const linksOf = (id: string) =>
               </h2>
               <ol>
                 {aiLessonsOf(m.id).map((l) => (
-                  <li class="plain">
-                    <div class="item">
+                  <li data-list-item={l.no}>
+                    <label class="done">
+                      <input type="checkbox" data-done={l.no} aria-label={`第 ${l.no} 堂學完了`} />
+                      <span class="box" set:html={check} />
+                    </label>
+                    <a href={lessonUrl(l.no)}>
                       <span class="no">{l.no}</span>
                       <span class="title">{l.title}</span>
                       <span class="why">{l.task}</span>
-                    </div>
+                    </a>
                   </li>
                 ))}
               </ol>

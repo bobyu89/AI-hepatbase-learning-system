@@ -50,6 +50,23 @@ const R = {
 };
 
 
+// 對話示意圖：一來一往的對話框，可以在某一句旁邊標號碼
+R.mockChat = (d) =>
+  h2(d.title) +
+  `<div class="split">${fig(
+    d,
+    win(
+      d.winTitle || "和 AI 的對話（示範用的虛構內容）",
+      d.turns
+        .map(
+          ([who, text, mark]) =>
+            `<div class="turn ${who === "你" ? "me" : "ai"}"><em>${esc(who)}</em><p>${esc(text)}</p>${mark ? `<b class="dot teal mark">${mark}</b>` : ""}</div>`,
+        )
+        .join(""),
+      "chat",
+    ),
+  )}${legend(d.legend)}</div>`;
+
 // 每種投影片右下角貼一張 looseleaf 的貼紙或塗鴉
 const DECO = {
   title: ["sticker", "notebook", 210, -7],
@@ -69,11 +86,11 @@ export function renderScene(d, L, i, artBase = "") {
   const tone = dark ? "dark" : d.type === "why" ? "tint" : "light";
   // 滿版的示意圖不貼，免得蓋到內容
   const full = d.type === "mockPair" || d.type === "mockMarkdown" || d.type === "mockDialog";
-  const deco = DECO[d.type] || (!full && (d.type.startsWith("mock") || d.type === "vaultTree") ? ["doodle", "pencil", 130, -8] : null);
+  const deco = DECO[d.type] || (d.type === "mockChat" ? ["doodle", "eye", 130, 6] : null) || (!full && (d.type.startsWith("mock") || d.type === "vaultTree") ? ["doodle", "pencil", 130, -8] : null);
   const art = deco ? `<img class="deco ${deco[0]}" src="${artBase}${deco[0]}-${deco[1]}.svg" width="${deco[2]}" alt="" aria-hidden="true" style="rotate:${deco[3]}deg">` : "";
   return `<section class="scene ${tone} type-${d.type}${i === 0 ? " active" : ""}" data-scene="${i}" aria-roledescription="投影片" aria-label="第 ${i + 1} 張，共 ${L.slides.length} 張">
 ${R[d.type](d, L)}
-${dark ? "" : `<footer>Obsidian 研究筆記課　${L.mod}　第 ${L.no} 堂</footer>`}
+${dark ? "" : `<footer>${L.course || "Obsidian 研究筆記課"}　${L.mod}　第 ${L.no} 堂</footer>`}
 ${art}
 </section>`;
 }

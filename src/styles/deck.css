@@ -244,4 +244,11 @@ table.syntax{background:var(--icard);box-shadow:0 2px 2px rgb(58 44 30/.2),0 10p
 .svgwin rect[fill="#E7E1FA"]{fill:#f8dc4c}
 .svgwin rect[fill="#D8EFEC"]{fill:#f7e38a;stroke:none}
 .svgwin text{fill:var(--ink)}
+/* 對話示意圖 */
+.win.chat .win-body{padding:40px 50px;display:flex;flex-direction:column;gap:30px;min-height:660px}
+.turn{position:relative;max-width:86%;padding:22px 30px;font-size:31px;line-height:1.5;border:3px solid var(--ink);border-radius:22px 8px 20px 8px/8px 20px 8px 22px;background:var(--sheet)}
+.turn em{display:block;font-style:normal;font-size:22px;color:var(--muted);margin-bottom:6px}
+.turn.me{align-self:flex-end;background:#f7e38a}
+.turn.ai{align-self:flex-start}
+.turn .mark{position:absolute;right:-30px;top:-26px}
 }

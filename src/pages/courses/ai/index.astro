@@ -34,11 +34,11 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
         </p>
         <div class="actions">
           <a class="btn btn-primary" href={board}>打開課程白板</a>
-          <a class="btn btn-quiet" href="#lessons">看課程大綱</a>
+          <a class="btn btn-quiet" href={url("/courses/ai/lessons/0/")}>從第 0 堂開始</a>
         </div>
         <p class="draft">
           <Art name="wip" size={74} rotate={-6} />
-          <span>這是大綱版。{aiLessons.length} 堂的主題與練習已經排好，簡報與影片還在製作，內容可能再調整。</span>
+          <span>{aiLessons.length} 堂的簡報已經可以看，內容是初稿，之後可能調整。影片還在製作。</span>
         </p>
       </div>
     </section>
@@ -50,7 +50,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
         regions={aiBoardRegions}
         width={AI_BOARD_W}
         height={AI_BOARD_H}
-        hrefFor={(n) => `${board}#${n.id}`}
+        hrefFor={(n) => (n.kind === "lesson" ? url(`/courses/ai/lessons/${n.no}/`) : url("/courses/ai/workshop/"))}
         label={`${aiCourse.title}的課程地圖：${aiLessons.length} 堂課與一堂實體課`}
       />
     </div>
@@ -68,8 +68,8 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
               </h3>
               <ol>
                 {aiLessonsOf(m.id).map((l) => (
-                  <li>
-                    <a href={`${board}#l${l.no}`}>
+                  <li data-lesson={l.no}>
+                    <a href={url(`/courses/ai/lessons/${l.no}/`)}>
                       <span class="no">{l.no}</span>
                       <span class="title">{l.title}</span>
                       <span class="task">
@@ -132,6 +132,18 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
 
   </main>
 </Base>
+
+<script>
+  import { getDone } from "../../../scripts/progress";
+  const paint = () => {
+    const done = getDone("ai");
+    document.querySelectorAll<HTMLElement>("[data-lesson]").forEach((li) => {
+      li.classList.toggle("is-done", done.has(Number(li.dataset.lesson)));
+    });
+  };
+  paint();
+  document.addEventListener("lb:progress", paint);
+</script>
 
 <style>
   .top {
@@ -202,6 +214,15 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
   }
   .module .title {
     font-weight: 700;
+  }
+  .module li.is-done .no {
+    color: var(--green);
+  }
+  .module li.is-done .title::after {
+    content: "　學完了";
+    color: var(--green);
+    font-weight: 400;
+    font-size: 0.9375rem;
   }
   .module .task {
     color: var(--muted);

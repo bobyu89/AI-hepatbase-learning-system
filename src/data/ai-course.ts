@@ -1,6 +1,7 @@
 // 「AI 不只是聊天：初學者的生成式 AI 實用入門」的課程資料。
-// 目前是大綱版：堂次與每堂要做的事已經排好，簡報與講稿還沒寫。
+// 14 堂的大綱在這個檔案，每堂的投影片在 ai-lessons.ts。投影片是初稿，講稿與影片還沒做。
 import { CARD_W, CARD_H, type BoardNode, type BoardEdge } from "./course";
+import { aiSlides } from "./ai-lessons";
 
 export const aiCourse = {
   id: "ai",
@@ -43,9 +44,15 @@ export const aiLessons: OutlineLesson[] = [
   { no: 9, module: "read", title: "請它考你", summary: "請它從講義出題，用自我測驗來複習。", task: "從講義出五題，答錯的請它解釋。" },
   { no: 10, module: "make", title: "整理成一張比較表", summary: "把容易搞混的內容排成表，再自己檢查每一格。", task: "把兩個你常搞混的概念排成一張表。" },
   { no: 11, module: "make", title: "報告大綱：讓它當讀者", summary: "請它指出大綱缺什麼，不請它替你寫。也要提防它只說好話。", task: "貼上自己的報告大綱，請它指出缺了什麼。" },
-  { no: 12, module: "rules", title: "什麼不能貼", summary: "病人與同學的資料不能貼。學會把內容改成可以貼的版本。實際規定以學校與實習單位為準。", task: "把一段實習紀錄改成可以貼的版本。" },
+  { no: 12, module: "rules", title: "什麼不能貼", summary: "病人與同學的資料不能貼。學會把內容改成可以貼的版本。實際規定以學校與實習單位為準。", task: "自己編一段虛構的實習情境，把它改成可以貼的版本。" },
   { no: 13, module: "rules", title: "作業怎麼用、怎麼標註", summary: "每門課對 AI 的規定不一樣。先查清楚，再決定怎麼用、怎麼在作業裡說明。", task: "查出你這學期一門課對 AI 的規定。" },
 ];
+
+const question: Record<number, string> = Object.fromEntries(
+  Object.entries(aiSlides).map(([no, slides]) => [no, String(slides.find((x) => x.type === "end")?.q ?? "")]),
+);
+/** 每堂最後留給學生的問題，取自該堂的最後一張投影片。 */
+export const aiQuestionOf = (no: number) => question[no] ?? "";
 
 export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.module === moduleId);
 

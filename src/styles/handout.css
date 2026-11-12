@@ -1,0 +1,202 @@
+/* 可以列印的單張：實體課的步驟單與備用講義。螢幕上是一張紙，列印時只印內容。 */
+.handout {
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+.handout .paper {
+  position: relative;
+  width: min(100% - 2 * var(--gutter), 52rem);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  background: var(--grain), var(--surface);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+.handout .tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  width: min(100% - 2 * var(--gutter), 52rem);
+  margin: 0 auto 1.5rem;
+}
+.handout h1 {
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+}
+.handout h2 {
+  margin-top: 2rem;
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+}
+.handout .lede {
+  margin-top: 0.5rem;
+  max-width: none;
+}
+.handout .notice {
+  margin-top: 1.25rem;
+  padding: 0.7rem 1rem;
+  background: var(--sticky);
+  border-radius: 2px;
+}
+.handout p,
+.handout li {
+  max-width: 40em;
+}
+.handout table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-collapse: collapse;
+}
+.handout th,
+.handout td {
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--pencil);
+  text-align: left;
+  vertical-align: top;
+}
+.handout th {
+  background: var(--paper);
+  font-weight: 700;
+}
+.handout .num {
+  width: 4.5em;
+  text-align: right;
+  white-space: nowrap;
+}
+.handout .ref {
+  margin-top: 0.5rem;
+  padding-left: 2em;
+  text-indent: -2em;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+/* 步驟單 */
+.stage {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 0 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--ink);
+  break-inside: avoid;
+}
+.stage .n {
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--blue);
+}
+.stage h2 {
+  margin: 0;
+}
+.stage .meta {
+  color: var(--muted);
+  font-size: 1rem;
+}
+.stage ul {
+  margin-top: 0.6rem;
+}
+.stage li {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+}
+.stage li::before {
+  content: "";
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.35rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--wob-a);
+}
+.say {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border: 2px dashed var(--pencil);
+  border-radius: var(--wob-b);
+  background: var(--card);
+}
+.say b {
+  display: block;
+  color: var(--marker-deep);
+  font-size: 0.9375rem;
+}
+.blank {
+  display: inline-block;
+  min-width: 4.5em;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  body {
+    background: #fff;
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+  .handout h1 {
+    font-size: 18pt;
+  }
+  .handout h2 {
+    margin-top: 10pt;
+    font-size: 12.5pt;
+  }
+  .handout .lede {
+    font-size: 10pt;
+  }
+  .stage {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    margin-top: 7pt;
+    padding-top: 6pt;
+    border-top-width: 1pt;
+  }
+  .stage .n {
+    font-size: 20pt;
+  }
+  .stage h2 {
+    margin-top: 0;
+  }
+  .stage .meta {
+    font-size: 8.5pt;
+  }
+  .stage ul,
+  .say {
+    margin-top: 3pt;
+  }
+  .stage li {
+    padding: 1pt 0;
+  }
+  .say {
+    padding: 3pt 6pt;
+  }
+  .handout th,
+  .handout td {
+    padding: 3pt 5pt;
+  }
+  .site-head,
+  .site-foot,
+  .handout .tools,
+  .art {
+    display: none !important;
+  }
+  .handout {
+    padding: 0;
+  }
+  .handout .paper {
+    width: 100%;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .handout .notice,
+  .handout th,
+  .say {
+    background: none;
+    border: 1pt solid #000;
+  }
+  .handout a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

@@ -314,7 +314,7 @@ function paintProgress() {
   const link = app.querySelector<HTMLAnchorElement>("[data-next-link]")!;
   const base = link.getAttribute("href")!.replace(/\d+\/$/, "");
   if (next === null) {
-    link.textContent = "17 堂都學完了，再看一次第 0 堂";
+    link.textContent = `${lessonCount} 堂都學完了，再看一次第 0 堂`;
     link.href = `${base}0/`;
   } else {
     link.textContent = done.size ? `接著學第 ${next} 堂` : "開始第 0 堂";
