@@ -9,8 +9,8 @@ export const aiCourse = {
   subtitle: "初學者的生成式 AI 實用入門",
   audience: "護理系大學部學生",
   // 實體課的日期與地點。留空時顯示「即將公布」。
-  workshopDate: "11 月 23 日（星期一）14:00–15:00，地點另行通知",
-  workshopPlace: "",
+  workshopDate: "11 月 23 日（星期一）14:00–15:00",
+  workshopPlace: "護理學系辦公室 討論室（一）",
 };
 
 export interface OutlineLesson {
