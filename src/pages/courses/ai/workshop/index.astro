@@ -1,0 +1,143 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import "../../../../styles/handout.css";
+import { aiCourse, aiWorkshopFlow, aiWorkshopGoal } from "../../../../data/ai-course";
+import { url } from "../../../../lib/url";
+
+const min = (i: number) => aiWorkshopFlow[i][1];
+const from = (i: number) => aiWorkshopFlow[i][2];
+---
+
+<Base title={`實體課步驟單｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的步驟單：用自己的講義，做出${aiWorkshopGoal}。`}>
+  <main class="handout">
+    <div class="tools">
+      <button type="button" class="btn btn-primary" onclick="window.print()">列印這一頁</button>
+      <a class="btn btn-quiet" href={url("/courses/ai/workshop/handout/")}>備用講義</a>
+      <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+    </div>
+    <article class="paper">
+      <h1>實體課步驟單</h1>
+      <p class="lede">
+        {aiCourse.title}　90 分鐘。照著做，下課時你會有{aiWorkshopGoal}。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
+      </p>
+
+      <section class="stage">
+        <span class="n">1</span>
+        <div>
+          <h2>打開工具和講義</h2>
+          <p class="meta">{min(0)} 分鐘</p>
+          <ul>
+            <li>登入你的 AI 工具，開一個新的對話</li>
+            <li>打開你帶來的講義。沒帶的話，用備用講義</li>
+            <li>開一份空白文件，等一下把複習單貼在這裡</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">2</span>
+        <div>
+          <h2>先檢查：這份講義能不能貼</h2>
+          <p class="meta">{min(1)} 分鐘　想再看一次：{from(1)}</p>
+          <ul>
+            <li>裡面沒有病人的姓名、病歷號、床號</li>
+            <li>裡面沒有同學的個人資料</li>
+            <li>是老師發的講義，或公開的內容</li>
+          </ul>
+          <p>有任何一格不確定，就改用備用講義。</p>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">3</span>
+        <div>
+          <h2>問第一次，再把話說清楚</h2>
+          <p class="meta">{min(2)} 分鐘　想再看一次：{from(2)}</p>
+          <ul>
+            <li>先不貼講義，只打下面這一句，看它回什麼</li>
+          </ul>
+          <p class="say"><b>先打這句</b>幫我整理 <span class="blank"></span> 的重點。</p>
+          <ul>
+            <li>開一個新的對話，這次把任務、材料、格式都交代清楚</li>
+          </ul>
+          <p class="say">
+            <b>再打這句，然後貼上講義</b>
+            我是護理系 <span class="blank"></span> 年級，要準備 <span class="blank"></span> 的考試。下面是老師的講義。請只根據講義，整理成一頁的考前複習單，分成
+            <span class="blank"></span>、<span class="blank"></span>、<span class="blank"></span> 三個部分。講義沒寫的不要自己補。
+          </p>
+          <ul>
+            <li>兩個答案並排比較，差在哪裡</li>
+            <li>追問一次，例如：「每一點縮成一句。」</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">4</span>
+        <div>
+          <h2>做出初稿</h2>
+          <p class="meta">{min(3)} 分鐘　想再看一次：{from(3)}</p>
+          <p>下面兩種選一種，加進你的複習單。</p>
+          <p class="say">
+            <b>比較表</b>
+            把 <span class="blank"></span> 和 <span class="blank"></span> 排成一張比較表，欄位是 <span class="blank"></span>、<span class="blank"></span>、<span class="blank"></span>。只填講義有寫的，沒寫的留空。
+          </p>
+          <p class="say"><b>自我測驗</b>只根據講義出五題選擇題。一次出一題，我回答之後再給下一題。答錯時告訴我是講義的哪一段。</p>
+          <ul>
+            <li>把重點整理，加上比較表或五題，貼進你的空白文件</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">5</span>
+        <div>
+          <h2>查證：挑三句回講義核對</h2>
+          <p class="meta">{min(4)} 分鐘　想再看一次：{from(4)}</p>
+          <p>在複習單上圈出三句：一個數字、一個名稱、一句講得很絕對的話。</p>
+          <table>
+            <thead>
+              <tr><th>我圈的句子</th><th>在講義的哪裡</th><th>對或錯</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+          <ul>
+            <li>在講義找不到的句子，從複習單上劃掉</li>
+            <li>和講義不一樣的，照講義改</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">6</span>
+        <div>
+          <h2>互看：和旁邊的同學交換</h2>
+          <p class="meta">{min(5)} 分鐘　想再看一次：{from(5)}</p>
+          <ul>
+            <li>在他的複習單上，找一句他還沒查過的，幫他回講義對</li>
+            <li>告訴他一個你看不懂的地方</li>
+            <li>拿回自己的，照同學說的改一處</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">7</span>
+        <div>
+          <h2>收尾：寫下你怎麼用的</h2>
+          <p class="meta">{min(6)} 分鐘　想再看一次：{from(6)}</p>
+          <ul>
+            <li>我用的工具是 <span class="blank"></span></li>
+            <li>我用它來做 <span class="blank"></span></li>
+            <li>我自己查證和修改了 <span class="blank"></span></li>
+            <li>今天學到、明天就會用的一個動作是 <span class="blank"></span></li>
+          </ul>
+        </div>
+      </section>
+    </article>
+  </main>
+</Base>

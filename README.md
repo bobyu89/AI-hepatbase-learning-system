@@ -1,1 +1,75 @@
-# AI-hepatbase-learning-system
+# 學習白板
+
+Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。目前有兩門課：Obsidian 研究筆記課，以及 AI 不只是聊天。
+
+網址（合併到 `main` 並啟用 GitHub Pages 之後）：https://bobyu89.github.io/AI-hepatbase-learning-system/
+
+## 頁面
+
+| 路徑 | 內容 |
+|---|---|
+| `/` | 首頁：平台介紹與目前開的課 |
+| `/courses/obsidian/` | 課程介紹：兩種身分、四個階段、課程目錄、直播與工作坊 |
+| `/courses/obsidian/board/` | 學習白板：可拖曳縮放，點卡片看內容，勾選學完 |
+| `/courses/obsidian/lessons/0/` … `/16/` | 單堂頁：簡報、A/B 練習卡、留給學員的問題 |
+| `/courses/ai/` | AI 不只是聊天：課程大綱、三個做法、實體課流程 |
+| `/courses/ai/board/` | AI 課的白板 |
+| `/courses/ai/lessons/0/` … `/13/` | AI 課的單堂頁：簡報（初稿）、換你做、學完打勾 |
+| `/courses/ai/workshop/` | 實體課步驟單，可列印成一張正反面 |
+| `/courses/ai/workshop/handout/` | 實體課備用講義（示範用），可列印 |
+
+## 開發
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+```bash
+npm run build
+```
+
+需要 Node 22 以上。
+
+## 常見修改
+
+**補上直播的 Google Meet 連結、日期**：改 `src/data/site.ts` 的 `obsidianCourse`。欄位留空時，網站顯示「即將公布」。
+
+**改站名**：改 `src/data/site.ts` 的 `site.name`。目前的「Bob 的學習白板」是暫定名稱。
+
+**調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
+
+**修改 AI 課**：大綱、實體課流程、白板位置與連線在 `src/data/ai-course.ts`；每一堂的投影片在 `src/data/ai-lessons.ts`，一堂是一個陣列，一張投影片一行。
+
+**更新課程內容**：課程原始碼（`data/m1.js` … `m4.js`）含完整逐字稿，不放在這個公開 repo。在本機執行下面的指令，會產生去掉逐字稿的 `src/data/lessons.json`：
+
+```bash
+node scripts/extract-content.mjs <課程原始碼資料夾>
+```
+
+**增減貼紙與塗鴉**：先取得 looseleaf 的原始碼，修改 `scripts/generate-art.mjs` 裡的清單，再重新產生 `public/art/`：
+
+```bash
+git clone --depth 1 https://github.com/kevintngo/looseleaf.git ../looseleaf
+```
+
+```bash
+node scripts/generate-art.mjs ../looseleaf
+```
+
+## 資料與隱私
+
+- 學習進度、身分選擇、白板卡片位置都存在學員自己瀏覽器的 localStorage，沒有後端，沒有登入。換裝置或清除網站資料就會重來。
+- 逐字稿不在這個 repo。pptx 的備忘稿含逐字稿，所以也不提供下載。
+- 示範用的文獻 A–D、學生甲、meeting 紀錄都是虛構的示範資料。
+
+## 部署
+
+`.github/workflows/deploy.yml` 會在推送到 `main` 時建置並發布到 GitHub Pages。第一次使用前，要到 repo 的 Settings → Pages，把 Source 設為 **GitHub Actions**。
+
+## 設計
+
+手繪紙張風，視覺參考 [kevintngo/looseleaf](https://github.com/kevintngo/looseleaf)，字型 Kevin Sans 與貼紙、塗鴉取自該專案（MIT）。介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。
