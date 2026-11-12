@@ -68,6 +68,25 @@
   overflow-wrap: anywhere;
 }
 
+/* 清單 */
+.handout .bullets {
+  margin-top: 0.5rem;
+  padding-left: 1.4em;
+}
+.handout ul.bullets {
+  list-style: disc;
+}
+.handout ol.bullets {
+  list-style: decimal;
+}
+.handout .bullets li {
+  padding: 0.15rem 0;
+}
+.handout th small {
+  font-weight: 400;
+  color: var(--muted);
+}
+
 /* 步驟單 */
 .stage {
   display: grid;
@@ -172,7 +191,17 @@
   }
   .handout th,
   .handout td {
-    padding: 3pt 5pt;
+    padding: 2pt 5pt;
+  }
+  .stage td {
+    height: 19pt;
+  }
+  .stage p {
+    margin: 0;
+  }
+  body {
+    font-size: 9.5pt;
+    line-height: 1.42;
   }
   .site-head,
   .site-foot,

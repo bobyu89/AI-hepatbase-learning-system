@@ -1,0 +1,59 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import "../../../../styles/handout.css";
+import { aiCourse, aiWorkshopPaper, aiReadingSheet } from "../../../../data/ai-course";
+import { url } from "../../../../lib/url";
+
+const p = aiWorkshopPaper;
+---
+
+<Base title={`實體課的預設論文｜${aiCourse.title}`} current="ai" description="實體課預設使用的論文，以及怎麼取得全文。">
+  <main class="handout">
+    <div class="tools">
+      <a class="btn btn-primary" href={p.fullText} target="_blank" rel="noopener">打開論文全文</a>
+      <a class="btn btn-quiet" href={url("/courses/ai/workshop/")}>步驟單</a>
+      <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+    </div>
+    <article class="paper">
+      <h1>實體課的預設論文</h1>
+      <p class="lede">{aiCourse.title}　沒有自己想讀的論文，就用這一篇。</p>
+
+      <h2>是哪一篇</h2>
+      <p class="ref">
+        {p.citation} <i>{p.journal}</i>{p.issue}{" "}
+        <a href={p.doi}>{p.doi}</a>
+      </p>
+      <p>主題：{p.topic}。</p>
+
+      <h2>為什麼選這篇</h2>
+      <ul class="bullets">
+        {p.why.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>來之前要做的事</h2>
+      <ol class="bullets">
+        <li>按上面的「打開論文全文」，在頁面上找到下載 PDF 的連結</li>
+        <li>把 PDF 存在上課要帶的那台電腦或平板裡</li>
+        <li>不用先讀完。上課時會一起讀</li>
+      </ol>
+
+      <h2>想帶自己的論文</h2>
+      <p>可以。請確認三件事：它是開放取用的，或學校圖書館有授權；它是已經發表的論文；篇幅不要太長，一般的原著論文就好。</p>
+
+      <h2>上課會填的閱讀單</h2>
+      <table>
+        <thead>
+          <tr><th>五格</th><th>去論文的哪裡找</th></tr>
+        </thead>
+        <tbody>
+          {aiReadingSheet.map(([head, hint]) => (
+            <tr>
+              <th scope="row">{head}</th>
+              <td>{hint}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </article>
+  </main>
+</Base>
