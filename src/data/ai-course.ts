@@ -59,16 +59,16 @@ export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.modul
 /**
  * 實體課 90 分鐘，約 30 人：把整門課的動作，照實際使用的順序串起來做一次。
  * 不用先看完預錄課，所以每一段都是先示範幾分鐘，再動手。
- * 每個人用自己的一份講義，從頭做出一頁考前複習單。
+ * 每個人帶一篇論文，從頭做出一頁論文閱讀單。
  * 每一段是 [要做的事, 分鐘, 對應哪幾堂預錄課]。
  */
-export const aiWorkshopGoal = "一頁自己的考前複習單";
+export const aiWorkshopGoal = "一頁論文閱讀單";
 export const aiWorkshopFlow: [string, number, string][] = [
-  ["開場：看一份完成的複習單，確認每個人都打得開 AI 工具和自己的講義", 8, ""],
-  ["動手前先檢查：這份講義能不能貼", 5, "第 12 堂"],
+  ["開場：看一份完成的閱讀單，確認每個人都打得開 AI 工具和論文", 8, ""],
+  ["動手前先檢查：這篇論文能不能上傳", 5, "第 12 堂"],
   ["問第一次，再把話說清楚、追問", 15, "第 2、3 堂"],
-  ["把講義交給它，做出初稿：重點整理，加一張比較表或五題自我測驗", 17, "第 7、9、10 堂"],
-  ["查證：挑三句回講義核對，標出它講錯或講得太滿的地方", 20, "第 4、5、8 堂"],
+  ["把論文交給它，填出閱讀單的五格：問題、對象、做法、結果、限制", 17, "第 7、8 堂"],
+  ["查證：每一格挑一句回原文核對，標出它講錯或講得太滿的地方", 20, "第 4、5、8 堂"],
   ["互看：兩人交換，找出對方還沒抓到的錯", 15, "第 11 堂"],
   ["收尾：這份如果要交出去，該怎麼標註。每人一句話", 10, "第 13 堂"],
 ];
@@ -77,8 +77,36 @@ export const aiWorkshopFlow: [string, number, string][] = [
 export const aiWorkshopPrep = [
   "一台能上網的筆電或平板",
   "先註冊好任何一個 AI 工具，確定登入得進去",
-  "一份這學期的講義電子檔，不要含病人或同學的個人資料",
+  "一篇論文的 PDF：用預設的那一篇，或你自己想讀的開放取用論文",
 ];
+
+/** 閱讀單的五格。 */
+export const aiReadingSheet = [
+  ["這篇在回答什麼問題", "研究目的"],
+  ["研究對象是誰、有多少人", "在哪裡、什麼時候做的"],
+  ["做了什麼、和什麼比較", "介入與研究設計"],
+  ["主要結果是什麼", "把數字寫下來"],
+  ["作者自己說的限制", "論文最後幾段"],
+] as const;
+
+/**
+ * 實體課的預設論文。資料經 PubMed 查證（PMID 33201236）。
+ * 這是暫定的選擇，老師可以換；換的時候只要改這一段。
+ */
+export const aiWorkshopPaper = {
+  citation: "Dykes, P. C., Burns, Z., Adelman, J., Benneyan, J., Bogaisky, M., Carter, E., Ergai, A., Lindros, M. E., Lipsitz, S. R., Scanlan, M., Shaykevich, S., & Bates, D. W. (2020). Evaluation of a patient-centered fall-prevention tool kit to reduce falls and injuries: A nonrandomized controlled trial.",
+  journal: "JAMA Network Open, 3",
+  issue: "(11), e2025889.",
+  doi: "https://doi.org/10.1001/jamanetworkopen.2020.25889",
+  fullText: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7672520/",
+  topic: "由護理人員主導、讓病人與家屬一起參與的住院病人跌倒預防工具",
+  why: [
+    "開放取用，全文可以合法下載與上傳",
+    "主題是住院病人跌倒預防，護理系學生不陌生",
+    "研究設計不是隨機分派，很適合練習分辨「有關聯」和「有效」",
+    "結果有幾個清楚的數字，適合練習回原文核對",
+  ],
+};
 
 /** 這門課的三個做法。 */
 export const aiPrinciples = [

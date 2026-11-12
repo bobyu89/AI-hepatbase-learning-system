@@ -14,18 +14,17 @@ const items: [string, [string, number][]][] = [
 ];
 ---
 
-<Base title={`備用講義｜${aiCourse.title}`} current="ai" description="實體課的備用講義：跌倒風險評估與 Morse 跌倒量表。練習用的示範講義。">
+<Base title={`示範講義｜${aiCourse.title}`} current="ai" description="預錄課示範用的講義：跌倒風險評估與 Morse 跌倒量表。">
   <main class="handout">
     <div class="tools">
       <button type="button" class="btn btn-primary" onclick="window.print()">列印這一頁</button>
-      <a class="btn btn-quiet" href={url("/courses/ai/workshop/")}>步驟單</a>
-      <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+            <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
     </div>
     <article class="paper">
       <h1>跌倒風險評估：Morse 跌倒量表</h1>
-      <p class="lede">{aiCourse.title}　實體課備用講義</p>
+      <p class="lede">{aiCourse.title}　預錄課的示範講義</p>
       <p class="notice">
-        這是給課堂練習用的示範講義，用來練習「把講義交給 AI，再回講義查證」。它不是正式教材。量表的項目與分數是依一般教材常見的版本整理的，沒有逐字對照原始文獻；臨床使用請以你的課本與所屬機構的版本為準。
+        這是預錄課第 4、7 堂示範用的講義，想跟著操作時可以用它練習「把講義交給 AI，再回講義查證」。它不是正式教材。量表的項目與分數是依一般教材常見的版本整理的，沒有逐字對照原始文獻；臨床使用請以你的課本與所屬機構的版本為準。
       </p>
 
       <h2>一、為什麼要評估</h2>

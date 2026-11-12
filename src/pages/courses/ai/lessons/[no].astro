@@ -62,7 +62,14 @@ const lessonUrl = (n: number) => url(`/courses/ai/lessons/${n}/`);
         <span class="hint-small">字太小時，把手機橫放或按全螢幕</span>
         <button type="button" class="btn btn-quiet full" data-deck-full>全螢幕</button>
       </div>
-      <p class="video-note">這一堂的影片還在製作，目前先看簡報。簡報內容是初稿，之後可能調整。</p>
+      <p class="video-note">
+        這一堂的影片還在製作，目前先看簡報。簡報內容是初稿，之後可能調整。
+        {(lesson.no === 4 || lesson.no === 7) && (
+          <>
+            {" "}想跟著操作，可以用這份<a href={url("/courses/ai/workshop/handout/")}>示範講義</a>。
+          </>
+        )}
+      </p>
     </section>
 
     <div class="wrap below">

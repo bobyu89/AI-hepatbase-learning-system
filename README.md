@@ -16,7 +16,8 @@ Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一�
 | `/courses/ai/board/` | AI 課的白板 |
 | `/courses/ai/lessons/0/` … `/13/` | AI 課的單堂頁：簡報（初稿）、換你做、學完打勾 |
 | `/courses/ai/workshop/` | 實體課步驟單，可列印成一張正反面 |
-| `/courses/ai/workshop/handout/` | 實體課備用講義（示範用），可列印 |
+| `/courses/ai/workshop/paper/` | 實體課的預設論文與取得方式 |
+| `/courses/ai/workshop/handout/` | 預錄課第 4、7 堂用的示範講義 |
 
 ## 開發
 

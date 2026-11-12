@@ -204,10 +204,10 @@ const ListTag = embed ? "div" : "main";
       <ol class="flow">
         {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
       </ol>
-      <p class="pending">把整門課的動作串起來做一次，不用先看完預錄課。帶一份這學期的講義來，下課時帶走{aiWorkshopGoal}。</p>
+      <p class="pending">把整門課的動作串起來做一次，不用先看完預錄課。帶一篇論文來，下課時帶走{aiWorkshopGoal}。</p>
       <div class="panel-actions">
         <a class="btn btn-primary" href={url("/courses/ai/workshop/")}>步驟單</a>
-        <a class="btn btn-quiet" href={url("/courses/ai/workshop/handout/")}>備用講義</a>
+        <a class="btn btn-quiet" href={url("/courses/ai/workshop/paper/")}>預設論文</a>
       </div>
     </section>
   </aside>
