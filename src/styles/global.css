@@ -1,0 +1,312 @@
+/* 全站樣式。配色與字體沿用課程簡報：紫是研究生（A 卡），青是老師（B 卡）。 */
+:root {
+  --paper: #f4f3f9;
+  --surface: #ffffff;
+  --ink: #1e1a2e;
+  --ink-2: #2a2540;
+  --muted: #5b5670;
+  --rule: #d9d6e6;
+  --violet: #5b3fc4;
+  --violet-deep: #4a31a8;
+  --violet-soft: #e7e1fa;
+  --violet-light: #b3a0ff;
+  --teal: #0b7a70;
+  --teal-soft: #d8efec;
+  --on-dark: #f4f3f9;
+  --on-dark-muted: #b9b4cf;
+
+  --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --measure: 34em;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow: 0 1px 2px rgb(30 26 46 / 0.06), 0 8px 24px rgb(30 26 46 / 0.08);
+
+  /* 目前選的身分決定強調色 */
+  --role: var(--violet);
+  --role-soft: var(--violet-soft);
+  color-scheme: light;
+}
+:root[data-role="b"] {
+  --role: var(--teal);
+  --role-soft: var(--teal-soft);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scrollbar-color: var(--rule) transparent;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  font-feature-settings: "tnum";
+}
+::selection {
+  background: var(--violet);
+  color: #fff;
+}
+:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.on-dark :focus-visible {
+  outline-color: var(--violet-light);
+}
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+h1,
+h2 {
+  font-family: var(--serif);
+  font-weight: 900;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2.25rem, 6.4vw, 5rem);
+  letter-spacing: 0.01em;
+}
+h2 {
+  font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+}
+h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+a {
+  color: var(--violet);
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+img,
+svg {
+  max-width: 100%;
+}
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), 72rem);
+  margin-inline: auto;
+}
+.lede {
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  color: var(--muted);
+  max-width: var(--measure);
+}
+.section {
+  padding-block: clamp(4rem, 9vw, 7.5rem) clamp(3rem, 7vw, 5.5rem);
+}
+.section > .wrap > h2 {
+  margin-bottom: 1rem;
+}
+
+/* 按鈕 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 3rem;
+  padding: 0.55rem 1.4rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.18s var(--ease-out),
+    border-color 0.18s var(--ease-out),
+    transform 0.18s var(--ease-out);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background: var(--violet);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--violet-deep);
+}
+.btn-quiet {
+  background: transparent;
+  border-color: var(--rule);
+  color: var(--ink);
+}
+.btn-quiet:hover {
+  border-color: var(--ink);
+}
+.on-dark .btn-primary {
+  background: var(--violet-light);
+  color: var(--ink);
+}
+.on-dark .btn-primary:hover {
+  background: #fff;
+}
+.on-dark .btn-quiet {
+  border-color: rgb(244 243 249 / 0.35);
+  color: var(--on-dark);
+}
+.on-dark .btn-quiet:hover {
+  border-color: var(--on-dark);
+}
+.btn svg {
+  flex: none;
+}
+
+/* 頁首頁尾 */
+.site-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem var(--gutter);
+}
+.site-head .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 1.125rem;
+  color: inherit;
+  text-decoration: none;
+}
+.site-head nav {
+  display: flex;
+  gap: clamp(0.75rem, 2.5vw, 1.75rem);
+  font-size: 0.9375rem;
+}
+.site-head nav a {
+  color: inherit;
+  text-decoration: none;
+  padding-block: 0.4rem;
+  border-bottom: 2px solid transparent;
+}
+.site-head nav a:hover,
+.site-head nav a[aria-current="page"] {
+  border-bottom-color: currentColor;
+}
+.site-head .brand,
+.site-head nav a {
+  white-space: nowrap;
+}
+.site-head .short {
+  display: none;
+}
+@media (max-width: 560px) {
+  .site-head .long {
+    display: none;
+  }
+  .site-head .short {
+    display: inline;
+  }
+}
+.on-dark {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+.on-dark a {
+  color: var(--violet-light);
+}
+.on-dark .lede {
+  color: var(--on-dark-muted);
+}
+.site-foot {
+  border-top: 1px solid var(--rule);
+  padding: 2rem var(--gutter) 3rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.site-foot .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  width: min(100%, 72rem);
+}
+
+/* 身分切換 */
+.role-switch {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+.role-switch button {
+  min-height: 2.5rem;
+  padding: 0.3rem 1.25rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--muted);
+  transition:
+    background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
+}
+.role-switch button[aria-pressed="true"] {
+  background: var(--role);
+  color: #fff;
+}
+[data-role-show] {
+  display: none;
+}
+:root:not([data-role="b"]) [data-role-show="a"],
+:root[data-role="b"] [data-role-show="b"] {
+  display: revert;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

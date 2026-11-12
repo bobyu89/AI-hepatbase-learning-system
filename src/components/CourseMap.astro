@@ -1,0 +1,245 @@
+---
+// 課程白板的縮圖：每個節點都是通往該堂課的連結。座標與正式白板共用。
+import { boardNodes, boardEdges, boardRegions, BOARD_W, BOARD_H, CARD_W, CARD_H } from "../data/course";
+import { edgeGeometry } from "../lib/edges";
+import { url } from "../lib/url";
+
+const byId = Object.fromEntries(boardNodes.map((n) => [n.id, n]));
+const edges = boardEdges.map((e) => ({ ...e, ...edgeGeometry(byId[e.from], byId[e.to]) }));
+/** 標題拆成最多兩行。中文字算 1、英數算 0.55 個字寬，優先在空白或標點後斷行。 */
+const wide = (ch: string) => (/[\u2E80-\uFFEF]/.test(ch) ? 1 : 0.55);
+const lines = (t: string, max = 7.6) => {
+  const total = [...t].reduce((n, ch) => n + wide(ch), 0);
+  if (total <= max) return [t];
+  let w = 0;
+  let fit = 0;
+  let nice = 0;
+  for (let i = 0; i < t.length; i++) {
+    w += wide(t[i]);
+    if (w > max) break;
+    fit = i + 1;
+    if (/[\s，、：？]/.test(t[i])) nice = i + 1;
+  }
+  const cut = nice >= 2 ? nice : fit;
+  let rest = t.slice(cut).trim();
+  let rw = 0;
+  for (let i = 0; i < rest.length; i++) {
+    rw += wide(rest[i]);
+    if (rw > max - 0.6) {
+      rest = rest.slice(0, i) + "…";
+      break;
+    }
+  }
+  return [t.slice(0, cut).trim(), rest];
+};
+const href = (n: (typeof boardNodes)[number]) =>
+  n.kind === "lesson" ? url(`/courses/obsidian/lessons/${n.no}/`) : url(`/courses/obsidian/#${n.id}`);
+const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.slice(t.indexOf(" ") + 1)] : [t]);
+---
+
+<figure class="course-map">
+  <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} role="group" aria-label="Obsidian 研究筆記課的課程地圖：17 堂課、兩場活動與三個選修">
+    <g class="regions">
+      {
+        boardRegions.map((r) => (
+          <>
+            <rect x={r.x} y={r.y} width={r.w} height={r.h} rx="26" />
+            <text x={r.x + 30} y={r.y + 40}>
+              {r.label}
+            </text>
+          </>
+        ))
+      }
+    </g>
+    <g class="edges">
+      {edges.map((e, i) => <path d={e.d} class={e.label ? "callback" : "seq"} pathLength={e.label ? undefined : 1} style={`--i:${i}`} />)}
+    </g>
+    <g class="nodes">
+      {
+        boardNodes.map((n) => (
+          <a href={href(n)} class={n.kind} data-caption={n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : `${n.title}　${n.sub}`}>
+            <title>{n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : n.title}</title>
+            <rect x={n.x} y={n.y} width={CARD_W} height={CARD_H} rx="18" />
+            {n.kind === "lesson" ? (
+              <>
+                <text class="no" x={n.x + 22} y={n.y + 78}>
+                  {n.no}
+                </text>
+                <text class="t" x={n.x + 84} y={n.y + (lines(n.title).length > 1 ? 56 : 71)}>
+                  {lines(n.title).map((ln, i) => (
+                    <tspan x={n.x + 84} dy={i ? 27 : 0}>
+                      {ln}
+                    </tspan>
+                  ))}
+                </text>
+              </>
+            ) : (
+              <text class="ev" y={n.y + CARD_H / 2 + (evLines(n.title).length > 1 ? -6 : 11)} text-anchor="middle">
+                {evLines(n.title).map((ln, i) => (
+                  <tspan x={n.x + CARD_W / 2} dy={i ? 34 : 0}>
+                    {ln}
+                  </tspan>
+                ))}
+              </text>
+            )}
+          </a>
+        ))
+      }
+    </g>
+  </svg>
+  <figcaption aria-hidden="true" data-map-caption>把游標移到卡片上，看那一堂在教什麼。</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".course-map").forEach((map) => {
+    const cap = map.querySelector<HTMLElement>("[data-map-caption]")!;
+    const idle = cap.textContent ?? "";
+    map.querySelectorAll<SVGAElement>(".nodes a").forEach((a) => {
+      const show = () => (cap.textContent = a.dataset.caption ?? idle);
+      const hide = () => (cap.textContent = idle);
+      a.addEventListener("pointerenter", show);
+      a.addEventListener("focus", show);
+      a.addEventListener("pointerleave", hide);
+      a.addEventListener("blur", hide);
+    });
+  });
+</script>
+
+<style>
+  .course-map {
+    position: relative;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .regions rect {
+    fill: rgb(244 243 249 / 0.035);
+    stroke: rgb(244 243 249 / 0.14);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 8;
+  }
+  .regions text {
+    fill: var(--on-dark-muted);
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .edges path {
+    fill: none;
+    stroke-linecap: round;
+  }
+  .edges .seq {
+    stroke: rgb(244 243 249 / 0.3);
+    stroke-width: 2.5;
+  }
+  .edges .callback {
+    stroke: var(--violet-light);
+    stroke-width: 3.5;
+    stroke-dasharray: 11 10;
+  }
+  .nodes a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nodes rect {
+    fill: var(--ink-2);
+    stroke: rgb(244 243 249 / 0.28);
+    stroke-width: 2;
+    transition:
+      fill 0.2s var(--ease-out),
+      stroke 0.2s var(--ease-out);
+  }
+  .nodes .event rect {
+    fill: transparent;
+    stroke: var(--violet-light);
+    stroke-dasharray: 10 8;
+  }
+  .nodes .tool rect {
+    fill: transparent;
+    stroke: rgb(244 243 249 / 0.4);
+  }
+  .nodes .tool .ev {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .nodes text {
+    fill: var(--on-dark);
+    font-family: var(--sans);
+  }
+  .nodes .no {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 50px;
+    fill: var(--violet-light);
+  }
+  .nodes .t {
+    font-size: 19px;
+    font-weight: 500;
+  }
+  .nodes .ev {
+    font-size: 30px;
+    font-weight: 700;
+  }
+  .nodes a:hover rect,
+  .nodes a:focus-visible rect {
+    fill: var(--violet);
+    stroke: var(--violet-light);
+  }
+  .nodes a:hover .no,
+  .nodes a:focus-visible .no {
+    fill: #fff;
+  }
+  .nodes a:focus-visible {
+    outline: none;
+  }
+  .nodes a:focus-visible rect {
+    stroke-width: 5;
+  }
+  figcaption {
+    margin-top: 1rem;
+    min-height: 1.8em;
+    color: var(--on-dark-muted);
+    font-size: 0.9375rem;
+  }
+
+  /* 進場：連線依序畫出來，只做一次。沒有 JS 或要求減少動態時，連線本來就是畫好的。 */
+  @media (prefers-reduced-motion: no-preference) {
+    .edges .seq {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw 0.7s var(--ease-out) forwards;
+      animation-delay: calc(var(--i) * 45ms + 150ms);
+    }
+    .edges .callback {
+      opacity: 0;
+      animation: appear 0.9s var(--ease-out) forwards;
+      animation-delay: calc(var(--i) * 45ms + 500ms);
+    }
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes appear {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* 小螢幕：地圖維持看得清楚的大小，左右滑動 */
+  @media (max-width: 720px) {
+    .course-map {
+      overflow-x: auto;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    svg {
+      width: 62rem;
+      max-width: none;
+    }
+  }
+</style>

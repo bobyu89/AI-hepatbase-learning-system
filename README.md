@@ -1,1 +1,58 @@
-# AI-hepatbase-learning-system
+# 學習白板
+
+Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。目前有一門課：Obsidian 研究筆記課。
+
+網址（合併到 `main` 並啟用 GitHub Pages 之後）：https://bobyu89.github.io/AI-hepatbase-learning-system/
+
+## 頁面
+
+| 路徑 | 內容 |
+|---|---|
+| `/` | 首頁：平台介紹與目前開的課 |
+| `/courses/obsidian/` | 課程介紹：兩種身分、四個階段、課程目錄、直播與工作坊 |
+| `/courses/obsidian/board/` | 學習白板：可拖曳縮放，點卡片看內容，勾選學完 |
+| `/courses/obsidian/lessons/0/` … `/16/` | 單堂頁：簡報、A/B 練習卡、留給學員的問題 |
+
+## 開發
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+```bash
+npm run build
+```
+
+需要 Node 22 以上。
+
+## 常見修改
+
+**補上直播的 Google Meet 連結、日期**：改 `src/data/site.ts` 的 `obsidianCourse`。欄位留空時，網站顯示「即將公布」。
+
+**改站名**：改 `src/data/site.ts` 的 `site.name`。目前的「Bob 的學習白板」是暫定名稱。
+
+**調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
+
+**更新課程內容**：課程原始碼（`data/m1.js` … `m4.js`）含完整逐字稿，不放在這個公開 repo。在本機執行下面的指令，會產生去掉逐字稿的 `src/data/lessons.json`：
+
+```bash
+node scripts/extract-content.mjs <課程原始碼資料夾>
+```
+
+## 資料與隱私
+
+- 學習進度、身分選擇、白板卡片位置都存在學員自己瀏覽器的 localStorage，沒有後端，沒有登入。換裝置或清除網站資料就會重來。
+- 逐字稿不在這個 repo。pptx 的備忘稿含逐字稿，所以也不提供下載。
+- 示範用的文獻 A–D、學生甲、meeting 紀錄都是虛構的示範資料。
+
+## 部署
+
+`.github/workflows/deploy.yml` 會在推送到 `main` 時建置並發布到 GitHub Pages。第一次使用前，要到 repo 的 Settings → Pages，把 Source 設為 **GitHub Actions**。
+
+## 設計
+
+介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。
