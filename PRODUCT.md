@@ -41,7 +41,7 @@ Astro（使用者選定），靜態輸出，部署到 GitHub Pages。學習進�
 ## Brand Commitments
 
 - 課程名稱：Obsidian 研究筆記課。講者：Bob。
-- 簡報既有的識別：紫 `#5B3FC4`、青 `#0B7A70`、Noto Sans TC／Noto Serif TC。紫色代表研究生的 A 卡，青色代表老師的 B 卡。
+- 網站視覺：手繪紙張風，參考 kevintngo/looseleaf（使用者指定）。簡報本身維持原本的紫 `#5B3FC4`、青 `#0B7A70`。紫色代表研究生的 A 卡，青色代表老師的 B 卡，網站沿用這個對應。
 - 全部使用繁體中文，醫學與軟體術語保留英文。語氣口語、直接。
 
 ## Evidence on Hand

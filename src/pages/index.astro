@@ -6,11 +6,11 @@ import { lessons, stages } from "../data/course";
 import { url } from "../lib/url";
 ---
 
-<Base darkHead current="home" description="把一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。">
+<Base current="home" description="把一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。">
   <main>
-    <section class="hero on-dark">
+    <section class="hero">
       <div class="hero-copy wrap">
-        <h1>把一門課<br />攤開成一張白板</h1>
+        <h1>把一門課<br />攤開成<span class="scribble">一張白板</span></h1>
         <div class="hero-side">
           <p class="lede">
             每一堂是一張卡片，前後呼應的地方畫成連線。學到哪裡、下一堂是什麼，一眼就看得到。進度記在你的瀏覽器裡，不用登入，也不評分。
@@ -37,7 +37,7 @@ import { url } from "../lib/url";
         <article class="feature">
           <div class="feature-head">
             <h3><a href={url("/courses/obsidian/")}>Obsidian 研究筆記課</a></h3>
-            <p class="quote">「我明明讀過，為什麼找不到？」</p>
+            <p class="quote"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
             <p>
               給護理領域的研究生與老師。從安裝開始，學會讓筆記互相連結、加上欄位、排成表格與看板，最後把筆記組成報告裡的一段文字。
             </p>
@@ -97,10 +97,7 @@ import { url } from "../lib/url";
 <style>
   .hero {
     overflow: hidden;
-    padding-top: clamp(1.5rem, 4vw, 3.5rem);
-    background:
-      radial-gradient(circle at 1px 1px, rgb(244 243 249 / 0.13) 1.2px, transparent 0) 0 0 / 28px 28px,
-      var(--ink);
+    padding-top: clamp(2rem, 5vw, 4rem);
   }
   .hero-copy {
     display: grid;
@@ -109,24 +106,26 @@ import { url } from "../lib/url";
     align-items: end;
   }
   .hero h1 {
-    font-size: clamp(2.4rem, 6.2vw, 5.25rem);
-    line-height: 1.16;
+    font-size: clamp(2.6rem, 6.6vw, 5.5rem);
+    line-height: 1.2;
     white-space: nowrap;
   }
   .hero-side {
     padding-bottom: 0.6rem;
   }
+  .hero .lede {
+    color: var(--ink);
+  }
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.9rem;
     margin-top: 1.75rem;
   }
   .hero-map {
-    margin: clamp(2rem, 5vw, 3.5rem) auto 0;
+    margin: clamp(2.5rem, 6vw, 4.5rem) auto 0;
     width: min(100% - 2 * var(--gutter), 72rem);
-    /* 地圖下緣被裁掉一截，接到下一段 */
-    margin-bottom: clamp(-7rem, -9vw, -2.5rem);
+    padding-bottom: clamp(1.5rem, 4vw, 3rem);
   }
   .hero-map :global(figcaption) {
     position: absolute;
@@ -136,24 +135,23 @@ import { url } from "../lib/url";
     transform: translateY(-100%);
   }
 
-  .course {
-    position: relative;
-    background: var(--paper);
-  }
+  /* 現在開的課：一張索引卡 */
   .feature {
-    margin-top: 2rem;
+    position: relative;
+    margin-top: 1.75rem;
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     gap: 1.5rem clamp(2rem, 6vw, 5rem);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    background: var(--surface);
-    border-radius: 18px;
+    padding: clamp(2.6rem, 5vw, 3.6rem) clamp(1.25rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 2rem / 100% 2px no-repeat,
+      var(--card);
+    border-radius: 2px;
     box-shadow: var(--shadow);
+    rotate: 0.5deg;
   }
   .feature h3 {
-    font-family: var(--serif);
-    font-weight: 900;
-    font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
     line-height: 1.3;
   }
   .feature h3 a {
@@ -161,13 +159,11 @@ import { url } from "../lib/url";
     text-decoration: none;
   }
   .feature h3 a:hover {
-    color: var(--violet);
+    color: var(--blue);
   }
   .quote {
     margin: 0.75rem 0 1rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--violet);
+    font-size: 1.35rem;
   }
   .feature-head p:last-child {
     max-width: var(--measure);
@@ -182,19 +178,19 @@ import { url } from "../lib/url";
     grid-template-columns: 6.5em 1fr auto;
     gap: 0.75rem;
     align-items: baseline;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--rule);
+    padding: 0.6rem 0;
+    border-bottom: 1.5px solid var(--rule);
   }
   .stages li:first-child {
-    border-top: 1px solid var(--rule);
+    border-top: 1.5px solid var(--rule);
   }
-  .stages span {
+  .stages span,
+  .stages em {
+    font-style: normal;
     color: var(--muted);
   }
   .stages em {
-    font-style: normal;
-    font-size: 0.9375rem;
-    color: var(--muted);
+    color: var(--blue);
   }
   .facts {
     grid-column: 1 / -1;
@@ -205,28 +201,23 @@ import { url } from "../lib/url";
     margin-top: 0;
   }
   .more {
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     color: var(--muted);
   }
 
-  .how {
-    padding-top: 0;
-  }
   .how dl {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     border-top: 2px solid var(--ink);
   }
   .how dl > div {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
     gap: 0.5rem clamp(1.5rem, 5vw, 4rem);
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--rule);
+    padding: 1.4rem 0;
+    border-bottom: 1.5px solid var(--rule);
   }
   .how dt {
-    font-family: var(--serif);
-    font-weight: 900;
-    font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
     line-height: 1.4;
   }
   .how dd {
@@ -234,7 +225,7 @@ import { url } from "../lib/url";
     color: var(--muted);
   }
   .how .a {
-    color: var(--violet);
+    color: var(--grape);
     font-weight: 700;
   }
   .how .b {
@@ -251,10 +242,6 @@ import { url } from "../lib/url";
     .hero-map :global(figcaption) {
       position: static;
       transform: none;
-    }
-    .hero-map {
-      margin-bottom: 0;
-      padding-bottom: 1.5rem;
     }
   }
 </style>

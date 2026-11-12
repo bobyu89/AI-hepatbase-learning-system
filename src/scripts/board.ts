@@ -42,7 +42,7 @@ function drawEdges(only?: string) {
   world.querySelectorAll<SVGPathElement>("[data-edge]").forEach((path) => {
     const { from, to, edge } = path.dataset;
     if (only && from !== only && to !== only) return;
-    const g = edgeGeometry(pos.get(from!)!, pos.get(to!)!, CARD_W, CARD_H);
+    const g = edgeGeometry(pos.get(from!)!, pos.get(to!)!, CARD_W, CARD_H, Number(edge) + 1);
     path.setAttribute("d", g.d);
     const label = world.querySelector<HTMLElement>(`[data-edge-label="${edge}"]`);
     if (label) {
@@ -57,9 +57,6 @@ function drawEdges(only?: string) {
 
 function apply() {
   world.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.k})`;
-  const dot = 28 * view.k;
-  canvas.style.backgroundSize = `${dot}px ${dot}px`;
-  canvas.style.backgroundPosition = `${view.x}px ${view.y}px`;
   zoomOut.textContent = `${Math.round(view.k * 100)}%`;
 }
 

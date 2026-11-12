@@ -5,7 +5,8 @@ import { edgeGeometry } from "../lib/edges";
 import { url } from "../lib/url";
 
 const byId = Object.fromEntries(boardNodes.map((n) => [n.id, n]));
-const edges = boardEdges.map((e) => ({ ...e, ...edgeGeometry(byId[e.from], byId[e.to]) }));
+const edges = boardEdges.map((e, i) => ({ ...e, ...edgeGeometry(byId[e.from], byId[e.to], CARD_W, CARD_H, i + 1) }));
+const tilt = (i: number) => (((i * 37) % 11) - 5) * 0.28;
 /** 標題拆成最多兩行。中文字算 1、英數算 0.55 個字寬，優先在空白或標點後斷行。 */
 const wide = (ch: string) => (/[\u2E80-\uFFEF]/.test(ch) ? 1 : 0.55);
 const lines = (t: string, max = 7.6) => {
@@ -32,6 +33,9 @@ const lines = (t: string, max = 7.6) => {
   }
   return [t.slice(0, cut).trim(), rest];
 };
+// 兩位數的堂次比較寬，標題往右讓，每行也短一點
+const tx = (no: number) => (no >= 10 ? 104 : 76);
+const mx = (no: number) => (no >= 10 ? 5.6 : 6.8);
 const href = (n: (typeof boardNodes)[number]) =>
   n.kind === "lesson" ? url(`/courses/obsidian/lessons/${n.no}/`) : url(`/courses/obsidian/#${n.id}`);
 const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.slice(t.indexOf(" ") + 1)] : [t]);
@@ -43,7 +47,7 @@ const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.s
       {
         boardRegions.map((r) => (
           <>
-            <rect x={r.x} y={r.y} width={r.w} height={r.h} rx="26" />
+            <rect x={r.x} y={r.y} width={r.w} height={r.h} rx="40" />
             <text x={r.x + 30} y={r.y + 40}>
               {r.label}
             </text>
@@ -56,18 +60,19 @@ const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.s
     </g>
     <g class="nodes">
       {
-        boardNodes.map((n) => (
-          <a href={href(n)} class={n.kind} data-caption={n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : `${n.title}　${n.sub}`}>
+        boardNodes.map((n, i) => (
+          <a href={href(n)} class={n.kind} transform={`rotate(${tilt(i)} ${n.x + CARD_W / 2} ${n.y + CARD_H / 2})`} data-caption={n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : `${n.title}　${n.sub}`}>
             <title>{n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : n.title}</title>
-            <rect x={n.x} y={n.y} width={CARD_W} height={CARD_H} rx="18" />
+            <rect x={n.x} y={n.y} width={CARD_W} height={CARD_H} rx="3" />
             {n.kind === "lesson" ? (
               <>
-                <text class="no" x={n.x + 22} y={n.y + 78}>
+                <line class="redline" x1={n.x} y1={n.y + 26} x2={n.x + CARD_W} y2={n.y + 26} />
+                <text class="no" x={n.x + 20} y={n.y + 88}>
                   {n.no}
                 </text>
-                <text class="t" x={n.x + 84} y={n.y + (lines(n.title).length > 1 ? 56 : 71)}>
-                  {lines(n.title).map((ln, i) => (
-                    <tspan x={n.x + 84} dy={i ? 27 : 0}>
+                <text class="t" x={n.x + tx(n.no!)} y={n.y + (lines(n.title, mx(n.no!)).length > 1 ? 62 : 77)}>
+                  {lines(n.title, mx(n.no!)).map((ln, i) => (
+                    <tspan x={n.x + tx(n.no!)} dy={i ? 27 : 0}>
                       {ln}
                     </tspan>
                   ))}
@@ -116,95 +121,88 @@ const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.s
     overflow: visible;
   }
   .regions rect {
-    fill: rgb(244 243 249 / 0.035);
-    stroke: rgb(244 243 249 / 0.14);
-    stroke-width: 1.5;
-    stroke-dasharray: 6 8;
+    fill: none;
+    stroke: var(--pencil);
+    stroke-width: 2;
+    stroke-dasharray: 3 9;
+    stroke-linecap: round;
+    opacity: 0.7;
   }
   .regions text {
-    fill: var(--on-dark-muted);
-    font-size: 24px;
-    font-weight: 500;
+    fill: var(--muted);
+    font-size: 25px;
   }
   .edges path {
     fill: none;
     stroke-linecap: round;
   }
   .edges .seq {
-    stroke: rgb(244 243 249 / 0.3);
-    stroke-width: 2.5;
+    stroke: var(--pencil);
+    stroke-width: 2.6;
   }
   .edges .callback {
-    stroke: var(--violet-light);
-    stroke-width: 3.5;
-    stroke-dasharray: 11 10;
+    stroke: var(--blue);
+    stroke-width: 3;
+    stroke-dasharray: 3 9;
   }
   .nodes a {
     cursor: pointer;
     text-decoration: none;
   }
   .nodes rect {
-    fill: var(--ink-2);
-    stroke: rgb(244 243 249 / 0.28);
+    fill: var(--card);
+    stroke: var(--ink);
     stroke-width: 2;
-    transition:
-      fill 0.2s var(--ease-out),
-      stroke 0.2s var(--ease-out);
+    filter: drop-shadow(0 3px 3px rgb(58 44 30 / 0.22));
+    transition: fill 0.15s ease-out;
+  }
+  .nodes .redline {
+    stroke: var(--rule-red);
+    stroke-width: 2;
   }
   .nodes .event rect {
-    fill: transparent;
-    stroke: var(--violet-light);
-    stroke-dasharray: 10 8;
+    fill: var(--kraft);
   }
   .nodes .tool rect {
-    fill: transparent;
-    stroke: rgb(244 243 249 / 0.4);
-  }
-  .nodes .tool .ev {
-    font-size: 24px;
-    font-weight: 500;
+    fill: var(--sticky);
+    stroke: none;
   }
   .nodes text {
-    fill: var(--on-dark);
-    font-family: var(--sans);
+    fill: var(--ink);
+    font-family: var(--hand);
   }
   .nodes .no {
-    font-family: var(--serif);
-    font-weight: 900;
     font-size: 50px;
-    fill: var(--violet-light);
+    fill: var(--blue);
   }
   .nodes .t {
-    font-size: 19px;
-    font-weight: 500;
+    font-size: 20px;
   }
   .nodes .ev {
     font-size: 30px;
-    font-weight: 700;
+  }
+  .nodes .tool .ev {
+    font-size: 24px;
   }
   .nodes a:hover rect,
   .nodes a:focus-visible rect {
-    fill: var(--violet);
-    stroke: var(--violet-light);
-  }
-  .nodes a:hover .no,
-  .nodes a:focus-visible .no {
-    fill: #fff;
+    fill: var(--hi);
   }
   .nodes a:focus-visible {
     outline: none;
   }
   .nodes a:focus-visible rect {
+    stroke: var(--blue);
     stroke-width: 5;
+    stroke-dasharray: 9 6;
   }
   figcaption {
     margin-top: 1rem;
     min-height: 1.8em;
-    color: var(--on-dark-muted);
-    font-size: 0.9375rem;
+    color: var(--muted);
   }
 
-  /* 進場：連線依序畫出來，只做一次。沒有 JS 或要求減少動態時，連線本來就是畫好的。 */
+  /* 進場：連線像用筆畫出來，只做一次。要求減少動態時，線本來就是畫好的。 */
   @media (prefers-reduced-motion: no-preference) {
     .edges .seq {
       stroke-dasharray: 1;
@@ -234,7 +232,7 @@ const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.s
     .course-map {
       overflow-x: auto;
       margin-inline: calc(-1 * var(--gutter));
-      padding-inline: var(--gutter);
+      padding: 1rem var(--gutter);
       scrollbar-width: none;
     }
     svg {

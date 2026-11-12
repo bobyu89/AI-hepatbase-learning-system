@@ -216,7 +216,7 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
   .lesson-head .no {
     flex: none;
     font-family: var(--serif);
-    font-weight: 900;
+    font-weight: 400;
     font-size: clamp(3.5rem, 10vw, 6rem);
     line-height: 0.9;
     color: var(--violet);
@@ -340,7 +340,7 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
   .question p {
     margin-top: 0.75rem;
     font-family: var(--serif);
-    font-weight: 900;
+    font-weight: 400;
     font-size: clamp(1.25rem, 2.8vw, 1.75rem);
     line-height: 1.5;
     max-width: 26em;
@@ -442,6 +442,110 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
       background: var(--violet);
       border-color: var(--violet);
       color: #fff;
+    }
+  }
+
+  /* ───── 手繪紙張風的調整 ───── */
+  .crumbs,
+  .crumbs a,
+  .why,
+  .video-note,
+  .count,
+  .hint,
+  .hint-small {
+    color: var(--muted);
+  }
+  .lesson-head .no {
+    color: var(--blue);
+  }
+  /* 簡報像一張貼在桌上的照片 */
+  .lesson {
+    overflow-x: clip;
+  }
+  .deck-wrap {
+    position: relative;
+  }
+  .deck {
+    border-radius: 2px;
+    border: 10px solid var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .deck:fullscreen {
+    border: 0;
+  }
+  .deck-wrap::before,
+  .deck-wrap::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 6.5rem;
+    height: 26px;
+    background: rgb(246 244 236 / 0.62);
+    border-inline: 1px dashed rgb(140 135 120 / 0.45);
+    z-index: 1;
+  }
+  .deck-wrap::before {
+    left: -1.5rem;
+    rotate: -32deg;
+  }
+  .deck-wrap::after {
+    right: -1.5rem;
+    rotate: 30deg;
+  }
+  .below > section {
+    position: relative;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--grain), var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .below > section:nth-child(odd) {
+    rotate: -0.3deg;
+  }
+  .below > section:nth-child(even) {
+    rotate: 0.35deg;
+  }
+  .practice-card {
+    border-radius: 2px;
+  }
+  .question p {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+  }
+  .done {
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+  }
+  .done:hover {
+    background: var(--paper);
+  }
+  .done .box {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--wob-a);
+    border-color: var(--ink);
+  }
+  .done input:checked + .box {
+    background: var(--surface);
+    border-color: var(--ink);
+    color: var(--green);
+  }
+  .done:has(input:checked) {
+    border-color: var(--green);
+    background: #dfe9d8;
+  }
+  .pager a:hover {
+    color: var(--blue);
+    border-top-color: var(--marker);
+  }
+  @media (max-width: 620px) {
+    .deck-bar .full {
+      background: var(--marker);
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .deck {
+      border-width: 5px;
     }
   }
 </style>

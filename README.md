@@ -55,4 +55,4 @@ node scripts/extract-content.mjs <課程原始碼資料夾>
 
 ## 設計
 
-介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。
+手繪紙張風，視覺參考 [kevintngo/looseleaf](https://github.com/kevintngo/looseleaf)，字型 Kevin Sans 取自該專案（MIT）。介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。

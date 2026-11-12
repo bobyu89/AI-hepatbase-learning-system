@@ -84,7 +84,7 @@ const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true
           )
         }
         {
-          boardNodes.map((n) => (
+          boardNodes.map((n, i) => (
             <button
               type="button"
               class:list={["card", n.kind]}
@@ -92,7 +92,7 @@ const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true
               data-no={n.no}
               data-x={n.x}
               data-y={n.y}
-              style={`left:${n.x}px;top:${n.y}px;width:${CARD_W}px;height:${CARD_H}px`}
+              style={`left:${n.x}px;top:${n.y}px;width:${CARD_W}px;height:${CARD_H}px;--tilt:${((((i * 37) % 11) - 5) * 0.28).toFixed(2)}deg`}
               aria-controls="inspector"
             >
               {n.kind === "lesson" ? (
@@ -497,7 +497,7 @@ const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true
   }
   .card .no {
     font-family: var(--serif);
-    font-weight: 900;
+    font-weight: 400;
     font-size: 2.75rem;
     line-height: 1;
     color: var(--violet);
@@ -839,7 +839,7 @@ const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true
   }
   .list .no {
     font-family: var(--serif);
-    font-weight: 900;
+    font-weight: 400;
     font-size: 1.4rem;
     color: var(--violet);
   }
@@ -898,6 +898,298 @@ const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true
     }
     .tools [data-tool="reset"] {
       display: none;
+    }
+  }
+
+  /* ───── 手繪紙張風的調整 ───── */
+  .bar {
+    background: var(--grain), var(--surface);
+    border-bottom: 0;
+    box-shadow: var(--shadow);
+  }
+  .bar h1 {
+    font-size: 1.5rem;
+  }
+  .bar .back,
+  .bar .progress {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .meter {
+    height: 11px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--surface);
+  }
+  .meter i {
+    background: var(--green);
+  }
+  .bar .role-switch,
+  .view-switch {
+    gap: 3px;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+  }
+  .bar .role-switch button,
+  .view-switch button {
+    border-radius: var(--wob-a);
+    font-size: 1rem;
+  }
+  .view-switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .canvas {
+    background: var(--linen), var(--desk);
+  }
+  .region {
+    border: 2px dashed rgb(107 102 96 / 0.75);
+    border-radius: 60px 38px 70px 34px / 38px 70px 34px 60px;
+    background: rgb(255 255 255 / 0.1);
+  }
+  .region span {
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: var(--muted);
+  }
+  .edges .seq,
+  .legend .seq {
+    stroke: var(--pencil);
+    stroke-width: 2.6;
+  }
+  .edges .callback,
+  .legend .callback {
+    stroke: var(--blue);
+    stroke-width: 3;
+    stroke-dasharray: 3 9;
+  }
+  .edge-label {
+    padding: 0.1rem 0.7rem;
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--blue-deep);
+    font-size: 1.05rem;
+    box-shadow: 0 1px 1.5px rgb(var(--shade) / 0.28);
+    rotate: -1.4deg;
+  }
+  .card {
+    border: 0;
+    border-radius: 2px;
+    padding-top: 22px;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+    rotate: var(--tilt, 0deg);
+    transition:
+      box-shadow 0.2s ease-out,
+      rotate 0.2s var(--ease-settle);
+  }
+  .card:hover {
+    rotate: 0deg;
+    box-shadow: var(--shadow-lift);
+  }
+  .card.is-dragging {
+    rotate: -1.5deg;
+    box-shadow: var(--shadow-lift);
+  }
+  .card {
+    gap: 0 0.6rem;
+    padding-inline: 0.9rem 0.7rem;
+    letter-spacing: 0;
+  }
+  .card .no {
+    font-size: 2.7rem;
+    color: var(--blue);
+  }
+  .card .title {
+    font-weight: 400;
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+  /* 已學完：蓋一個綠色的章 */
+  .card .badge {
+    right: 8px;
+    top: auto;
+    bottom: 8px;
+    width: 38px;
+    height: 38px;
+    border: 2.5px solid var(--green);
+    background: rgb(251 246 233 / 0.85);
+    color: var(--green);
+    rotate: -14deg;
+  }
+  .card.is-done {
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+  }
+  .card.is-done .no {
+    color: var(--pencil);
+  }
+  /* 接著學：橘色麥克筆圈起來，貼一張標籤 */
+  .card.is-next {
+    color: var(--ink);
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+    outline: 4px solid var(--marker);
+    outline-offset: 5px;
+    border-radius: var(--wob-a);
+  }
+  .card.is-next .no {
+    color: var(--blue);
+  }
+  .card.is-next::after {
+    left: 12px;
+    top: -24px;
+    padding: 0.05rem 0.7rem;
+    border-radius: 2px;
+    background: var(--marker);
+    color: var(--ink);
+    font-size: 1.05rem;
+    rotate: -3deg;
+    box-shadow: 0 1px 1.5px rgb(var(--shade) / 0.3);
+  }
+  .card.is-selected,
+  .card.is-next.is-selected {
+    box-shadow:
+      0 0 0 3px var(--blue),
+      var(--shadow-lift);
+  }
+  /* 活動：牛皮紙。選修：黃色便利貼 */
+  .card.event,
+  .card.event:hover,
+  .card.event.is-selected {
+    padding-top: 0;
+    border: 0;
+    background: var(--grain), var(--kraft);
+    box-shadow: var(--shadow);
+  }
+  .card.event::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    width: 5rem;
+    height: 24px;
+    translate: -50% 0;
+    rotate: -3deg;
+    background: rgb(246 244 236 / 0.62);
+    border-inline: 1px dashed rgb(140 135 120 / 0.45);
+  }
+  .card.tool,
+  .card.tool:hover,
+  .card.tool.is-selected {
+    padding-top: 0;
+    border: 0;
+    background: linear-gradient(to bottom, rgb(255 252 235 / 0.35), transparent 30%), var(--sticky);
+    box-shadow: var(--shadow);
+  }
+  .card.event.is-selected,
+  .card.tool.is-selected {
+    box-shadow:
+      0 0 0 3px var(--blue),
+      var(--shadow-lift);
+  }
+  .card.event .title,
+  .card.tool .title {
+    font-size: 1.25rem;
+  }
+  .card.event .sub,
+  .card.tool .sub {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .tools {
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+    background: var(--surface);
+  }
+  .tools button {
+    border-radius: var(--wob-a);
+    font-size: 1rem;
+  }
+  .tools output {
+    font-size: 1rem;
+  }
+  .inspector {
+    background: var(--grain), var(--surface);
+    border-left: 0;
+    box-shadow: -3px 0 14px rgb(var(--shade) / 0.16);
+  }
+  .inspector h2 .no {
+    color: var(--blue);
+    font-size: 2.6rem;
+  }
+  .inspector h3 {
+    font-weight: 700;
+  }
+  .inspector .practice {
+    border-radius: 2px;
+  }
+  .inspector .links li,
+  .inspector .flow,
+  .inspector .flow li {
+    border-color: var(--rule);
+    border-width: 1.5px;
+  }
+  .inspector .links button {
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.24em;
+  }
+  .inspector .links span,
+  .inspector .where,
+  .inspector .why,
+  .inspector .pending {
+    font-size: 1rem;
+  }
+  .app .done .box {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+  }
+  .app .done input:checked + .box {
+    background: var(--surface);
+    border-color: var(--ink);
+    color: var(--green);
+  }
+  .list {
+    background: none;
+  }
+  .list-inner {
+    margin-block: 1.5rem 3rem;
+    padding: 0.5rem clamp(1rem, 4vw, 2.5rem) 2.5rem;
+    background: var(--grain), var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .list h2 {
+    font-family: var(--hand);
+    font-size: 1.3rem;
+  }
+  .list li {
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .list .no {
+    font-size: 1.7rem;
+    color: var(--blue);
+  }
+  @media (max-width: 900px) {
+    .inspector {
+      box-shadow: 0 -6px 24px rgb(var(--shade) / 0.25);
+      border-radius: 2px;
+    }
+    .inspector .close {
+      border: 2px solid var(--ink);
+      border-radius: var(--wob-a);
+      background: var(--surface);
     }
   }
 </style>
