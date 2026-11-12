@@ -101,6 +101,12 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
         <p class="lede">
           把整門課的動作，照實際使用的順序串起來做一次。不用先看完預錄課，每一段都會先示範再動手。帶一份你這學期的講義來，下課時帶走{aiWorkshopGoal}。
         </p>
+        <figure class="intro-video">
+          <video controls preload="metadata" playsinline poster={url("/video/ai-workshop-intro.jpg")} src={url("/video/ai-workshop-intro.mp4")}>
+            你的瀏覽器不能播放這支影片，請改用下面的步驟單。
+          </video>
+          <figcaption>課前一分鐘：這堂課要做什麼、來之前準備哪三樣。有字幕，旁白是合成語音。</figcaption>
+        </figure>
         <ol class="flow">
           {
             aiWorkshopFlow.map(([what, min, from]) => (
@@ -241,6 +247,24 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
 
   .when {
     color: var(--red);
+  }
+  .intro-video {
+    max-width: 44rem;
+    margin-top: 1.5rem;
+  }
+  .intro-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--desk);
+    border: 8px solid var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .intro-video figcaption {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 1rem;
   }
   .flow {
     max-width: 44rem;
