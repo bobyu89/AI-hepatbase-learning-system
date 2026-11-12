@@ -317,6 +317,26 @@ main {
 .site-head nav a {
   white-space: nowrap;
 }
+.site-head nav {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.site-head nav .all {
+  color: var(--muted);
+}
+/* 每門課一個代表色：AI 課是橘色麥克筆，Obsidian 課是藍筆 */
+body[data-course="ai"] {
+  --course: var(--marker);
+}
+body[data-course="obsidian"] {
+  --course: var(--blue);
+}
+.site-head.in-course {
+  border-bottom: 4px solid var(--course);
+}
+.site-head.in-course nav a:hover {
+  border-bottom-color: var(--course);
+}
 .site-head .short {
   display: none;
 }

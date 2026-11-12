@@ -1,0 +1,8 @@
+assets/
+voice/
+out/
+renders/
+.hyperframes/
+index.html
+timing.json
+node_modules/

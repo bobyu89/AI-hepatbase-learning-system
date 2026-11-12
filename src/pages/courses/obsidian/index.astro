@@ -2,6 +2,7 @@
 import Base from "../../../layouts/Base.astro";
 import RoleSwitch from "../../../components/RoleSwitch.astro";
 import Art from "../../../components/Art.astro";
+import ObsidianBoard from "../../../components/boards/ObsidianBoard.astro";
 import { obsidianCourse } from "../../../data/site";
 import { lessons, modules, lessonsOf, stages, liveFlow, workshopFlow, lessonShape, roles, tools } from "../../../data/course";
 import { url } from "../../../lib/url";
@@ -25,10 +26,15 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
           Obsidian，讓它們互相連結，需要的時候找得到、用得上。
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href={url("/courses/obsidian/board/")} data-resume>打開學習白板</a>
+          <a class="btn btn-primary" href="#board">看學習白板</a>
           <a class="btn btn-quiet" href="#lessons">看課程目錄</a>
         </div>
       </div>
+    </section>
+
+    <section class="board-embed" id="board" aria-label="學習白板">
+      <ObsidianBoard embed />
+      <p class="board-hint wrap">拖曳可以移動畫面，點卡片看那一堂的內容。想看大一點，按右上角的「放大看」。</p>
     </section>
 
     <section class="section who">
@@ -171,7 +177,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
       </div>
     </section>
 
-    <section class="section events kraft">
+    <section class="section events kraft" id="events">
       <div class="wrap">
         <Art name="coffee-to-go" size={100} rotate={6} class="pinned" />
         <h2>直播與工作坊</h2>
@@ -231,7 +237,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
         <p class="lede" data-close-note>第 0 堂不用打開任何軟體，只請你想一件事：你的筆記，現在都放在哪裡？</p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/courses/obsidian/lessons/0/")} data-close-link>開始第 0 堂</a>
-          <a class="btn btn-quiet" href={url("/courses/obsidian/board/")}>打開學習白板</a>
+          <a class="btn btn-quiet" href="#board">回到學習白板</a>
         </div>
       </div>
     </section>
@@ -609,6 +615,16 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     .stage-list {
       grid-template-columns: 1fr;
     }
+  }
+
+  .board-embed {
+    padding-block: clamp(0.5rem, 2vw, 1.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    scroll-margin-top: 1rem;
+  }
+  .board-hint {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 1rem;
   }
 
   /* ───── 手繪紙張風的調整 ───── */

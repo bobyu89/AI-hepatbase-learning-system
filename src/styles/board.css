@@ -1,6 +1,6 @@
 /* 學習白板的樣式，各門課的白板頁共用。 */
-  html:has(.app),
-  html:has(.app) body {
+  html:has(.app:not(.embed)),
+  html:has(.app:not(.embed)) body {
     height: 100%;
     overflow: hidden;
   }
@@ -34,7 +34,11 @@
   .bar .back:hover {
     color: var(--ink);
   }
-  .bar h1 {
+  .bar h1,
+  .bar h2 {
+    font-family: var(--hand);
+    font-weight: 400;
+    line-height: 1.3;
     font-size: 1.25rem;
     letter-spacing: 0;
   }
@@ -305,7 +309,7 @@
   }
 
   /* 工具列 */
-  .tools {
+  .board-tools {
     position: absolute;
     left: 1rem;
     bottom: 1rem;
@@ -318,7 +322,7 @@
     box-shadow: var(--shadow);
     cursor: default;
   }
-  .tools button {
+  .board-tools button {
     display: grid;
     place-items: center;
     min-width: 2.75rem;
@@ -331,10 +335,10 @@
     font-weight: 500;
     cursor: pointer;
   }
-  .tools button:hover {
+  .board-tools button:hover {
     background: var(--paper);
   }
-  .tools output {
+  .board-tools output {
     min-width: 3.25em;
     text-align: center;
     font-size: 0.9375rem;
@@ -611,7 +615,7 @@
     .inspector h2 {
       padding-right: 3rem;
     }
-    .tools [data-tool="reset"] {
+    .board-tools [data-tool="reset"] {
       display: none;
     }
   }
@@ -622,7 +626,8 @@
     border-bottom: 0;
     box-shadow: var(--shadow);
   }
-  .bar h1 {
+  .bar h1,
+  .bar h2 {
     font-size: 1.5rem;
   }
   .bar .back,
@@ -827,16 +832,16 @@
     color: var(--muted);
     font-size: 1rem;
   }
-  .tools {
+  .board-tools {
     border: 2px solid var(--ink);
     border-radius: var(--wob-b);
     background: var(--surface);
   }
-  .tools button {
+  .board-tools button {
     border-radius: var(--wob-a);
     font-size: 1rem;
   }
-  .tools output {
+  .board-tools output {
     font-size: 1rem;
   }
   .inspector {
@@ -932,4 +937,47 @@
     gap: 0 0.75rem;
     align-items: baseline;
     padding: 0.8rem 0;
+  }
+
+  /* 嵌在課程首頁裡的白板：像一塊釘在桌上的板子 */
+  .app.embed {
+    position: relative;
+    width: min(100% - 2 * var(--gutter), 86rem);
+    height: min(84vh, 820px);
+    margin-inline: auto;
+    border: 10px solid var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .app.embed .bar {
+    padding-inline: 1rem;
+  }
+  .app.embed .canvas {
+    box-shadow: inset 0 2px 6px rgb(var(--shade) / 0.18);
+  }
+  .bar .expand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.1rem 0.9rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  .bar .expand:hover {
+    background: var(--paper);
+  }
+  @media (max-width: 900px) {
+    .app.embed {
+      height: min(60vh, 560px);
+      border-width: 6px;
+    }
+    .app.embed .bar .progress {
+      margin-right: auto;
+    }
   }
