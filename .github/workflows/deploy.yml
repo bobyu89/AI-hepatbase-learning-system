@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3
+        with:
+          # Astro 需要 Node 22 以上；這個 action 預設用的版本比較舊
+          node-version: 22
   deploy:
     needs: build
     runs-on: ubuntu-latest
