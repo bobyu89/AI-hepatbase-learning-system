@@ -107,6 +107,10 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           </video>
           <figcaption>課前一分鐘：這堂課要做什麼、來之前準備哪三樣。有字幕，旁白是合成語音。</figcaption>
         </figure>
+        <p class="prep-link">
+          課堂只有 {total} 分鐘，註冊工具和下載論文請在課前做完。
+          <a href={url("/courses/ai/workshop/prep/")}>照著課前準備清單做一次</a>，大約十分鐘。
+        </p>
         <ol class="flow">
           {
             aiWorkshopFlow.map(([what, min, from]) => (
@@ -125,6 +129,18 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
 
   </main>
 </Base>
+
+<style>
+  .prep-link {
+    max-width: 62ch;
+    margin: 0 0 1.5rem;
+  }
+  .prep-link a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+</style>
 
 <script>
   import { getDone } from "../../../scripts/progress";

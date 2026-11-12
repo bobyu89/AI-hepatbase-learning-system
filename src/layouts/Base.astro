@@ -36,7 +36,8 @@ const courses = {
   },
 } as const;
 const course = current === "course" || current === "ai" ? courses[current] : null;
-const fullTitle = title ? `${title}｜${site.name}` : site.name;
+const titleSite = course ? course.name : site.name;
+const fullTitle = title && !title.includes(titleSite) ? `${title}｜${titleSite}` : title || titleSite;
 ---
 
 <!doctype html>
@@ -72,15 +73,12 @@ const fullTitle = title ? `${title}｜${site.name}` : site.name;
             <span class="short">{course ? course.short : "學習白板"}</span>
           </a>
           {
-            // 每門課的對象不同，所以進到課程裡之後，選單只列這門課自己的頁面
+            // 每門課的對象不同，所以進到課程裡之後，選單只列這門課自己的頁面，也不連回列出兩門課的首頁
             course ? (
               <nav aria-label={course.name}>
                 {course.links.map(([label, href]) => (
                   <a href={href}>{label}</a>
                 ))}
-                <a class="all" href={url("/")}>
-                  所有課程
-                </a>
               </nav>
             ) : (
               <nav aria-label="課程">
@@ -103,7 +101,7 @@ const fullTitle = title ? `${title}｜${site.name}` : site.name;
       !bare && (
         <footer class="site-foot">
           <div class="wrap">
-            <span>{site.name}</span>
+            <span>{course ? course.name : site.name}</span>
             <span>學習進度只存在你這台裝置的瀏覽器裡。</span>
           </div>
         </footer>

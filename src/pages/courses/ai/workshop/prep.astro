@@ -1,0 +1,160 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import "../../../../styles/handout.css";
+import {
+  aiCourse,
+  aiWorkshopFlow,
+  aiWorkshopGoal,
+  aiWorkshopChecklist,
+  aiOwnPaperRules,
+  aiDoNotBring,
+  aiWorkshopPaper,
+} from "../../../../data/ai-course";
+import { url } from "../../../../lib/url";
+
+const total = aiWorkshopFlow.reduce((sum, [, min]) => sum + min, 0);
+---
+
+<Base title={`課前準備｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的課前準備清單：註冊工具、下載論文、試傳一次。`}>
+  <main class="handout">
+    <div class="tools">
+      <a class="btn btn-primary" href={url("/courses/ai/workshop/paper/")}>下載示範論文</a>
+      <a class="btn btn-quiet" href={url("/courses/ai/workshop/")}>步驟單</a>
+      <a class="btn btn-quiet" href={url("/files/ai/step-sheet.docx")} download="AI課_實體課步驟單.docx">下載步驟單（Word）</a>
+      <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+    </div>
+    <article class="paper">
+      <h1>課前準備</h1>
+      <p class="lede">
+        {aiCourse.title}　實體課 {total} 分鐘，要做出{aiWorkshopGoal}。時間很緊，下面這幾件事請在家做完，大約十分鐘。
+      </p>
+      <p class="when-line">
+        {aiCourse.workshopDate || "日期與地點即將公布"}
+        {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
+      </p>
+
+      <h2>來之前做完這六件事</h2>
+      <ul class="checklist">
+        {
+          aiWorkshopChecklist.map(([what, note], i) => (
+            <li>
+              <label>
+                <input type="checkbox" data-prep={i} />
+                <span>
+                  <b>{what}</b>
+                  <small>{note}</small>
+                </span>
+              </label>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="saved" data-saved hidden>六件都做完了，上課見。</p>
+
+      <h2>預設的論文</h2>
+      <p class="ref">
+        {aiWorkshopPaper.citation} <i>{aiWorkshopPaper.journal}</i>{aiWorkshopPaper.issue}
+      </p>
+      <p>
+        開放取用，可以免費下載。<a href={url("/courses/ai/workshop/paper/")}>怎麼取得全文</a>。不用先讀完，課堂上會帶著你讀。
+      </p>
+
+      <h2>想帶自己的論文</h2>
+      <ul class="bullets">
+        {aiOwnPaperRules.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>不要帶，也不要上傳</h2>
+      <ul class="bullets">
+        {aiDoNotBring.map((item) => <li>{item}</li>)}
+      </ul>
+      <p class="notice">能不能把資料交給 AI 工具，以學校與實習單位的規定為準。</p>
+
+      <h2>卡住了怎麼辦</h2>
+      <ul class="bullets">
+        <li>註冊不了、收不到驗證信：換一個工具試試，三個裡面有一個能用就好</li>
+        <li>上傳失敗：確認檔案是 PDF、不是網頁捷徑；或把論文摘要整段貼進對話框</li>
+        <li>都不行：人來就好，課堂上和旁邊的同學共用一台</li>
+      </ul>
+    </article>
+  </main>
+</Base>
+
+<style>
+  .when-line {
+    margin: 0 0 1.5rem;
+    font-weight: 700;
+  }
+  .checklist {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+  }
+  .checklist li {
+    border-bottom: 1.5px dashed color-mix(in srgb, var(--ink) 28%, transparent);
+  }
+  .checklist label {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 0.8rem 0.25rem;
+    cursor: pointer;
+  }
+  .checklist input {
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-top: 0.2rem;
+    accent-color: var(--marker-deep);
+  }
+  .checklist b {
+    display: block;
+  }
+  .checklist small {
+    display: block;
+    font-size: 0.92em;
+    color: color-mix(in srgb, var(--ink) 78%, transparent);
+  }
+  .checklist input:checked + span b {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+  .saved {
+    font-weight: 700;
+    color: var(--green);
+  }
+  @media print {
+    .saved {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // 勾選狀態存在這台裝置的瀏覽器裡，重新整理後還在。
+  const KEY = "lb:ai:prep";
+  const boxes = [...document.querySelectorAll<HTMLInputElement>("[data-prep]")];
+  const saved = document.querySelector<HTMLElement>("[data-saved]");
+  let done: number[] = [];
+  try {
+    done = JSON.parse(localStorage.getItem(KEY) || "[]");
+  } catch {
+    done = [];
+  }
+  const paint = () => {
+    if (saved) saved.hidden = !boxes.every((b) => b.checked);
+  };
+  boxes.forEach((box, i) => {
+    box.checked = done.includes(i);
+    box.addEventListener("change", () => {
+      const now = boxes.map((b, n) => (b.checked ? n : -1)).filter((n) => n >= 0);
+      try {
+        localStorage.setItem(KEY, JSON.stringify(now));
+      } catch {
+        /* 存不了就只留在這一頁 */
+      }
+      paint();
+    });
+  });
+  paint();
+</script>
