@@ -166,6 +166,9 @@ svg {
   max-width: 100%;
 }
 
+main {
+  overflow-x: clip;
+}
 .wrap {
   width: min(100% - 2 * var(--gutter), 70rem);
   margin-inline: auto;
@@ -428,5 +431,32 @@ svg {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* 貼紙與塗鴉（looseleaf） */
+.art {
+  flex: none;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+.art.sticker {
+  filter: drop-shadow(0 1px 0.75px rgb(var(--shade) / 0.3)) drop-shadow(0 3px 4px rgb(var(--shade) / 0.14));
+}
+/* 貼在紙角上的貼紙 */
+.art.pinned {
+  position: absolute;
+  z-index: 1;
+}
+.section > .wrap > .art.pinned {
+  right: clamp(0.75rem, 4vw, 3rem);
+  top: -30px;
+}
+@media (max-width: 620px) {
+  .section > .wrap > .art.pinned {
+    width: 62px;
+    height: auto;
+    top: -22px;
   }
 }

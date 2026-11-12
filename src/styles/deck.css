@@ -1,5 +1,6 @@
-/* 投影片樣式，移植自課程原始碼的 scene.css，全部收在 .deck 之下，不影響網站其他部分。 */
-.deck{--ink:#1E1A2E;--muted:#5B5670;--tint:#F1F0F7;--violet:#5B3FC4;--violet-soft:#E7E1FA;--violet-light:#B3A0FF;--teal:#0B7A70;--teal-soft:#D8EFEC;--rule:#D9D6E6;font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;color:var(--ink);
+/* 投影片樣式，移植自課程原始碼的 scene.css，全部收在 .deck 之下，不影響網站其他部分。
+   檔案最後一段把簡報改成和網站一樣的手繪紙張風。 */
+.deck{--ink:#2a2420;--muted:#4a423b;--tint:#ece6da;--violet:#2c4f9e;--violet-soft:#dfe8f5;--violet-light:#4a423b;--teal:#1f7f73;--teal-soft:#d3e9e2;--rule:#b2c3dc;--grape:#6a4bc4;--grape-soft:#e6dff6;--marker:#df6b3c;--sheet:#f8f5ee;--icard:#fbf6e9;--desk:#a8c8bb;font-family:var(--hand);letter-spacing:.02em;color:var(--ink);
 *{box-sizing:border-box;margin:0}
 h1,h2{font-family:inherit;letter-spacing:0;text-wrap:initial}
 ul{list-style:disc}
@@ -147,4 +148,100 @@ figure.mock{position:relative}
 .kcol strong em{font-style:normal;color:var(--muted);font-weight:400}
 .kcol>.mark{align-self:center}
 .kcard{background:#fff;border:2px solid var(--rule);border-radius:10px;padding:18px 20px;font-size:25px}
+
+/* ───────── 手繪紙張風 ───────── */
+#stage{background:var(--desk)}
+.scene{background:var(--grain),var(--sheet)}
+.scene.light{background:var(--grain),var(--sheet)}
+.scene.tint{background:repeating-linear-gradient(transparent 0 78px,var(--rule) 78px 80px) 0 40px,linear-gradient(90deg,transparent 118px,#d9776a 118px 121px,transparent 121px),var(--icard)}
+.scene.dark{background:var(--linen),var(--desk);color:var(--ink)}
+h1,h2{font-weight:400}
+footer{font-size:22px;color:var(--muted)}
+.deco{position:absolute;right:64px;bottom:44px;height:auto;max-width:none;pointer-events:none}
+.deco.sticker{filter:drop-shadow(0 2px 1.5px rgb(58 44 30/.3)) drop-shadow(0 6px 8px rgb(58 44 30/.16))}
+.type-title .deco{right:auto;left:140px;bottom:90px}
+.type-end .deco{right:150px;bottom:120px}
+.type-why .deco{right:120px;bottom:110px}
+
+/* 開場與結尾：桌面上的大字，重點用麥克筆畫底線 */
+.type-title h1,.type-end h1{font-size:104px;line-height:1.25;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M3 8.5C40 5.5 78 9.8 120 7.2 165 4.6 210 9.6 252 6.8 270 5.8 286 7.4 297 6.4' fill='none' stroke='%23df6b3c' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") 0 100%/min(100%,900px) 22px no-repeat;padding-bottom:26px;align-self:flex-start}
+.type-end h1{font-size:72px;max-width:1300px;background-size:520px 20px}
+.type-title .kicker,.type-end .kicker,.type-title .sub,.type-end .sub{color:var(--muted);font-size:36px}
+.type-title .graph line{stroke:var(--ink);stroke-width:5;stroke-linecap:round;stroke-dasharray:2 14}
+.type-title .graph circle{fill:var(--icard);stroke:var(--ink);stroke-width:5}
+.type-title .graph circle:last-child{fill:var(--marker)}
+.type-why .kicker{color:var(--ink)}
+.type-why h1{font-size:82px}
+.type-why h1,.type-why .sub,.type-why .kicker{margin-left:60px}
+
+/* 數字圓點：手畫的圈 */
+.dot{border:4px solid var(--ink);border-radius:52% 46% 54% 44%/46% 54% 44% 52%;color:var(--ink);font-weight:400;font-size:36px}
+.dot.violet{background:var(--marker)}
+.dot.teal{background:#f8dc4c}
+.dot.big{font-size:60px}
+.mark{font-size:28px;border-width:3px}
+.glyph{background:var(--marker);color:var(--ink);border:4px solid var(--ink);border-radius:26px 8px 24px 8px/8px 24px 8px 26px}
+
+/* 格子、卡片：索引卡 */
+.tile,.analogy .card,.cards .card,.tree,.kcol{border-radius:3px;box-shadow:0 2px 2px rgb(58 44 30/.2),0 10px 22px rgb(58 44 30/.13)}
+.tile{background:linear-gradient(#d9776a,#d9776a) 0 34px/100% 3px no-repeat,var(--icard);padding-top:66px}
+.tile:nth-child(odd){rotate:-.6deg}.tile:nth-child(even){rotate:.5deg}
+.tile-head strong,.grid3.tall strong,.analogy strong{font-weight:400}
+.tile span,.analogy p,.grid3.tall p{color:var(--muted)}
+.analogy .card:first-child{rotate:-.7deg}.analogy .card:last-child{rotate:.6deg}
+.cards .card:first-child{rotate:-.5deg}.cards .card:last-child{rotate:.6deg}
+.cards .card.violet-bg{background:var(--grape-soft)}
+.cards .card.violet-bg .dot{background:var(--grape);color:#fff}
+.cards .card.teal-bg .dot{background:var(--teal);color:#fff}
+.analogy .violet-bg{background:var(--icard)}
+.analogy .violet-fg{color:var(--violet)}
+.equals{color:var(--ink)}
+.common{font-weight:400;background:linear-gradient(transparent 58%,#f8dc4c 58% 92%,transparent 92%);align-self:flex-start;padding-inline:10px}
+.notebar{background:#f7e38a;color:var(--ink);font-weight:400;border-radius:3px;rotate:-.4deg;box-shadow:0 2px 2px rgb(58 44 30/.2)}
+.steps li{font-size:48px}
+
+/* 表格 */
+table.syntax{background:var(--icard);box-shadow:0 2px 2px rgb(58 44 30/.2),0 10px 22px rgb(58 44 30/.13)}
+.syntax th{background:#dcc8a3;color:var(--ink);font-weight:700}
+.syntax td{border:3px solid var(--rule)}
+
+/* 介面示意圖：用黑筆畫的視窗 */
+.win{border:4px solid var(--ink);border-radius:22px 8px 20px 8px/8px 20px 8px 22px;background:var(--icard);box-shadow:5px 7px 0 rgb(58 44 30/.14),0 14px 28px rgb(58 44 30/.14)}
+.win-bar{background:var(--tint);border-bottom:3px solid var(--ink)}
+.win-bar i{background:var(--icard);border:3px solid var(--ink)}
+.file i{background:var(--icard);border:3px solid var(--ink);border-radius:8px 3px 7px 3px/3px 7px 3px 8px}
+.file.dir i{background:#f7e38a;border-color:var(--ink)}
+.ui-left,.ui-right{background:var(--tint)}
+.ui-plus{background:var(--marker);color:var(--ink);border:3px solid var(--ink)}
+.ui-right em,.input,.sbox,.kcard,.dropdown{border:3px solid var(--ink);border-radius:12px 5px 11px 5px/5px 11px 5px 12px;background:var(--sheet)}
+.dropdown{box-shadow:4px 5px 0 rgb(58 44 30/.14)}
+.dropdown span.on{background:#f8dc4c}
+.btn{background:var(--marker);color:var(--ink);border:4px solid var(--ink);border-radius:26px 8px 24px 8px/8px 24px 8px 26px;font-weight:400}
+.ui-center>i,.propwin .win-body>i{background:var(--rule);height:5px;border-radius:3px}
+.r-quote{border-left:8px solid var(--ink)}
+.r-todo i{border:4px solid var(--ink);border-radius:9px 4px 8px 4px/4px 8px 4px 9px}
+.win.link a{color:var(--violet);font-weight:400}
+.res mark{background:#f8dc4c;color:var(--ink);font-weight:400}
+.btable th{background:var(--tint)}
+.btable th,.btable td{border:3px solid var(--rule)}
+.kcol{background:var(--tint)}
+.kcard{background:#f7e38a;border:0;border-radius:2px;box-shadow:0 2px 2px rgb(58 44 30/.22)}
+.kcard:nth-child(odd){rotate:-1deg}.kcard:nth-child(even){rotate:.8deg}
+.props{background:var(--tint);border-radius:3px}
+.tree{background:var(--icard)}
+.tree>div{border-radius:3px}
+.mono,code{font-family:"Courier New",Consolas,monospace;font-weight:700;letter-spacing:0}
+.win.svgwin svg text{font-family:var(--hand)}
+/* 圖譜與 Canvas 示意圖：原本寫死的紫色換成筆色 */
+.svgwin [stroke="#D9D6E6"]{stroke:var(--muted);stroke-linecap:round}
+.svgwin [stroke="#5B5670"]{stroke:var(--ink);stroke-linecap:round}
+.svgwin circle{stroke:var(--ink);stroke-width:2}
+.svgwin [fill="#5B3FC4"]{fill:var(--marker)}
+.svgwin [fill="#B3A0FF"]{fill:#f8dc4c}
+.svgwin circle[fill="#D9D6E6"]{fill:var(--tint)}
+.svgwin rect{stroke:var(--ink);rx:3px}
+.svgwin rect[fill="#fff"]{fill:var(--sheet)}
+.svgwin rect[fill="#E7E1FA"]{fill:#f8dc4c}
+.svgwin rect[fill="#D8EFEC"]{fill:#f7e38a;stroke:none}
+.svgwin text{fill:var(--ink)}
 }

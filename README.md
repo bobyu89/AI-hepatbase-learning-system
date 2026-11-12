@@ -43,6 +43,16 @@ npm run build
 node scripts/extract-content.mjs <課程原始碼資料夾>
 ```
 
+**增減貼紙與塗鴉**：先取得 looseleaf 的原始碼，修改 `scripts/generate-art.mjs` 裡的清單，再重新產生 `public/art/`：
+
+```bash
+git clone --depth 1 https://github.com/kevintngo/looseleaf.git ../looseleaf
+```
+
+```bash
+node scripts/generate-art.mjs ../looseleaf
+```
+
 ## 資料與隱私
 
 - 學習進度、身分選擇、白板卡片位置都存在學員自己瀏覽器的 localStorage，沒有後端，沒有登入。換裝置或清除網站資料就會重來。
@@ -55,4 +65,4 @@ node scripts/extract-content.mjs <課程原始碼資料夾>
 
 ## 設計
 
-手繪紙張風，視覺參考 [kevintngo/looseleaf](https://github.com/kevintngo/looseleaf)，字型 Kevin Sans 取自該專案（MIT）。介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。
+手繪紙張風，視覺參考 [kevintngo/looseleaf](https://github.com/kevintngo/looseleaf)，字型 Kevin Sans 與貼紙、塗鴉取自該專案（MIT）。介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。

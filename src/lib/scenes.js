@@ -50,12 +50,30 @@ const R = {
 };
 
 
-export function renderScene(d, L, i) {
+// 每種投影片右下角貼一張 looseleaf 的貼紙或塗鴉
+const DECO = {
+  title: ["sticker", "notebook", 210, -7],
+  why: ["sticker", "thinking-face", 230, 8],
+  analogy: ["doodle", "light-bulb", 150, 8],
+  cards: ["sticker", "pencil-cup", 170, -6],
+  steps: ["sticker", "hand-point-right", 170, -4],
+  grid: ["doodle", "sparkle-trio", 140, 0],
+  three: ["doodle", "star", 130, 10],
+  table: ["sticker", "highlighter", 160, 6],
+  end: ["sticker", "question-badge", 220, 9],
+};
+
+export function renderScene(d, L, i, artBase = "") {
   order = 0;
   const dark = d.type === "title" || d.type === "end";
   const tone = dark ? "dark" : d.type === "why" ? "tint" : "light";
+  // 滿版的示意圖不貼，免得蓋到內容
+  const full = d.type === "mockPair" || d.type === "mockMarkdown" || d.type === "mockDialog";
+  const deco = DECO[d.type] || (!full && (d.type.startsWith("mock") || d.type === "vaultTree") ? ["doodle", "pencil", 130, -8] : null);
+  const art = deco ? `<img class="deco ${deco[0]}" src="${artBase}${deco[0]}-${deco[1]}.svg" width="${deco[2]}" alt="" aria-hidden="true" style="rotate:${deco[3]}deg">` : "";
   return `<section class="scene ${tone} type-${d.type}${i === 0 ? " active" : ""}" data-scene="${i}" aria-roledescription="投影片" aria-label="第 ${i + 1} 張，共 ${L.slides.length} 張">
 ${R[d.type](d, L)}
 ${dark ? "" : `<footer>Obsidian 研究筆記課　${L.mod}　第 ${L.no} 堂</footer>`}
+${art}
 </section>`;
 }

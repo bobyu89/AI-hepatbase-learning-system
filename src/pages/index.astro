@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import CourseMap from "../components/CourseMap.astro";
+import Art from "../components/Art.astro";
 import { site } from "../data/site";
 import { lessons, stages } from "../data/course";
 import { url } from "../lib/url";
@@ -10,7 +11,9 @@ import { url } from "../lib/url";
   <main>
     <section class="hero">
       <div class="hero-copy wrap">
-        <h1>把一門課<br />攤開成<span class="scribble">一張白板</span></h1>
+        <h1>
+          把一門課<Art kind="doodle" name="sparkle-trio" size={78} rotate={8} class="spark" /><br />攤開成<span class="scribble">一張白板</span>
+        </h1>
         <div class="hero-side">
           <p class="lede">
             每一堂是一張卡片，前後呼應的地方畫成連線。學到哪裡、下一堂是什麼，一眼就看得到。進度記在你的瀏覽器裡，不用登入，也不評分。
@@ -35,6 +38,7 @@ import { url } from "../lib/url";
       <div class="wrap">
         <h2>現在開的課</h2>
         <article class="feature">
+          <Art name="new" size={98} rotate={9} class="pinned new" />
           <div class="feature-head">
             <h3><a href={url("/courses/obsidian/")}>Obsidian 研究筆記課</a></h3>
             <p class="quote"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
@@ -67,6 +71,7 @@ import { url } from "../lib/url";
 
     <section class="section how">
       <div class="wrap">
+        <Art name="pencil-cup" size={104} rotate={-5} class="pinned" />
         <h2>在這裡怎麼學</h2>
         <dl>
           <div>
@@ -109,6 +114,14 @@ import { url } from "../lib/url";
     font-size: clamp(2.6rem, 6.6vw, 5.5rem);
     line-height: 1.2;
     white-space: nowrap;
+  }
+  .hero h1 :global(.spark) {
+    margin-left: 0.15em;
+    vertical-align: 0.25em;
+  }
+  .feature :global(.new) {
+    right: -22px;
+    top: -34px;
   }
   .hero-side {
     padding-bottom: 0.6rem;

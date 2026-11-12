@@ -1,6 +1,7 @@
 ---
 import Base from "../../../layouts/Base.astro";
 import RoleSwitch from "../../../components/RoleSwitch.astro";
+import Art from "../../../components/Art.astro";
 import { obsidianCourse } from "../../../data/site";
 import { lessons, modules, lessonsOf, stages, liveFlow, workshopFlow, lessonShape, roles, tools } from "../../../data/course";
 import { url } from "../../../lib/url";
@@ -16,6 +17,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
   <main>
     <section class="top">
       <div class="wrap">
+        <Art name="thinking-face" size={150} rotate={7} class="pinned face" />
         <h1>Obsidian <span class="nb">研究筆記課</span></h1>
         <p class="hook"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
         <p class="lede">
@@ -58,6 +60,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section path" id="stages">
       <div class="wrap">
+        <Art name="rocket" size={100} rotate={10} class="pinned" />
         <h2>四個階段，三種上課方式</h2>
         <p class="lede">三種方式內容不重疊：直播不教操作細節，工作坊不重講功能。</p>
         <ol class="stage-list">
@@ -79,6 +82,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section lessons" id="lessons">
       <div class="wrap">
+        <Art name="notebook" size={100} rotate={-6} class="pinned" />
         <h2>課程目錄</h2>
         <p class="lede">
           學完的課會在這裡打勾。<span data-progress-text></span>
@@ -114,6 +118,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section shape">
       <div class="wrap">
+        <Art name="highlighter" size={100} rotate={6} class="pinned" />
         <h2>每一堂都照同樣的五段走</h2>
         <ol class="shape-list">
           {
@@ -135,6 +140,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section tools" id="tools">
       <div class="wrap">
+        <Art name="magnifier" size={100} rotate={-8} class="pinned" />
         <h2>選修：三樣可以接著試的東西</h2>
         <p class="lede">不在 17 堂課裡，也不是必學。學完對應的課，覺得需要再裝。</p>
         {
@@ -167,6 +173,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section events kraft">
       <div class="wrap">
+        <Art name="coffee-to-go" size={100} rotate={6} class="pinned" />
         <h2>直播與工作坊</h2>
         <div class="event-grid">
           <article id="live">
@@ -219,6 +226,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 
     <section class="section close">
       <div class="wrap">
+        <Art name="thumbs-up" size={100} rotate={8} class="pinned" />
         <h2 data-close-title>從第 0 堂開始，只要五分鐘</h2>
         <p class="lede" data-close-note>第 0 堂不用打開任何軟體，只請你想一件事：你的筆記，現在都放在哪裡？</p>
         <div class="actions">
@@ -604,6 +612,18 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
   }
 
   /* ───── 手繪紙張風的調整 ───── */
+  .top .wrap {
+    position: relative;
+  }
+  .top :global(.face) {
+    right: 6%;
+    top: 0.5rem;
+  }
+  @media (max-width: 900px) {
+    .top :global(.face) {
+      display: none;
+    }
+  }
   .top {
     padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
   }

@@ -1,6 +1,7 @@
 ---
 import Base from "../../../../layouts/Base.astro";
 import RoleSwitch from "../../../../components/RoleSwitch.astro";
+import Art from "../../../../components/Art.astro";
 import "../../../../styles/deck.css";
 import { lessons } from "../../../../data/course";
 import { renderScene } from "../../../../lib/scenes.js";
@@ -13,7 +14,7 @@ export function getStaticPaths() {
 const { lesson } = Astro.props;
 const prev = lessons[lesson.no - 1];
 const next = lessons[lesson.no + 1];
-const scenes = lesson.slides.map((s, i) => renderScene(s, lesson, i)).join("\n");
+const scenes = lesson.slides.map((s, i) => renderScene(s, lesson, i, url("/art/"))).join("\n");
 const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
 ---
 
@@ -56,13 +57,14 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
         <span class="hint-small">字太小時，把手機橫放或按全螢幕</span>
         <button type="button" class="btn btn-quiet full" data-deck-full>全螢幕</button>
       </div>
-      <p class="video-note">這一堂的影片還在錄製，目前先看簡報。簡報裡的介面畫面是示意圖。</p>
+      <p class="video-note">這一堂的影片還在錄製，目前先看簡報。簡報裡的介面畫面是手繪的示意圖，不是實際截圖。</p>
     </section>
 
     <div class="wrap below">
       {
         lesson.practice && (
           <section class="practice">
+            <Art name="pencil-cup" size={92} rotate={-6} class="pinned corner" />
             <div class="practice-head">
               <h2>{lesson.practice.title.replace(/^換你做：?/, "換你做：") || "換你做"}</h2>
               <RoleSwitch />
@@ -87,6 +89,7 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
       {
         lesson.question && (
           <section class="question">
+            <Art name="question-badge" size={92} rotate={8} class="pinned corner" />
             <h2>留給你的問題</h2>
             <p>{lesson.question}</p>
           </section>
@@ -105,6 +108,7 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
             <strong>我學完這一堂了</strong>
             <small>只記在這台裝置的瀏覽器裡，隨時可以取消。</small>
           </span>
+          <Art name="done" size={96} rotate={-9} class="done-sticker" />
         </label>
         <nav class="pager" aria-label="前後堂">
           {
@@ -468,7 +472,11 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
   .deck {
     border-radius: 2px;
     border: 10px solid var(--surface);
+    background: var(--surface);
     box-shadow: var(--shadow);
+  }
+  .deck:fullscreen {
+    background: var(--desk);
   }
   .deck:fullscreen {
     border: 0;
@@ -506,8 +514,41 @@ const lessonUrl = (n: number) => url(`/courses/obsidian/lessons/${n}/`);
   .below > section:nth-child(even) {
     rotate: 0.35deg;
   }
+  .below :global(.corner) {
+    right: -18px;
+    top: -34px;
+  }
+  .practice-head {
+    padding-right: 4.5rem;
+  }
   .practice-card {
     border-radius: 2px;
+  }
+  /* 打勾之後，貼上一張 DONE 貼紙 */
+  .done {
+    position: relative;
+  }
+  .done :global(.done-sticker) {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    translate: 0 -50%;
+    scale: 0.4;
+    opacity: 0;
+    transition:
+      scale 0.3s var(--ease-settle),
+      opacity 0.15s ease-out;
+  }
+  .done:has(input:checked) :global(.done-sticker) {
+    scale: 1;
+    opacity: 1;
+  }
+  @media (max-width: 620px) {
+    .below :global(.corner) {
+      right: -6px;
+      width: 64px;
+      height: auto;
+    }
   }
   .question p {
     font-size: clamp(1.4rem, 3vw, 1.9rem);
