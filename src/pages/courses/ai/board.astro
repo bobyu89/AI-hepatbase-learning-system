@@ -126,7 +126,7 @@ const linksOf = (id: string) =>
           <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="seq"></path></svg>實線是上課順序</li>
           <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="callback"></path></svg>虛線是前後呼應的地方</li>
         </ul>
-        <p>點一張卡片，看那一堂要做什麼。這門課目前是大綱版，每堂的簡報與影片還在製作，所以卡片還不能點進去上課。</p>
+        <p>點一張卡片，看那一堂要做什麼。實體課是獨立的一張，不用先看完預錄課。這門課目前是大綱版，每堂的簡報與影片還在製作，所以卡片還不能點進去上課。</p>
         <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
       </section>
 
@@ -171,7 +171,7 @@ const linksOf = (id: string) =>
         <ol class="flow">
           {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
         </ol>
-        <p class="pending">把預錄課學的動作串起來做一次。帶一份這學期的講義來，下課時帶走{aiWorkshopGoal}。</p>
+        <p class="pending">把整門課的動作串起來做一次，不用先看完預錄課。帶一份這學期的講義來，下課時帶走{aiWorkshopGoal}。</p>
       </section>
     </aside>
 

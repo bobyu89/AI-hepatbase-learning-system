@@ -9,6 +9,7 @@ import {
   aiLessonsOf,
   aiWorkshopFlow,
   aiWorkshopGoal,
+  aiWorkshopPrep,
   aiPrinciples,
   aiBoardNodes,
   aiBoardEdges,
@@ -111,7 +112,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <p class="lede">
-          把 {aiLessons.length} 堂學的動作，照實際使用的順序串起來做一次。帶一份你這學期的講義來，下課時帶走{aiWorkshopGoal}。
+          把整門課的動作，照實際使用的順序串起來做一次。不用先看完預錄課，每一段都會先示範再動手。帶一份你這學期的講義來，下課時帶走{aiWorkshopGoal}。
         </p>
         <ol class="flow">
           {
@@ -119,7 +120,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
               <li>
                 <span>
                   {what}
-                  {from && <small>用到{from}</small>}
+                  {from && <small>想再看一次：{from}</small>}
                 </span>
                 <span class="min">{min} 分</span>
               </li>
@@ -249,6 +250,17 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
   .flow .min {
     flex: none;
     color: var(--muted);
+  }
+  .prep-head {
+    margin-top: 2rem;
+  }
+  .prep {
+    margin-top: 0.5rem;
+    padding-left: 1.3em;
+    list-style: disc;
+  }
+  .prep li {
+    padding: 0.15rem 0;
   }
   .flow small {
     display: block;

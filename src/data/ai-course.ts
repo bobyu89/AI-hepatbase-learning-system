@@ -50,19 +50,27 @@ export const aiLessons: OutlineLesson[] = [
 export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.module === moduleId);
 
 /**
- * 實體課 90 分鐘：把預錄課學的動作，照實際使用的順序串起來做一次。
+ * 實體課 90 分鐘，約 30 人：把整門課的動作，照實際使用的順序串起來做一次。
+ * 不用先看完預錄課，所以每一段都是先示範幾分鐘，再動手。
  * 每個人用自己的一份講義，從頭做出一頁考前複習單。
- * 每一段是 [要做的事, 分鐘, 用到哪幾堂]。
+ * 每一段是 [要做的事, 分鐘, 對應哪幾堂預錄課]。
  */
 export const aiWorkshopGoal = "一頁自己的考前複習單";
 export const aiWorkshopFlow: [string, number, string][] = [
-  ["開場與排障：看一份完成的複習單，處理預錄課卡關的問題", 10, ""],
+  ["開場：看一份完成的複習單，確認每個人都打得開 AI 工具和自己的講義", 8, ""],
   ["動手前先檢查：這份講義能不能貼", 5, "第 12 堂"],
   ["問第一次，再把話說清楚、追問", 15, "第 2、3 堂"],
-  ["把講義交給它，做出初稿：重點整理，加一張比較表或五題自我測驗", 15, "第 7、9、10 堂"],
+  ["把講義交給它，做出初稿：重點整理，加一張比較表或五題自我測驗", 17, "第 7、9、10 堂"],
   ["查證：挑三句回講義核對，標出它講錯或講得太滿的地方", 20, "第 4、5、8 堂"],
   ["互看：兩人交換，找出對方還沒抓到的錯", 15, "第 11 堂"],
   ["收尾：這份如果要交出去，該怎麼標註。每人一句話", 10, "第 13 堂"],
+];
+
+/** 來實體課之前要準備的東西。 */
+export const aiWorkshopPrep = [
+  "一台能上網的筆電或平板",
+  "先註冊好任何一個 AI 工具，確定登入得進去",
+  "一份這學期的講義電子檔，不要含病人或同學的個人資料",
 ];
 
 /** 這門課的三個做法。 */
@@ -94,7 +102,7 @@ const lessonNodes: BoardNode[] = aiLessons.map((l) => ({
 
 export const aiBoardNodes: BoardNode[] = [
   ...lessonNodes,
-  { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，把整門課串起來做一次", x: 1010, y: 636 },
+  { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，不用先看完預錄課", x: 1010, y: 636 },
 ];
 
 export const aiBoardRegions = aiModules.map((m) => {
@@ -109,7 +117,8 @@ export const aiBoardRegions = aiModules.map((m) => {
 export const AI_BOARD_W = 1310;
 export const AI_BOARD_H = 1100;
 
-const order = [...aiLessons.map((l) => `l${l.no}`), "workshop"];
+// 實體課不用先看完預錄課，所以不接在第 13 堂後面，白板上是獨立的一張
+const order = aiLessons.map((l) => `l${l.no}`);
 const sequence: BoardEdge[] = order.slice(0, -1).map((id, i) => ({ from: id, to: order[i + 1] }));
 
 export const aiBoardEdges: BoardEdge[] = [
