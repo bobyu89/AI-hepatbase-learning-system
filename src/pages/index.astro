@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro";
 import CourseMap from "../components/CourseMap.astro";
 import Art from "../components/Art.astro";
-import { site } from "../data/site";
+import { site, upcomingCourses } from "../data/site";
 import { lessons, stages } from "../data/course";
 import { url } from "../lib/url";
 ---
@@ -36,7 +36,7 @@ import { url } from "../lib/url";
 
     <section class="section course" id="courses">
       <div class="wrap">
-        <h2>現在開的課</h2>
+        <h2>課程</h2>
         <article class="feature">
           <Art name="new" size={98} rotate={9} class="pinned new" />
           <div class="feature-head">
@@ -65,7 +65,18 @@ import { url } from "../lib/url";
             <a class="btn btn-quiet" href={url("/courses/obsidian/")}>課程介紹</a>
           </div>
         </article>
-        <p class="more">目前只有這一門課。之後開的課會出現在這裡，每一門都有自己的白板。</p>
+        {
+          upcomingCourses.map((c) => (
+            <article class="soon">
+              <Art name="wip" size={92} rotate={-7} class="pinned wip" />
+              <h3>{c.title}</h3>
+              <p>
+                給{c.audience}的課。內容還在準備，白板排好之後會從這裡進去。
+              </p>
+            </article>
+          ))
+        }
+        <p class="more">每一門課都有自己的白板。</p>
       </div>
     </section>
 
@@ -212,6 +223,28 @@ import { url } from "../lib/url";
   .feature .actions {
     grid-column: 1 / -1;
     margin-top: 0;
+  }
+  /* 準備中的課：一張還沒寫完的便利貼 */
+  .soon {
+    position: relative;
+    margin-top: 2.25rem;
+    max-width: 34rem;
+    padding: 1.4rem 5.5rem 1.5rem 1.6rem;
+    background: linear-gradient(to bottom, rgb(255 252 235 / 0.35), transparent 30%), var(--sticky);
+    box-shadow: var(--shadow);
+    rotate: -0.8deg;
+  }
+  .soon h3 {
+    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+    line-height: 1.4;
+  }
+  .soon p {
+    margin-top: 0.4rem;
+    color: var(--muted);
+  }
+  .soon :global(.wip) {
+    right: -14px;
+    top: -22px;
   }
   .more {
     margin-top: 1.75rem;
