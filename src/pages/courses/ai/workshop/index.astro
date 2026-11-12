@@ -12,13 +12,14 @@ const from = (i: number) => aiWorkshopFlow[i][2];
   <main class="handout">
     <div class="tools">
       <button type="button" class="btn btn-primary" onclick="window.print()">列印這一頁</button>
+      <a class="btn btn-quiet" href={url("/courses/ai/workshop/prep/")}>課前準備</a>
       <a class="btn btn-quiet" href={url("/courses/ai/workshop/paper/")}>示範論文</a>
       <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
     </div>
     <article class="paper">
       <h1>實體課步驟單</h1>
       <p class="lede">
-        {aiCourse.title}　90 分鐘。照著做，下課時你會有{aiWorkshopGoal}。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
+        {aiCourse.title}　60 分鐘。照著做，下課時你會有{aiWorkshopGoal}。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
       </p>
 
       <section class="stage">
@@ -29,6 +30,7 @@ const from = (i: number) => aiWorkshopFlow[i][2];
           <ul>
             <li>登入你的 AI 工具，開一個新的對話</li>
             <li>打開你帶來的論文 PDF。沒帶的話，用預設的那一篇</li>
+            <li>工具登不進去：先和旁邊的同學共用一台，下課再處理</li>
           </ul>
         </div>
       </section>
