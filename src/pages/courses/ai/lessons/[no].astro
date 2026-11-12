@@ -7,6 +7,7 @@ import { aiCourse, aiLessons, aiModules, aiQuestionOf } from "../../../../data/a
 import { aiSlides } from "../../../../data/ai-lessons";
 import { renderScene } from "../../../../lib/scenes.js";
 import { url } from "../../../../lib/url";
+import fs from "node:fs";
 
 export function getStaticPaths() {
   return aiLessons.map((l) => ({ params: { no: String(l.no) }, props: { lesson: l } }));
@@ -21,6 +22,8 @@ const scenes = slides.map((s, i) => renderScene(s, deck, i, url("/art/"))).join(
 const prev = aiLessons[lesson.no - 1];
 const next = aiLessons[lesson.no + 1];
 const lessonUrl = (n: number) => url(`/courses/ai/lessons/${n}/`);
+// 這一堂的上課影片做好了才顯示。檔案放在 public/video/ai/lesson-<堂次>.mp4
+const hasVideo = fs.existsSync(`public/video/ai/lesson-${lesson.no}.mp4`);
 ---
 
 <Base title={`第 ${lesson.no} 堂　${lesson.title}｜${aiCourse.title}`} current="ai" description={lesson.summary}>
@@ -41,6 +44,23 @@ const lessonUrl = (n: number) => url(`/courses/ai/lessons/${n}/`);
         </div>
       </header>
     </div>
+
+    {
+      hasVideo && (
+        <section class="lesson-video" aria-label="這一堂的影片">
+          <video
+            controls
+            preload="metadata"
+            playsinline
+            poster={url(`/video/ai/lesson-${lesson.no}.jpg`)}
+            src={url(`/video/ai/lesson-${lesson.no}.mp4`)}
+          >
+            你的瀏覽器不能播放這支影片，請看下面的簡報。
+          </video>
+          <p class="video-note">有字幕，旁白是合成語音。想照自己的速度看，可以用下面的簡報翻頁。</p>
+        </section>
+      )
+    }
 
     <section class="deck-wrap" aria-label="這一堂的簡報">
       <div class="deck" data-deck tabindex="0" aria-roledescription="簡報">
@@ -63,7 +83,7 @@ const lessonUrl = (n: number) => url(`/courses/ai/lessons/${n}/`);
         <button type="button" class="btn btn-quiet full" data-deck-full>全螢幕</button>
       </div>
       <p class="video-note">
-        這一堂的影片還在製作，目前先看簡報。簡報內容是初稿，之後可能調整。
+        {hasVideo ? "這是影片用的同一份簡報。" : "這一堂的影片還在製作，目前先看簡報。"}簡報內容是初稿，之後可能調整。
         {lesson.no >= 5 && (
           <>
             {" "}這一堂用的<a href={url("/courses/ai/workshop/paper/")}>示範論文在這裡</a>。
