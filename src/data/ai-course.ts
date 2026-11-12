@@ -44,7 +44,7 @@ export const aiLessons: OutlineLesson[] = [
   { no: 10, module: "make", title: "整理成一張比較表", summary: "把容易搞混的內容排成表，再自己檢查每一格。", task: "把兩個你常搞混的概念排成一張表。" },
   { no: 11, module: "make", title: "報告大綱：讓它當讀者", summary: "請它指出大綱缺什麼，不請它替你寫。也要提防它只說好話。", task: "貼上自己的報告大綱，請它指出缺了什麼。" },
   { no: 12, module: "rules", title: "什麼不能貼", summary: "病人與同學的資料不能貼。學會把內容改成可以貼的版本。實際規定以學校與實習單位為準。", task: "把一段實習紀錄改成可以貼的版本。" },
-  { no: 13, module: "rules", title: "作業怎麼用、怎麼標註", summary: "先查清楚每門課的規定。最後談學完之後，和 AI 聊出來的東西要收在哪裡。", task: "查出你這學期一門課對 AI 的規定。" },
+  { no: 13, module: "rules", title: "作業怎麼用、怎麼標註", summary: "每門課對 AI 的規定不一樣。先查清楚，再決定怎麼用、怎麼在作業裡說明。", task: "查出你這學期一門課對 AI 的規定。" },
 ];
 
 export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.module === moduleId);
@@ -88,7 +88,6 @@ const lessonNodes: BoardNode[] = aiLessons.map((l) => ({
 export const aiBoardNodes: BoardNode[] = [
   ...lessonNodes,
   { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，做自己的成品", x: 1010, y: 636 },
-  { id: "obsidian", kind: "tool", title: "接著學 Obsidian 研究筆記課", sub: "把學到的東西收起來", x: 1010, y: 366 },
 ];
 
 export const aiBoardRegions = aiModules.map((m) => {
@@ -111,5 +110,4 @@ export const aiBoardEdges: BoardEdge[] = [
   { from: "l0", to: "l2", label: "同一個問題重問一次" },
   { from: "l5", to: "l8", label: "回原文核對", labelAt: 0.5 },
   { from: "l4", to: "l11", label: "提防它說好話", labelAt: 0.13 },
-  { from: "workshop", to: "obsidian", label: "學完之後" },
 ];

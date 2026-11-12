@@ -48,7 +48,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
         regions={aiBoardRegions}
         width={AI_BOARD_W}
         height={AI_BOARD_H}
-        hrefFor={(n) => (n.id === "obsidian" ? url("/courses/obsidian/") : `${board}#${n.id}`)}
+        hrefFor={(n) => `${board}#${n.id}`}
         label={`${aiCourse.title}的課程地圖：${aiLessons.length} 堂課與一堂實體課`}
       />
     </div>
@@ -123,18 +123,6 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
       </div>
     </section>
 
-    <section class="section next" id="obsidian">
-      <div class="wrap">
-        <Art name="hand-point-right" size={100} rotate={-4} class="pinned" />
-        <h2>學完之後</h2>
-        <p class="lede">
-          和 AI 聊出來的東西，關掉視窗就找不到了。想把讀過的講義、文獻和自己的想法收在一個找得到的地方，可以接著學 Obsidian 研究筆記課。
-        </p>
-        <div class="actions">
-          <a class="btn btn-quiet" href={url("/courses/obsidian/")}>看 Obsidian 研究筆記課</a>
-        </div>
-      </div>
-    </section>
   </main>
 </Base>
 
