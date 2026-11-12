@@ -8,6 +8,7 @@ import {
   aiModules,
   aiLessonsOf,
   aiWorkshopFlow,
+  aiWorkshopGoal,
   aiPrinciples,
   aiBoardNodes,
   aiBoardEdges,
@@ -109,12 +110,17 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           {aiCourse.workshopDate || "日期與地點即將公布"}
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
-        <p class="lede">不重講功能。帶一份你這學期的講義和一份作業來，現場做出一樣自己用得上的東西。</p>
+        <p class="lede">
+          把 {aiLessons.length} 堂學的動作，照實際使用的順序串起來做一次。帶一份你這學期的講義來，下課時帶走{aiWorkshopGoal}。
+        </p>
         <ol class="flow">
           {
-            aiWorkshopFlow.map(([what, min]) => (
+            aiWorkshopFlow.map(([what, min, from]) => (
               <li>
-                <span>{what}</span>
+                <span>
+                  {what}
+                  {from && <small>用到{from}</small>}
+                </span>
                 <span class="min">{min} 分</span>
               </li>
             ))
@@ -243,6 +249,11 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
   .flow .min {
     flex: none;
     color: var(--muted);
+  }
+  .flow small {
+    display: block;
+    color: var(--blue-deep);
+    font-size: 0.9375rem;
   }
 
   @media (max-width: 720px) {

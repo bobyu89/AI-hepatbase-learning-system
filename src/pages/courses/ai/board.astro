@@ -9,6 +9,7 @@ import {
   aiModules,
   aiLessonsOf,
   aiWorkshopFlow,
+  aiWorkshopGoal,
   aiBoardNodes,
   aiBoardEdges,
   aiBoardRegions,
@@ -170,7 +171,7 @@ const linksOf = (id: string) =>
         <ol class="flow">
           {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
         </ol>
-        <p class="pending">帶一份這學期的講義和一份作業來。</p>
+        <p class="pending">把預錄課學的動作串起來做一次。帶一份這學期的講義來，下課時帶走{aiWorkshopGoal}。</p>
       </section>
     </aside>
 

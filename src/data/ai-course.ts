@@ -49,13 +49,20 @@ export const aiLessons: OutlineLesson[] = [
 
 export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.module === moduleId);
 
-/** 實體課 90 分鐘的流程。 */
-export const aiWorkshopFlow: [string, number][] = [
-  ["開場：每人一句話，說最近一次 AI 幫倒忙的經驗", 10],
-  ["排障：預錄課卡關的問題", 15],
-  ["做自己的成品：用自己的講義或作業，做出讀書筆記、複習題或報告大綱", 35],
-  ["互看：兩人一組，檢查對方成品裡 AI 講錯的地方", 20],
-  ["收尾：課堂的 AI 使用規定與下一步", 10],
+/**
+ * 實體課 90 分鐘：把預錄課學的動作，照實際使用的順序串起來做一次。
+ * 每個人用自己的一份講義，從頭做出一頁考前複習單。
+ * 每一段是 [要做的事, 分鐘, 用到哪幾堂]。
+ */
+export const aiWorkshopGoal = "一頁自己的考前複習單";
+export const aiWorkshopFlow: [string, number, string][] = [
+  ["開場與排障：看一份完成的複習單，處理預錄課卡關的問題", 10, ""],
+  ["動手前先檢查：這份講義能不能貼", 5, "第 12 堂"],
+  ["問第一次，再把話說清楚、追問", 15, "第 2、3 堂"],
+  ["把講義交給它，做出初稿：重點整理，加一張比較表或五題自我測驗", 15, "第 7、9、10 堂"],
+  ["查證：挑三句回講義核對，標出它講錯或講得太滿的地方", 20, "第 4、5、8 堂"],
+  ["互看：兩人交換，找出對方還沒抓到的錯", 15, "第 11 堂"],
+  ["收尾：這份如果要交出去，該怎麼標註。每人一句話", 10, "第 13 堂"],
 ];
 
 /** 這門課的三個做法。 */
@@ -87,7 +94,7 @@ const lessonNodes: BoardNode[] = aiLessons.map((l) => ({
 
 export const aiBoardNodes: BoardNode[] = [
   ...lessonNodes,
-  { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，做自己的成品", x: 1010, y: 636 },
+  { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，把整門課串起來做一次", x: 1010, y: 636 },
 ];
 
 export const aiBoardRegions = aiModules.map((m) => {
