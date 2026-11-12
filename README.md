@@ -16,8 +16,7 @@ Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一�
 | `/courses/ai/board/` | AI 課的白板 |
 | `/courses/ai/lessons/0/` … `/13/` | AI 課的單堂頁：簡報（初稿）、換你做、學完打勾 |
 | `/courses/ai/workshop/` | 實體課步驟單，可列印成一張正反面 |
-| `/courses/ai/workshop/paper/` | 實體課的預設論文與取得方式 |
-| `/courses/ai/workshop/handout/` | 預錄課第 4、7 堂用的示範講義 |
+| `/courses/ai/workshop/paper/` | 示範論文與取得方式，預錄課與實體課共用 |
 
 ## 開發
 
@@ -43,7 +42,7 @@ npm run build
 
 **調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
 
-**修改 AI 課**：大綱、實體課流程、白板位置與連線在 `src/data/ai-course.ts`；每一堂的投影片在 `src/data/ai-lessons.ts`，一堂是一個陣列，一張投影片一行。
+**修改 AI 課**：大綱、實體課流程、白板位置與連線在 `src/data/ai-course.ts`；每一堂的投影片在 `src/data/ai-lessons.json`。這個檔案由含講稿的原始檔產生，原始檔不在這個公開 repo，所以要改投影片請連同講稿一起從原始檔改。
 
 **更新課程內容**：課程原始碼（`data/m1.js` … `m4.js`）含完整逐字稿，不放在這個公開 repo。在本機執行下面的指令，會產生去掉逐字稿的 `src/data/lessons.json`：
 
