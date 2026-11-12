@@ -251,4 +251,9 @@ table.syntax{background:var(--icard);box-shadow:0 2px 2px rgb(58 44 30/.2),0 10p
 .turn.me{align-self:flex-end;background:#f7e38a}
 .turn.ai{align-self:flex-start}
 .turn .mark{position:absolute;right:-30px;top:-26px}
+/* 四句以上的對話排緊一點 */
+.win.chat.dense .win-body{padding:24px 40px;gap:14px;min-height:0}
+.win.chat.dense .turn{padding:12px 24px;font-size:26px;line-height:1.42}
+.win.chat.dense .turn em{font-size:19px;margin-bottom:2px}
+.win.chat.dense .turn .mark{right:-26px;top:-22px}
 }

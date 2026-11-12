@@ -63,7 +63,7 @@ R.mockChat = (d) =>
             `<div class="turn ${who === "你" ? "me" : "ai"}"><em>${esc(who)}</em><p>${esc(text)}</p>${mark ? `<b class="dot teal mark">${mark}</b>` : ""}</div>`,
         )
         .join(""),
-      "chat",
+      "chat" + (d.turns.length > 3 ? " dense" : ""),
     ),
   )}${legend(d.legend)}</div>`;
 
