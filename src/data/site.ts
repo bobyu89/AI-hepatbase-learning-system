@@ -14,11 +14,3 @@ export const obsidianCourse = {
   workshopDate: "",
   workshopPlace: "",
 };
-
-// 還在準備的課。只列已經確定的資訊；有了課程內容再做成完整的課程頁與白板。
-export const upcomingCourses = [
-  {
-    title: "AI 不只是聊天：初學者的生成式 AI 實用入門",
-    audience: "學生",
-  },
-];

@@ -1,5 +1,5 @@
 // 學習白板：拖曳移動畫面、縮放、拖動卡片、選取卡片、學習進度。
-import { BOARD_W, BOARD_H, CARD_W, CARD_H } from "../data/course";
+import { CARD_W, CARD_H } from "../data/course";
 import { edgeGeometry } from "../lib/edges";
 import { getDone, setDone, nextLesson, getPositions, setPositions, clearPositions } from "./progress";
 
@@ -11,6 +11,11 @@ const zoomOut = app.querySelector<HTMLOutputElement>("[data-zoom]")!;
 const cards = [...world.querySelectorAll<HTMLElement>(".card")];
 const cardById = new Map(cards.map((c) => [c.dataset.node!, c]));
 const lessonCount = cards.filter((c) => c.dataset.no !== undefined).length;
+// 這張白板屬於哪門課、畫布多大、要不要記錄進度，都寫在頁面上
+const course = app.dataset.course ?? "obsidian";
+const tracksProgress = app.dataset.progress !== "off";
+const BOARD_W = Number(world.dataset.w);
+const BOARD_H = Number(world.dataset.h);
 
 const MIN = 0.25;
 const MAX = 1.6;
@@ -21,7 +26,7 @@ let selected: string | null = null;
 // ───────── 卡片位置與連線 ─────────
 
 function loadPositions() {
-  const saved = getPositions();
+  const saved = getPositions(course);
   for (const c of cards) {
     const id = c.dataset.node!;
     const home = { x: Number(c.dataset.x), y: Number(c.dataset.y) };
@@ -100,7 +105,7 @@ function glideTo(id: string, k = Math.max(view.k, 0.7), upper = false) {
 function initialView() {
   fitAll();
   if (view.k < 0.42) {
-    const next = nextLesson(lessonCount);
+    const next = tracksProgress ? nextLesson(lessonCount, getDone(course)) : 0;
     centerOn(next === null ? "l0" : `l${next}`, 0.62, true);
   }
 }
@@ -167,7 +172,7 @@ function release(e: PointerEvent) {
   if (drag) {
     const card = cardById.get(drag.id)!;
     card.classList.remove("is-dragging");
-    if (drag.moved) setPositions(Object.fromEntries(pos));
+    if (drag.moved) setPositions(Object.fromEntries(pos), course);
     else {
       select(drag.id);
       if (narrow.matches) glideTo(drag.id, view.k, true);
@@ -225,7 +230,7 @@ app.querySelectorAll<HTMLButtonElement>("[data-tool]").forEach((b) => {
     else if (b.dataset.tool === "out") zoomAt(cx, cy, view.k / 1.25);
     else if (b.dataset.tool === "fit") fitAll();
     else if (b.dataset.tool === "reset") {
-      clearPositions();
+      clearPositions(course);
       loadPositions();
       drawEdges();
       fitAll();
@@ -287,7 +292,8 @@ document.addEventListener("keydown", (e) => {
 // ───────── 進度 ─────────
 
 function paintProgress() {
-  const done = getDone();
+  if (!tracksProgress) return;
+  const done = getDone(course);
   const next = nextLesson(lessonCount, done);
   cards.forEach((c) => {
     if (c.dataset.no === undefined) return;
@@ -317,7 +323,7 @@ function paintProgress() {
 }
 
 app.querySelectorAll<HTMLInputElement>("[data-done]").forEach((box) => {
-  box.addEventListener("change", () => setDone(Number(box.dataset.done), box.checked));
+  box.addEventListener("change", () => setDone(Number(box.dataset.done), box.checked, course));
 });
 document.addEventListener("lb:progress", paintProgress);
 
@@ -338,3 +344,13 @@ drawEdges();
 select(null);
 paintProgress();
 initialView();
+
+// 網址帶 #l3 這類錨點時，直接打開那張卡片
+function openFromHash() {
+  const wanted = location.hash.slice(1);
+  if (!cardById.has(wanted)) return;
+  select(wanted);
+  centerOn(wanted, Math.max(view.k, narrow.matches ? 0.62 : 0.7), narrow.matches);
+}
+openFromHash();
+window.addEventListener("hashchange", openFromHash);

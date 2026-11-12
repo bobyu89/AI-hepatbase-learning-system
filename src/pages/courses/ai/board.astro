@@ -1,0 +1,216 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Art from "../../../components/Art.astro";
+import "../../../styles/board.css";
+import { CARD_W, CARD_H } from "../../../data/course";
+import {
+  aiCourse,
+  aiLessons,
+  aiModules,
+  aiLessonsOf,
+  aiWorkshopFlow,
+  aiBoardNodes,
+  aiBoardEdges,
+  aiBoardRegions,
+  AI_BOARD_W,
+  AI_BOARD_H,
+} from "../../../data/ai-course";
+import { url } from "../../../lib/url";
+
+const nodeName = (id: string) => {
+  const n = aiBoardNodes.find((x) => x.id === id)!;
+  return n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : n.title;
+};
+const moduleOf = (id: string) => aiModules.find((m) => m.id === id)!;
+const linksOf = (id: string) =>
+  aiBoardEdges
+    .filter((e) => e.label && (e.from === id || e.to === id))
+    .map((e) => ({ label: e.label!, other: e.from === id ? e.to : e.from }));
+---
+
+<Base bare title={`課程白板｜${aiCourse.title}`} description={`${aiCourse.title}的課程白板：${aiLessons.length} 堂課與它們之間的呼應。`}>
+  <div class="app" data-board data-course="ai" data-progress="off" data-view="board">
+    <header class="bar">
+      <a class="back" href={url("/courses/ai/")} aria-label="回到課程介紹">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+          ><path d="M11 4 6 9l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+        >
+        <span>{aiCourse.title}</span>
+      </a>
+      <h1>課程白板</h1>
+      <p class="progress">大綱版，{aiLessons.length} 堂的內容還在製作</p>
+      <div class="view-switch" role="group" aria-label="檢視方式">
+        <button type="button" data-view-btn="board" aria-pressed="true">白板</button>
+        <button type="button" data-view-btn="list" aria-pressed="false">清單</button>
+      </div>
+    </header>
+
+    <div class="canvas" data-canvas tabindex="0" aria-label="課程白板。拖曳可以移動畫面，方向鍵也可以；加號與減號縮放。">
+      <div class="world" data-world data-w={AI_BOARD_W} data-h={AI_BOARD_H} style={`width:${AI_BOARD_W}px;height:${AI_BOARD_H}px`}>
+        {
+          aiBoardRegions.map((r) => (
+            <div class="region" style={`left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`}>
+              <span>{r.label}</span>
+            </div>
+          ))
+        }
+        <svg class="edges" width={AI_BOARD_W} height={AI_BOARD_H} aria-hidden="true">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M1 1 9 5 1 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </marker>
+          </defs>
+          {aiBoardEdges.map((e, i) => <path data-edge={i} data-from={e.from} data-to={e.to} class={e.label ? "callback" : "seq"} marker-end="url(#arrow)" />)}
+        </svg>
+        {
+          aiBoardEdges.map(
+            (e, i) =>
+              e.label && (
+                <span class="edge-label" data-edge-label={i} data-at={e.labelAt ?? 0.5} data-from={e.from} data-to={e.to}>
+                  {e.label}
+                </span>
+              ),
+          )
+        }
+        {
+          aiBoardNodes.map((n, i) => (
+            <button
+              type="button"
+              class:list={["card", n.kind]}
+              data-node={n.id}
+              data-no={n.no}
+              data-x={n.x}
+              data-y={n.y}
+              style={`left:${n.x}px;top:${n.y}px;width:${CARD_W}px;height:${CARD_H}px;--tilt:${((((i * 37) % 11) - 5) * 0.28).toFixed(2)}deg`}
+              aria-controls="inspector"
+            >
+              {n.kind === "lesson" ? (
+                <>
+                  <span class="no">{n.no}</span>
+                  <span class="title">{n.title}</span>
+                </>
+              ) : (
+                <>
+                  <span class="title">{n.title}</span>
+                  <span class="sub">{n.sub}</span>
+                </>
+              )}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="tools" role="toolbar" aria-label="白板工具">
+        <button type="button" data-tool="out" aria-label="縮小">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        </button>
+        <output data-zoom aria-label="目前縮放">100%</output>
+        <button type="button" data-tool="in" aria-label="放大">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M9 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        </button>
+        <button type="button" data-tool="fit">看全部</button>
+        <button type="button" data-tool="reset">排回原樣</button>
+      </div>
+    </div>
+
+    <aside class="inspector" id="inspector" data-inspector aria-label="卡片內容">
+      <button type="button" class="close" data-inspector-close aria-label="關閉">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      </button>
+
+      <section data-panel="intro">
+        <Art name="wip" size={88} rotate={6} class="intro-owl" />
+        <h2>這張白板怎麼看</h2>
+        <ul class="legend">
+          <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="seq"></path></svg>實線是上課順序</li>
+          <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="callback"></path></svg>虛線是前後呼應的地方</li>
+        </ul>
+        <p>點一張卡片，看那一堂要做什麼。這門課目前是大綱版，每堂的簡報與影片還在製作，所以卡片還不能點進去上課。</p>
+        <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程介紹</a>
+      </section>
+
+      {
+        aiLessons.map((l) => (
+          <section data-panel={`l${l.no}`} hidden>
+            <h2>
+              <span class="no">{l.no}</span>
+              {l.title}
+            </h2>
+            <p class="why">{l.summary}</p>
+            <p class="where">
+              {moduleOf(l.module).name}　{moduleOf(l.module).label}
+            </p>
+            <div class="practice outline">
+              <h3>換你做</h3>
+              <p>{l.task}</p>
+            </div>
+            {linksOf(`l${l.no}`).length > 0 && (
+              <div class="links">
+                <h3>和其他堂的呼應</h3>
+                <ul>
+                  {linksOf(`l${l.no}`).map((k) => (
+                    <li>
+                      <button type="button" data-goto={k.other}>
+                        {nodeName(k.other)}
+                      </button>
+                      <span>{k.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <p class="pending">這一堂的簡報與影片還在製作。</p>
+          </section>
+        ))
+      }
+
+      <section data-panel="workshop" hidden>
+        <h2>實體課</h2>
+        <p class="why">{aiCourse.workshopDate || "日期與地點即將公布"}</p>
+        <ol class="flow">
+          {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
+        </ol>
+        <p class="pending">帶一份這學期的講義和一份作業來。</p>
+      </section>
+      <section data-panel="obsidian" hidden>
+        <h2>接著學 Obsidian 研究筆記課</h2>
+        <p class="why">和 AI 聊出來的東西，關掉視窗就找不到了。Obsidian 課教你把講義、文獻和自己的想法收在一個找得到的地方。</p>
+        <div class="panel-actions">
+          <a class="btn btn-primary" href={url("/courses/obsidian/")}>看課程介紹</a>
+        </div>
+      </section>
+    </aside>
+
+    <main class="list" data-list>
+      <div class="list-inner">
+        {
+          aiModules.map((m) => (
+            <section>
+              <h2>
+                {m.name}　{m.label}
+              </h2>
+              <ol>
+                {aiLessonsOf(m.id).map((l) => (
+                  <li class="plain">
+                    <div class="item">
+                      <span class="no">{l.no}</span>
+                      <span class="title">{l.title}</span>
+                      <span class="why">{l.task}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))
+        }
+      </div>
+    </main>
+  </div>
+  <noscript>
+    <p style="padding:1rem">白板需要 JavaScript。你也可以直接看<a href={url("/courses/ai/#lessons")}>課程大綱</a>。</p>
+  </noscript>
+</Base>
+
+<script>
+  import "../../../scripts/board";
+</script>

@@ -1,6 +1,6 @@
 # 學習白板
 
-Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。目前有一門課：Obsidian 研究筆記課。
+Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。目前有兩門課：Obsidian 研究筆記課（完整），以及 AI 不只是聊天（大綱版）。
 
 網址（合併到 `main` 並啟用 GitHub Pages 之後）：https://bobyu89.github.io/AI-hepatbase-learning-system/
 
@@ -12,6 +12,8 @@ Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一�
 | `/courses/obsidian/` | 課程介紹：兩種身分、四個階段、課程目錄、直播與工作坊 |
 | `/courses/obsidian/board/` | 學習白板：可拖曳縮放，點卡片看內容，勾選學完 |
 | `/courses/obsidian/lessons/0/` … `/16/` | 單堂頁：簡報、A/B 練習卡、留給學員的問題 |
+| `/courses/ai/` | AI 不只是聊天：課程大綱、三個做法、實體課流程 |
+| `/courses/ai/board/` | AI 課的白板（大綱版，沒有進度紀錄與單堂頁） |
 
 ## 開發
 
@@ -36,6 +38,8 @@ npm run build
 **改站名**：改 `src/data/site.ts` 的 `site.name`。目前的「Bob 的學習白板」是暫定名稱。
 
 **調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
+
+**修改 AI 課的大綱**：改 `src/data/ai-course.ts`。堂次、每堂的說明與練習、白板位置與連線都在這個檔案。
 
 **更新課程內容**：課程原始碼（`data/m1.js` … `m4.js`）含完整逐字稿，不放在這個公開 repo。在本機執行下面的指令，會產生去掉逐字稿的 `src/data/lessons.json`：
 

@@ -321,6 +321,17 @@ main {
   display: none;
 }
 @media (max-width: 560px) {
+  .site-head {
+    padding-inline: 0.8rem;
+  }
+  .site-head .brand {
+    gap: 0.4rem;
+    font-size: 1.1rem;
+  }
+  .site-head nav {
+    gap: 0.9rem;
+    font-size: 1rem;
+  }
   .site-head .long {
     display: none;
   }

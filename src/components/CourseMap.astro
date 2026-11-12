@@ -1,8 +1,30 @@
 ---
 // 課程白板的縮圖：每個節點都是通往該堂課的連結。座標與正式白板共用。
-import { boardNodes, boardEdges, boardRegions, BOARD_W, BOARD_H, CARD_W, CARD_H } from "../data/course";
+import * as obsidian from "../data/course";
+import { CARD_W, CARD_H } from "../data/course";
+import type { BoardNode, BoardEdge } from "../data/course";
 import { edgeGeometry } from "../lib/edges";
 import { url } from "../lib/url";
+
+interface Props {
+  nodes?: BoardNode[];
+  edges?: BoardEdge[];
+  regions?: { id: string; label: string; x: number; y: number; w: number; h: number }[];
+  width?: number;
+  height?: number;
+  /** 節點連到哪裡。預設是 Obsidian 課的單堂頁。 */
+  hrefFor?: (n: BoardNode) => string;
+  label?: string;
+}
+const {
+  nodes: boardNodes = obsidian.boardNodes,
+  edges: boardEdges = obsidian.boardEdges,
+  regions: boardRegions = obsidian.boardRegions,
+  width: BOARD_W = obsidian.BOARD_W,
+  height: BOARD_H = obsidian.BOARD_H,
+  hrefFor,
+  label = "Obsidian 研究筆記課的課程地圖：17 堂課、兩場活動與三個選修",
+} = Astro.props;
 
 const byId = Object.fromEntries(boardNodes.map((n) => [n.id, n]));
 const edges = boardEdges.map((e, i) => ({ ...e, ...edgeGeometry(byId[e.from], byId[e.to], CARD_W, CARD_H, i + 1) }));
@@ -36,13 +58,13 @@ const lines = (t: string, max = 7.6) => {
 // 兩位數的堂次比較寬，標題往右讓，每行也短一點
 const tx = (no: number) => (no >= 10 ? 104 : 76);
 const mx = (no: number) => (no >= 10 ? 5.6 : 6.8);
-const href = (n: (typeof boardNodes)[number]) =>
-  n.kind === "lesson" ? url(`/courses/obsidian/lessons/${n.no}/`) : url(`/courses/obsidian/#${n.id}`);
-const evLines = (t: string) => (t.length > 10 ? [t.slice(0, t.indexOf(" ")), t.slice(t.indexOf(" ") + 1)] : [t]);
+const href = (n: BoardNode) =>
+  hrefFor ? hrefFor(n) : n.kind === "lesson" ? url(`/courses/obsidian/lessons/${n.no}/`) : url(`/courses/obsidian/#${n.id}`);
+const evLines = (t: string) => (t.length > 10 && t.includes(" ") ? [t.slice(0, t.indexOf(" ")), t.slice(t.indexOf(" ") + 1)] : [t]);
 ---
 
 <figure class="course-map">
-  <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} role="group" aria-label="Obsidian 研究筆記課的課程地圖：17 堂課、兩場活動與三個選修">
+  <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} role="group" aria-label={label}>
     <g class="regions">
       {
         boardRegions.map((r) => (

@@ -3,9 +3,10 @@
 
 import type { Role } from "../data/course";
 
-const DONE_KEY = "lb:obsidian:done";
 const ROLE_KEY = "lb:role";
-const POS_KEY = "lb:obsidian:positions";
+// 每門課各存各的進度與卡片位置
+const doneKey = (course: string) => `lb:${course}:done`;
+const posKey = (course: string) => `lb:${course}:positions`;
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -24,15 +25,15 @@ function write(key: string, value: unknown) {
   }
 }
 
-export function getDone(): Set<number> {
-  return new Set(read<number[]>(DONE_KEY, []).filter((n) => Number.isInteger(n)));
+export function getDone(course = "obsidian"): Set<number> {
+  return new Set(read<number[]>(doneKey(course), []).filter((n) => Number.isInteger(n)));
 }
 
-export function setDone(no: number, done: boolean) {
-  const set = getDone();
+export function setDone(no: number, done: boolean, course = "obsidian") {
+  const set = getDone(course);
   if (done) set.add(no);
   else set.delete(no);
-  write(DONE_KEY, [...set].sort((a, b) => a - b));
+  write(doneKey(course), [...set].sort((a, b) => a - b));
   document.dispatchEvent(new CustomEvent("lb:progress"));
   return set;
 }
@@ -53,11 +54,11 @@ export function setRole(role: Role) {
 }
 
 export type Positions = Record<string, { x: number; y: number }>;
-export const getPositions = () => read<Positions>(POS_KEY, {});
-export const setPositions = (p: Positions) => write(POS_KEY, p);
-export const clearPositions = () => {
+export const getPositions = (course = "obsidian") => read<Positions>(posKey(course), {});
+export const setPositions = (p: Positions, course = "obsidian") => write(posKey(course), p);
+export const clearPositions = (course = "obsidian") => {
   try {
-    localStorage.removeItem(POS_KEY);
+    localStorage.removeItem(posKey(course));
   } catch {
     /* 同上 */
   }

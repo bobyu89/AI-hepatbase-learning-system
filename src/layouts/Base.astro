@@ -10,7 +10,7 @@ interface Props {
   darkHead?: boolean;
   /** 白板頁自己處理版面，不要頁首頁尾 */
   bare?: boolean;
-  current?: "home" | "course" | "board";
+  current?: "home" | "course" | "ai" | "board";
 }
 const { title, description = site.tagline, darkHead = false, bare = false, current } = Astro.props;
 const fullTitle = title ? `${title}｜${site.name}` : site.name;
@@ -45,14 +45,18 @@ const fullTitle = title ? `${title}｜${site.name}` : site.name;
               <path d="M5.4 11.2c6.2-.5 12.8-.4 19 .2" stroke="var(--rule-red)" />
               <path d="M9 16c3.6-.3 8-.2 11.6.1M9 20.2c2.6-.2 5.4-.2 8 0" stroke="var(--rule)" />
             </svg>
-            {site.name}
+            <span class="long">{site.name}</span>
+            <span class="short">學習白板</span>
           </a>
           <nav aria-label="主要">
             <a href={url("/courses/obsidian/")} aria-current={current === "course" ? "page" : undefined}>
               <span class="long">Obsidian 研究筆記課</span>
-              <span class="short">課程</span>
+              <span class="short">Obsidian</span>
             </a>
-            <a href={url("/courses/obsidian/board/")}>學習白板</a>
+            <a href={url("/courses/ai/")} aria-current={current === "ai" ? "page" : undefined}>
+              <span class="long">AI 不只是聊天</span>
+              <span class="short">AI 入門</span>
+            </a>
           </nav>
         </header>
       )
