@@ -12,7 +12,7 @@
 
 改 `lines.json` 的文字或 `build.mjs` 的畫面之後，依序執行。
 
-合成旁白。金鑰只放在環境變數，不要寫進檔案：
+合成旁白。金鑰只放在環境變數，不要寫進檔案。在 Claude Code 的雲端環境裡，金鑰存在環境的網路密鑰中，由代理自動帶上，這時 `VOAI_KEY` 填任意佔位字串即可：
 
 ```bash
 VOAI_KEY=你的金鑰 python tts_voai.py

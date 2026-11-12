@@ -117,9 +117,9 @@ const html = `<!doctype html>
 
         <!-- 二、這堂課要做什麼 -->
         ${card("g-90", 2500, 260, 520, 300, `<div class="num">90</div><div class="m">分鐘的實體課</div>`)}
-        ${card("g-handout", 2560, 650, 440, 330, `<div class="m">你自己的<br>一份講義</div>`, "plain")}
+        ${card("g-handout", 2560, 650, 440, 330, `<div class="m">你帶來的<br>一篇論文</div>`, "plain")}
         ${arrow("g-arrow", 3040, 790, 230)}
-        ${card("g-sheet", 3310, 600, 560, 420, `<div class="m">一頁<br><span class="hi">考前複習單</span></div>`, "lined")}
+        ${card("g-sheet", 3310, 600, 560, 420, `<div class="m">一頁<br><span class="hi">論文閱讀單</span></div>`, "lined")}
         ${img("g-done", "sticker-done", 3720, 880, 190)}
         ${card("g-sticky", 3200, 180, 620, 330, `<div class="m">沒看過預錄課<br>也沒關係</div>`, "sticky")}
         <div id="g-demo" class="m blue" style="left:3880px;top:300px;white-space:nowrap">先示範</div>
@@ -131,27 +131,27 @@ const html = `<!doctype html>
         <div id="p-under" class="under" style="left:2924px;top:1660px;width:330px"></div>
         ${card("p-1", 2480, 1760, 520, 440, `<div class="num">1</div><div class="m">能上網的<br>筆電或平板</div>`)}
         ${card("p-2", 3060, 1800, 520, 440, `<div class="num">2</div><div class="m">註冊好一個<br>AI 工具</div><div class="s">哪一個都可以</div>`)}
-        ${card("p-3", 3640, 1760, 520, 440, `<div class="num">3</div><div class="m">這學期的<br>講義電子檔</div>`)}
-        ${card("p-warn", 3560, 2260, 640, 180, `<div class="s red" style="font-size:42px">不要有病人或同學的個人資料</div>`, "sticky")}
+        ${card("p-3", 3640, 1760, 520, 440, `<div class="num">3</div><div class="m">一篇論文<br>的 PDF</div>`)}
+        ${card("p-warn", 3560, 2260, 640, 180, `<div class="s" style="font-size:42px">預設的那篇，或自己想讀的</div>`, "sticky")}
 
         <!-- 四、上課的順序 -->
         <div id="f-head" class="h" style="left:240px;top:1620px;white-space:nowrap">上課那天，照這個順序</div>
-        ${card("f-1", 200, 1830, 400, 330, `<div class="num" style="font-size:90px">1</div><div class="m">能不能貼</div>`)}
+        ${card("f-1", 200, 1830, 400, 330, `<div class="num" style="font-size:90px">1</div><div class="m">能不能<br>上傳</div>`)}
         ${arrow("f-a1", 612, 1980, 96)}
         ${card("f-2", 720, 1870, 400, 330, `<div class="num" style="font-size:90px">2</div><div class="m">把話<br>說清楚</div>`)}
         ${arrow("f-a2", 1132, 2000, 96)}
-        ${card("f-3", 1240, 1830, 400, 330, `<div class="num" style="font-size:90px">3</div><div class="m">做出初稿</div>`)}
+        ${card("f-3", 1240, 1830, 400, 330, `<div class="num" style="font-size:90px">3</div><div class="m">填出<br>閱讀單</div>`)}
         ${arrow("f-a3", 1652, 1980, 96)}
-        ${card("f-4", 1760, 1870, 400, 330, `<div class="num" style="font-size:90px">4</div><div class="m">回講義<br>查證</div>`)}
+        ${card("f-4", 1760, 1870, 400, 330, `<div class="num" style="font-size:90px">4</div><div class="m">回原文<br>查證</div>`)}
         <div id="f-ring" class="ring" style="left:1716px;top:1826px;width:488px;height:418px"></div>
         ${img("f-mag", "sticker-magnifier", 2110, 1760, 170)}
-        <div id="f-rule" class="m" style="left:1500px;top:2290px;white-space:nowrap">AI 講得再肯定，也要<span class="hi">回講義對過</span></div>
+        <div id="f-rule" class="m" style="left:1500px;top:2290px;white-space:nowrap">AI 講得再肯定，也要<span class="hi">回原文對過</span></div>
 
         <!-- 五、結尾卡 -->
         <div id="end" class="card plain" style="left:1250px;top:860px;width:1900px;height:980px;padding:120px 130px">
           <div class="tape" style="position:absolute;left:50%;top:-22px;translate:-50% 0;rotate:-2deg;width:300px;height:64px"></div>
           <div style="font-size:190px;line-height:1.2">我們實體課見</div>
-          <div style="font-size:92px;line-height:1.4;margin-top:60px">步驟單和備用講義<br>都在<span class="hi">課程網站</span>上</div>
+          <div style="font-size:92px;line-height:1.4;margin-top:60px">步驟單和預設論文<br>都在<span class="hi">課程網站</span>上</div>
         </div>
         ${img("e-thumb", "sticker-thumbs-up", 2700, 1380, 380)}
       </div>
