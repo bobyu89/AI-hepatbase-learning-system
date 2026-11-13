@@ -43,21 +43,24 @@ move(cam(...R.goal, 1), T["02"].s - 0.75);
 pop("#g-90", T["02"].s + 0.1, -3); pop("#g-handout", T["02"].s + 2.0, -2); draw("#g-arrow", T["02"].s + 3.2, 0.6); pop("#g-sheet", T["02"].s + 3.9, 2); pop("#g-done", T["02"].s + 5.0, -10);
 // 03 不用先看
 pop("#g-sticky", T["03"].s + 0.2, 3); rise("#g-demo", T["03"].s + 2.4); draw("#g-arrow2", T["03"].s + 3.3, 0.4); rise("#g-do", T["03"].s + 3.8);
-// 04–07 準備三樣
+// 04–08 準備四樣
 move(cam(...R.prep, 1), T["04"].s - 0.75);
 rise("#p-head", T["04"].s + 0.1); draw("#p-under", T["04"].s + 0.9, 0.6);
-pop("#p-1", T["05"].s + 0.15, -2); pop("#p-2", T["06"].s + 0.15, 1.5); pop("#p-3", T["07"].s + 0.15, -1); pop("#p-warn", T["07"].s + 3.1, 2);
-// 08 流程
-move(cam(...R.flow, 0.94), T["08"].s - 0.75);
-const f = T["08"].s; rise("#f-head", f + 0.1);
-pop("#f-1", f + 1.9, -2); draw("#f-a1", f + 3.2, 0.35); pop("#f-2", f + 3.5, 1.5); draw("#f-a2", f + 4.9, 0.35); pop("#f-3", f + 5.2, -1); draw("#f-a3", f + 6.2, 0.35); pop("#f-4", f + 6.5, 2);
-// 09 最重要的是最後一步：推近第四張
-move(cam(1800, 2080, 1.5), T["09"].s - 0.3, 1.2);
-A("#f-ring", { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, T["09"].s + 0.9); pop("#f-mag", T["09"].s + 1.5, -8); rise("#f-rule", T["09"].s + 2.3);
-// 10 拉遠看整張板子，結尾卡
-move(cam(...R.all, 0.4), T["10"].s - 0.6, 1.5);
-A("#end", { opacity: 0, scale: 0.6, rotation: -5 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.6, ease: "back.out(1.4)" }, T["10"].s + 0.9);
-pop("#e-thumb", T["10"].s + 3.2, 8);
+pop("#p-1", T["05"].s + 0.15, -2); pop("#p-2", T["06"].s + 0.15, 1.5); pop("#p-3", T["07"].s + 0.15, -1); pop("#p-3n", T["07"].s + 3.4, 2);
+pop("#p-4", T["08"].s + 0.15, 1); pop("#p-warn", T["08"].s + 3.3, -2);
+// 09 流程：每張卡在旁白講到那個詞的時候出現
+move(cam(...R.flow, 0.94), T["09"].s - 0.75);
+const FL = lines.find((l) => l.id === "09").text;
+const at9 = (w) => T["09"].s + (T["09"].d * FL.indexOf(w)) / FL.length;
+rise("#f-head", T["09"].s + 0.1);
+pop("#f-1", at9("先寫下"), -2); draw("#f-a1", at9("再請") - 0.3, 0.35); pop("#f-2", at9("再請"), 1.5); draw("#f-a2", at9("填出") - 0.3, 0.35); pop("#f-3", at9("填出"), -1); draw("#f-a3", at9("最後") - 0.3, 0.35); pop("#f-4", at9("最後"), 2);
+// 10 最重要的是最後一步：推近第四張
+move(cam(1800, 2080, 1.5), T["10"].s - 0.3, 1.2);
+A("#f-ring", { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, T["10"].s + 0.9); pop("#f-mag", T["10"].s + 1.5, -8); rise("#f-rule", T["10"].s + 2.3);
+// 11 拉遠看整張板子，結尾卡
+move(cam(...R.all, 0.4), T["11"].s - 0.6, 1.5);
+A("#end", { opacity: 0, scale: 0.6, rotation: -5 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.6, ease: "back.out(1.4)" }, T["11"].s + 0.9);
+pop("#e-thumb", T["11"].s + 4.2, 8);
 
 const audio = lines.map((l, i) => `<audio id="vo-${l.id}" class="clip" src="voice/${l.id}.wav" data-start="${T[l.id].s}" data-duration="${r(T[l.id].d)}" data-track-index="${2 + (i % 2)}"></audio>`).join("\n      ");
 const subHtml = SUBS.map((s, i) => `<p class="sub clip" id="sub-${i}" data-start="${s.s}" data-duration="${r(s.e - s.s)}" data-track-index="5"><i></i>${s.text}</p>`).join("\n      ");
@@ -116,29 +119,31 @@ const html = `<!doctype html>
         ${img("t-spark", "doodle-sparkle-trio", 1375, 250, 120)}
 
         <!-- 二、這堂課要做什麼 -->
-        ${card("g-90", 2500, 260, 520, 300, `<div class="num">90</div><div class="m">分鐘的實體課</div>`)}
-        ${card("g-handout", 2560, 650, 440, 330, `<div class="m">你帶來的<br>一篇論文</div>`, "plain")}
+        ${card("g-90", 2500, 260, 520, 300, `<div class="num">60</div><div class="m">分鐘的實體課</div>`)}
+        ${card("g-handout", 2560, 650, 440, 330, `<div class="m">你的臨床問題<br>和一篇論文</div>`, "plain")}
         ${arrow("g-arrow", 3040, 790, 230)}
-        ${card("g-sheet", 3310, 600, 560, 420, `<div class="m">一頁<br><span class="hi">論文閱讀單</span></div>`, "lined")}
+        ${card("g-sheet", 3310, 600, 560, 420, `<div class="m">一頁<br><span class="hi">證據摘要</span></div>`, "lined")}
         ${img("g-done", "sticker-done", 3720, 880, 190)}
         ${card("g-sticky", 3200, 180, 620, 330, `<div class="m">沒看過預錄課<br>也沒關係</div>`, "sticky")}
         <div id="g-demo" class="m blue" style="left:3880px;top:300px;white-space:nowrap">先示範</div>
         ${arrow("g-arrow2", 3890, 390, 150, 80)}
         <div id="g-do" class="m blue" style="left:3880px;top:540px;white-space:nowrap">再換你動手</div>
 
-        <!-- 三、來之前準備三樣 -->
-        <div id="p-head" class="h" style="left:2520px;top:1560px;white-space:nowrap">來之前，準備三樣</div>
+        <!-- 三、來之前準備四樣 -->
+        <div id="p-head" class="h" style="left:2520px;top:1560px;white-space:nowrap">來之前，準備四樣</div>
         <div id="p-under" class="under" style="left:2924px;top:1660px;width:330px"></div>
-        ${card("p-1", 2480, 1760, 520, 440, `<div class="num">1</div><div class="m">能上網的<br>筆電或平板</div>`)}
-        ${card("p-2", 3060, 1800, 520, 440, `<div class="num">2</div><div class="m">註冊好一個<br>AI 工具</div><div class="s">哪一個都可以</div>`)}
-        ${card("p-3", 3640, 1760, 520, 440, `<div class="num">3</div><div class="m">一篇論文<br>的 PDF</div>`)}
-        ${card("p-warn", 3560, 2260, 640, 180, `<div class="s" style="font-size:42px">預設的那篇，或自己想讀的</div>`, "sticky")}
+        ${card("p-1", 2400, 1770, 440, 430, `<div class="num">1</div><div class="m">筆電<br>充好電</div>`)}
+        ${card("p-2", 2870, 1810, 440, 430, `<div class="num">2</div><div class="m">註冊好一個<br>AI 工具</div><div class="s">哪一個都可以</div>`)}
+        ${card("p-3", 3340, 1770, 440, 430, `<div class="num">3</div><div class="m">一個<br>臨床問題</div>`)}
+        ${card("p-3n", 3300, 2250, 520, 150, `<div class="s red" style="font-size:42px">不寫任何病人的資料</div>`, "sticky")}
+        ${card("p-4", 3810, 1810, 440, 430, `<div class="num">4</div><div class="m">一篇相關<br>論文的 PDF</div>`)}
+        ${card("p-warn", 3840, 2290, 420, 150, `<div class="s" style="font-size:42px">或用預設那篇</div>`, "sticky")}
 
         <!-- 四、上課的順序 -->
         <div id="f-head" class="h" style="left:240px;top:1620px;white-space:nowrap">上課那天，照這個順序</div>
-        ${card("f-1", 200, 1830, 400, 330, `<div class="num" style="font-size:90px">1</div><div class="m">能不能<br>上傳</div>`)}
+        ${card("f-1", 200, 1830, 400, 330, `<div class="num" style="font-size:90px">1</div><div class="m">寫下<br>臨床問題</div>`)}
         ${arrow("f-a1", 612, 1980, 96)}
-        ${card("f-2", 720, 1870, 400, 330, `<div class="num" style="font-size:90px">2</div><div class="m">把話<br>說清楚</div>`)}
+        ${card("f-2", 720, 1870, 400, 330, `<div class="num" style="font-size:90px">2</div><div class="m">根據論文<br>回答</div>`)}
         ${arrow("f-a2", 1132, 2000, 96)}
         ${card("f-3", 1240, 1830, 400, 330, `<div class="num" style="font-size:90px">3</div><div class="m">填出<br>閱讀單</div>`)}
         ${arrow("f-a3", 1652, 1980, 96)}
@@ -151,7 +156,7 @@ const html = `<!doctype html>
         <div id="end" class="card plain" style="left:1250px;top:860px;width:1900px;height:980px;padding:120px 130px">
           <div class="tape" style="position:absolute;left:50%;top:-22px;translate:-50% 0;rotate:-2deg;width:300px;height:64px"></div>
           <div style="font-size:190px;line-height:1.2">我們實體課見</div>
-          <div style="font-size:92px;line-height:1.4;margin-top:60px">步驟單和預設論文<br>都在<span class="hi">課程網站</span>上</div>
+          <div style="font-size:92px;line-height:1.4;margin-top:60px">這一頁可以接到<span class="hi">你的論文</span>裡<br>步驟單和預設論文都在課程網站上</div>
         </div>
         ${img("e-thumb", "sticker-thumbs-up", 2700, 1380, 380)}
       </div>
