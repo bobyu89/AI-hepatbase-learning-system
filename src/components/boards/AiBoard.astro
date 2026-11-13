@@ -200,7 +200,7 @@ const ListTag = embed ? "div" : "main";
 
     <section data-panel="workshop" hidden>
       <h2>實體課</h2>
-      <p class="why">{aiCourse.workshopDate || "日期與地點即將公布"}</p>
+      <p class="why">{aiCourse.workshopDate || "日期與地點即將公布"}{aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}</p>
       <ol class="flow">
         {aiWorkshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
       </ol>

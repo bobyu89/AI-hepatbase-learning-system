@@ -7,10 +7,10 @@ export const aiCourse = {
   id: "ai",
   title: "AI 不只是聊天",
   subtitle: "初學者的生成式 AI 實用入門",
-  audience: "護理系大學部學生",
+  audience: "護理系的學生與老師",
   // 實體課的日期與地點。留空時顯示「即將公布」。
-  workshopDate: "",
-  workshopPlace: "",
+  workshopDate: "11 月 23 日（星期一）14:00–15:00",
+  workshopPlace: "護理學系辦公室 討論室（一）",
 };
 
 export interface OutlineLesson {
@@ -57,7 +57,7 @@ export const aiQuestionOf = (no: number) => question[no] ?? "";
 export const aiLessonsOf = (moduleId: string) => aiLessons.filter((l) => l.module === moduleId);
 
 /**
- * 實體課 60 分鐘，約 30 人：把整門課的動作，照實際使用的順序串起來做一次。
+ * 實體課 60 分鐘，約 20 人，老師和學生同場：把整門課的動作，照實際使用的順序串起來做一次。
  * 不用先看完預錄課，所以每一段都是先示範一兩分鐘，再動手。
  * 每個人帶一篇論文，從頭做出一頁論文閱讀單。
  * 時間很緊，註冊工具和下載論文要在課前做完（見 aiWorkshopPrep），課堂上不留時間處理。
