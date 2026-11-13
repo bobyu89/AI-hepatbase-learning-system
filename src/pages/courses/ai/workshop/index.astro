@@ -21,7 +21,7 @@ const from = (i: number) => aiWorkshopFlow[i][2];
     <article class="paper">
       <h1>實體課步驟單</h1>
       <p class="lede">
-        {aiCourse.title}　60 分鐘。照著做，下課時你會有{aiWorkshopGoal}。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
+        {aiCourse.title}　60 分鐘。照著做，下課時你會有{aiWorkshopGoal}：你的臨床問題、閱讀單六格、查證紀錄，和一句適用性。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
       </p>
 
       <section class="stage">
@@ -31,7 +31,7 @@ const from = (i: number) => aiWorkshopFlow[i][2];
           <p class="meta">{min(0)} 分鐘</p>
           <ul>
             <li>登入你的 AI 工具，開一個新的對話</li>
-            <li>打開你帶來的論文 PDF。沒帶的話，用預設的那一篇</li>
+            <li>打開你帶來的論文 PDF。沒帶的話，用預設的那一篇；沒有自己的臨床問題，就用「住院病人的跌倒預防」</li>
             <li>工具登不進去：先和旁邊的同學共用一台，下課再處理</li>
           </ul>
         </div>
@@ -40,37 +40,49 @@ const from = (i: number) => aiWorkshopFlow[i][2];
       <section class="stage">
         <span class="n">2</span>
         <div>
-          <h2>先檢查：這篇論文能不能上傳</h2>
+          <h2>先檢查：能不能上傳、有沒有病人資料</h2>
           <p class="meta">{min(1)} 分鐘　想再看一次：{from(1)}</p>
           <ul>
             <li>是開放取用的論文，或學校圖書館有授權</li>
             <li>是已經發表的論文，不是別人還沒發表的稿子</li>
             <li>檔案裡沒有病人或同學的個人資料</li>
+            <li>我等一下要打的臨床問題，只寫病人族群和情境，沒有任何一位病人的資料</li>
           </ul>
-          <p>有任何一格不確定，就改用預設的那一篇。</p>
+          <p>論文有任何一格不確定，就改用預設的那一篇。</p>
         </div>
       </section>
 
       <section class="stage">
         <span class="n">3</span>
         <div>
-          <h2>問第一次，再把話說清楚</h2>
+          <h2>把臨床問題寫成 PICO，再問它</h2>
           <p class="meta">{min(2)} 分鐘　想再看一次：{from(2)}</p>
+          <table>
+            <thead>
+              <tr><th>我的臨床問題</th><th>用一句話寫</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">P <small>（哪一群病人）</small></th><td>&nbsp;</td></tr>
+              <tr><th scope="row">I <small>（想了解的介入或做法）</small></th><td>&nbsp;</td></tr>
+              <tr><th scope="row">C <small>（和什麼比較）</small></th><td>&nbsp;</td></tr>
+              <tr><th scope="row">O <small>（看什麼結果）</small></th><td>&nbsp;</td></tr>
+            </tbody>
+          </table>
           <ul>
             <li>先不上傳論文，只打下面這一句，看它回什麼</li>
           </ul>
-          <p class="say"><b>先打這句</b>幫我摘要 <span class="blank"></span> 這篇論文。</p>
+          <p class="say"><b>先打這句</b><span class="blank"></span>（你的臨床問題）有什麼證據？</p>
           <ul>
-            <li>開一個新的對話，上傳論文，把任務、材料、格式都交代清楚</li>
+            <li>開一個新的對話，上傳論文，把身分、問題、材料、格式都交代清楚</li>
           </ul>
           <p class="say">
             <b>再打這句，並上傳論文</b>
-            我是護理系 <span class="blank"></span> 年級的學生。請只根據我上傳的這篇論文回答，論文沒寫的請說「論文沒有提到」。先用三句話告訴我，這篇在回答什麼問題。
+            我是專科護理師組的研究生，正在寫碩士論文。我的臨床問題是：<span class="blank"></span>。請只根據我上傳的這篇論文回答，論文沒寫的請說「論文沒有提到」。先用三句話告訴我，這篇論文能回答我的問題到什麼程度。
           </p>
           <ul>
             <li>老師把第一句換成「我是護理系的老師」</li>
-            <li>兩個答案比較，差在哪裡</li>
-            <li>追問一次，例如：「用大二學生聽得懂的話再講一次。」</li>
+            <li>兩個答案比較：第一個答案提到的研究，你查得到出處嗎</li>
+            <li>追問一次，例如：「這篇的研究對象，和我問的病人族群差在哪裡？」</li>
           </ul>
         </div>
       </section>
@@ -78,7 +90,7 @@ const from = (i: number) => aiWorkshopFlow[i][2];
       <section class="stage">
         <span class="n">4</span>
         <div>
-          <h2>填出閱讀單的五格</h2>
+          <h2>填出閱讀單的六格</h2>
           <p class="meta">{min(3)} 分鐘　想再看一次：{from(3)}</p>
           <p class="say">
             <b>一格一格問</b>
@@ -120,6 +132,7 @@ const from = (i: number) => aiWorkshopFlow[i][2];
           </table>
           <ul>
             <li>原文找不到的句子，從閱讀單上劃掉</li>
+            <li>研究設計的名稱和原文不一樣，照原文改</li>
             <li>原文寫「有關聯」，它寫成「有效」的地方，圈起來</li>
             <li>和原文不一樣的數字，照原文改</li>
           </ul>
@@ -129,27 +142,29 @@ const from = (i: number) => aiWorkshopFlow[i][2];
       <section class="stage">
         <span class="n">6</span>
         <div>
-          <h2>互看：和旁邊的同學交換</h2>
+          <h2>互看：這個結果和你的病人族群像不像</h2>
           <p class="meta">{min(5)} 分鐘　想再看一次：{from(5)}</p>
           <ul>
             <li>在他的閱讀單上，找一句他還沒查過的，幫他回原文對</li>
-            <li>告訴他一個你看不懂的地方</li>
-            <li>拿回自己的，照同學說的改一處</li>
+            <li>問他：這篇的研究對象，和你關心的病人族群像不像？哪裡不像？</li>
+            <li>拿回自己的，寫下適用性的一句話 <span class="blank"></span></li>
           </ul>
+          <p>這一句只寫「像不像、差在哪裡」，不寫該怎麼處置。</p>
         </div>
       </section>
 
       <section class="stage">
         <span class="n">7</span>
         <div>
-          <h2>收尾：寫下你怎麼用的</h2>
+          <h2>收尾：放進論文的哪裡、怎麼標註</h2>
           <p class="meta">{min(6)} 分鐘　想再看一次：{from(6)}</p>
           <ul>
-            <li>我用的工具是 <span class="blank"></span></li>
-            <li>我用它來做 <span class="blank"></span></li>
+            <li>這一頁會放進我論文的哪一段（例如文獻回顧） <span class="blank"></span></li>
+            <li>我用的工具是 <span class="blank"></span>，用它來做 <span class="blank"></span></li>
             <li>我自己查證和修改了 <span class="blank"></span></li>
             <li>今天學到、明天就會用的一個動作是 <span class="blank"></span></li>
           </ul>
+          <p>論文裡怎麼標註 AI 的使用，以學校、系所和指導教授的規定為準。</p>
           <p><b>如果你是老師，改寫這四句：</b></p>
           <ul>
             <li>我會把這個活動放進哪一門課 <span class="blank"></span></li>

@@ -24,7 +24,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
         <h1>AI <span class="scribble">不只是聊天</span></h1>
         <p class="sub">{aiCourse.subtitle}</p>
         <p class="lede">
-          給{aiCourse.audience}。學完之後，你能用 AI 讀懂一篇論文、把重點整理出來、寫出一份讀書報告的大綱。而且知道什麼時候不能信它，什麼資料不能貼給它。
+          給{aiCourse.audience}。學完之後，你能用 AI 讀懂一篇論文、把重點整理出來、寫出一份讀書報告的大綱。而且知道什麼時候不能信它，什麼資料不能貼給它。預錄課的例句以大學部學生為例，做法對研究生與老師相同。
         </p>
         <div class="actions">
           <a class="btn btn-primary" href="#board">看課程白板</a>
@@ -99,7 +99,7 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <p class="lede">
-          把整門課的動作，照實際使用的順序串起來做一次。不用先看完預錄課，每一段都會先示範再動手。帶一篇論文來，下課時帶走{aiWorkshopGoal}。
+          把整門課的動作，照實際使用的順序串起來做一次。不用先看完預錄課，每一段都會先示範再動手。帶一個你想回答的臨床問題和一篇相關的論文來，下課時帶走{aiWorkshopGoal}，可以接到你自己的論文裡。
         </p>
         <figure class="intro-video">
           <video controls preload="metadata" playsinline poster={url("/video/ai-workshop-intro.jpg")} src={url("/video/ai-workshop-intro.mp4")}>
