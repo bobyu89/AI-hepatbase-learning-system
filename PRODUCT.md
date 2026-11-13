@@ -45,6 +45,10 @@ Astro（使用者選定），靜態輸出，部署到 GitHub Pages。學習進�
 
 - 2026 年 11 月：Obsidian 研究筆記課搬到獨立的網站（bobyu89/obsidian-research-notes），這個 repo 只剩 AI 課。上面關於 Obsidian 課的描述是搬走前的紀錄，那門課的現況以新 repo 的 PRODUCT.md 為準。網址根目錄轉到 `/courses/ai/`，舊的 `/courses/obsidian/…` 留轉址頁。AI 課的網址不變，因為邀請函已經寄出。
 
+- AI 課引用「AI 流暢度」4D 框架（委派、描述、辨別、盡責）當全課的骨架：課程首頁有四項能力與堂次的對照表，第 11 堂有一張「委派」的投影片，實體課開場用一分鐘介紹。框架 © 2025 Rick Dakan、Joseph Feller 與 Anthropic，CC BY-NC-SA 4.0：每次引用都要標示出處、只能非商業使用、改寫的部分要用同樣的授權分享。四項的中文是翻譯，定義以原文為準。
+
+- AI 課首頁有一張選修延伸「學完之後：找文獻的延伸練習」，連到 Claude Academy 的「規劃您的文獻回顧」。那一頁 © Anthropic、沒有開放授權，所以只放連結，不複製內容；它綁定 Claude 與 PubMed 連接器，和這門課「不綁定工具」不同，所以是選修。卡片上的三個提醒是這門課自己寫的。
+
 ## Brand Commitments
 
 - 課程名稱：Obsidian 研究筆記課。講者：Bob。

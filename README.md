@@ -59,6 +59,10 @@ node scripts/generate-art.mjs ../looseleaf
 
 `.github/workflows/deploy.yml` 會在推送到 `main` 時建置並發布到 GitHub Pages。第一次使用前，要到 repo 的 Settings → Pages，把 Source 設為 **GitHub Actions**。
 
+## 引用的框架
+
+課程首頁的「四項能力」對照表與第 11 堂的「委派」投影片，引用 [AI Fluency Framework](https://aifluencyframework.org/)（Rick Dakan 與 Joseph Feller 提出，© 2025 Rick Dakan、Joseph Feller 與 Anthropic），以 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant) 釋出。這兩處改寫的內容依同樣的授權分享。
+
 ## 設計
 
 手繪紙張風，視覺參考 [kevintngo/looseleaf](https://github.com/kevintngo/looseleaf)，字型 Kevin Sans 與貼紙、塗鴉取自該專案（MIT）。介面依 [impeccable](https://impeccable.style/) 的流程製作，skill 裝在 `.claude/skills/impeccable/`。產品背景在 `PRODUCT.md`，視覺規範在 `DESIGN.md`。
