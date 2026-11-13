@@ -1,4 +1,4 @@
-import { CARD_W, CARD_H } from "../data/course";
+import { CARD_W, CARD_H } from "../data/board";
 
 export interface Pt {
   x: number;

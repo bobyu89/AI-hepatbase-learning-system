@@ -1,0 +1,23 @@
+---
+// 轉址頁：這個網址的內容已經搬到別的地方。
+interface Props {
+  to: string;
+  title: string;
+}
+const { to, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={to} />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+  </head>
+  <body style="font-family:sans-serif;padding:2rem;line-height:1.7">
+    <p>{title}　<a href={to}>{to}</a></p>
+  </body>
+</html>

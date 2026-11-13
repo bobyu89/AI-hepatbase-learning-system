@@ -43,6 +43,8 @@ Astro（使用者選定），靜態輸出，部署到 GitHub Pages。學習進�
 
 - 兩門課的對象不同（AI 課是護理系專科護理師組研究生與老師，Obsidian 課是研究生與老師）。兩門課在不同學校開課。首頁只負責分流，給 Bob 自己用；進到課程之後，頁首選單只列那門課自己的頁面，不互相連結，也不連回首頁，頁尾與分頁標題只顯示該門課的名稱。給學生的連結一律是該門課的課程首頁。各課的白板直接嵌在課程首頁，另有放大的獨立頁。AI 課的代表色是橘色麥克筆，Obsidian 課是藍筆。
 
+- 2026 年 11 月：Obsidian 研究筆記課搬到獨立的網站（bobyu89/obsidian-research-notes），這個 repo 只剩 AI 課。上面關於 Obsidian 課的描述是搬走前的紀錄，那門課的現況以新 repo 的 PRODUCT.md 為準。網址根目錄轉到 `/courses/ai/`，舊的 `/courses/obsidian/…` 留轉址頁。AI 課的網址不變，因為邀請函已經寄出。
+
 ## Brand Commitments
 
 - 課程名稱：Obsidian 研究筆記課。講者：Bob。

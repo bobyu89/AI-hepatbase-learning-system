@@ -1,7 +1,7 @@
 // 學習進度只存在這台裝置的瀏覽器裡，沒有帳號、沒有伺服器。
 // localStorage 可能被停用（無痕視窗、封鎖網站資料），所以每次讀寫都包起來，失敗時頁面照常運作。
 
-import type { Role } from "../data/course";
+import type { Role } from "../data/board";
 
 const ROLE_KEY = "lb:role";
 // 每門課各存各的進度與卡片位置

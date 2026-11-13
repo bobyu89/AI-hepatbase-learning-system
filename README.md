@@ -1,22 +1,23 @@
-# 學習白板
+# AI 不只是聊天
 
-Bob 的課程學習網站。每一門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。目前有兩門課：Obsidian 研究筆記課，以及 AI 不只是聊天。
+「AI 不只是聊天：初學者的生成式 AI 實用入門」的學習網站，給護理系的研究生與老師。整門課攤開成一張白板：每一堂是一張卡片，前後呼應的地方畫成連線。
 
-網址（合併到 `main` 並啟用 GitHub Pages 之後）：https://bobyu89.github.io/AI-hepatbase-learning-system/
+網址：https://bobyu89.github.io/AI-hepatbase-learning-system/courses/ai/
+
+Obsidian 研究筆記課原本也在這個網站，後來搬到 [bobyu89/obsidian-research-notes](https://github.com/bobyu89/obsidian-research-notes)。舊網址 `/courses/obsidian/…` 留有轉址頁。
 
 ## 頁面
 
 | 路徑 | 內容 |
 |---|---|
-| `/` | 首頁：兩門課各一張卡，依上課的人分開 |
-| `/courses/obsidian/` | 課程介紹：兩種身分、四個階段、課程目錄、直播與工作坊 |
-| `/courses/obsidian/board/` | 學習白板：可拖曳縮放，點卡片看內容，勾選學完 |
-| `/courses/obsidian/lessons/0/` … `/16/` | 單堂頁：簡報、A/B 練習卡、留給學員的問題 |
-| `/courses/ai/` | AI 不只是聊天：課程大綱、三個做法、實體課流程 |
-| `/courses/ai/board/` | AI 課的白板 |
-| `/courses/ai/lessons/0/` … `/13/` | AI 課的單堂頁：簡報（初稿）、換你做、學完打勾 |
-| `/courses/ai/workshop/` | 實體課步驟單，可列印成一張正反面 |
-| `/courses/ai/workshop/paper/` | 示範論文與取得方式，預錄課與實體課共用 |
+| `/` | 轉到 `/courses/ai/` |
+| `/courses/ai/` | 課程介紹：嵌入的白板、課程大綱、三個做法、實體課 |
+| `/courses/ai/board/` | 學習白板 |
+| `/courses/ai/lessons/0/` … `/13/` | 單堂頁：影片、簡報、換你做、學完打勾 |
+| `/courses/ai/workshop/` | 實體課步驟單，可列印，也可下載 Word 與 PDF |
+| `/courses/ai/workshop/prep/` | 課前準備清單 |
+| `/courses/ai/workshop/paper/` | 示範論文與取得方式 |
+| `/courses/obsidian/…` | 轉址到 Obsidian 課的新網站 |
 
 ## 開發
 
@@ -36,19 +37,7 @@ npm run build
 
 ## 常見修改
 
-**補上直播的 Google Meet 連結、日期**：改 `src/data/site.ts` 的 `obsidianCourse`。欄位留空時，網站顯示「即將公布」。
-
-**改站名**：改 `src/data/site.ts` 的 `site.name`。目前的「Bob 的學習白板」是暫定名稱。
-
-**調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
-
-**修改 AI 課**：大綱、實體課流程、白板位置與連線在 `src/data/ai-course.ts`；每一堂的投影片在 `src/data/ai-lessons.json`。這個檔案由含講稿的原始檔產生，原始檔不在這個公開 repo，所以要改投影片請連同講稿一起從原始檔改。
-
-**更新課程內容**：課程原始碼（`data/m1.js` … `m4.js`）含完整逐字稿，不放在這個公開 repo。在本機執行下面的指令，會產生去掉逐字稿的 `src/data/lessons.json`：
-
-```bash
-node scripts/extract-content.mjs <課程原始碼資料夾>
-```
+**修改課程內容**：大綱、實體課流程、白板位置與連線在 `src/data/ai-course.ts`；每一堂的投影片在 `src/data/ai-lessons.json`。這個檔案由含講稿的原始檔產生，原始檔不在這個公開 repo，所以要改投影片請連同講稿一起從原始檔改。
 
 **增減貼紙與塗鴉**：先取得 looseleaf 的原始碼，修改 `scripts/generate-art.mjs` 裡的清單，再重新產生 `public/art/`：
 
