@@ -43,7 +43,7 @@ export const aiLessons: OutlineLesson[] = [
   { no: 8, module: "read", title: "一格一格讀", summary: "用六個問題讀完一篇論文：問題、對象、研究設計、做法、結果、限制。每一格都回原文核對。", task: "照六格問一輪，每一格挑一句在原文找到出處。" },
   { no: 9, module: "read", title: "請它考你", summary: "填完閱讀單不等於讀懂。請它根據論文出題，一次一題。", task: "請它出五題，答錯的回論文找到那一段。" },
   { no: 10, module: "make", title: "把結果整理成一張表", summary: "把論文裡的數字排進同一張表，再一格一格回原文核對。", task: "請它把示範論文的結果排成表，在下面寫一句你看到的。" },
-  { no: 11, module: "make", title: "文獻回顧的大綱：讓它當讀者", summary: "請它指出大綱缺什麼、哪一句沒有文獻支持，不請它替你寫。也要提防它只說好話。", task: "寫五行文獻回顧的大綱，請它只提問題。" },
+  { no: 11, module: "make", title: "文獻回顧的大綱：讓它當讀者", summary: "先分工：哪些自己做、哪些可以交給它。再請它指出大綱缺什麼、哪一句沒有文獻支持，不請它替你寫。", task: "寫五行文獻回顧的大綱，請它只提問題。" },
   { no: 12, module: "rules", title: "什麼不能貼", summary: "論文能不能上傳、病人資料為什麼去掉名字也不能貼。問臨床問題時寫一群人，不寫一個人。實際規定以醫院、學校與系所為準。", task: "把一個臨床問題寫成只有族群和情境的一句話。" },
   { no: 13, module: "rules", title: "論文裡怎麼用、怎麼揭露", summary: "學校、指導教授、期刊對 AI 的規定不一樣。先查清楚，再決定怎麼用、怎麼在論文裡揭露。", task: "查出學校或系所對學位論文使用 AI 的規定。" },
 ];
@@ -143,6 +143,26 @@ export const aiWorkshopPaper = {
     "研究設計不是隨機分派，很適合練習分辨「有關聯」和「有效」",
     "結果有幾個清楚的數字，適合練習回原文核對",
   ],
+};
+
+/**
+ * AI 流暢度的 4D 框架，和這門課各堂的對應。
+ * 框架由 Rick Dakan 與 Joseph Feller 提出，© 2025 Rick Dakan、Joseph Feller 與 Anthropic，
+ * 以 CC BY-NC-SA 4.0 釋出。四項能力的說明是中文翻譯，定義以原文為準。
+ * [中文, 英文, 說明, 對應的堂次]
+ */
+export const aiFluency: [string, string, string, number[]][] = [
+  ["委派", "Delegation", "決定哪些工作自己做、哪些交給 AI，以及怎麼分工。", [11]],
+  ["描述", "Description", "把話說清楚：要什麼結果、怎麼做、希望它怎麼回應。", [2, 3]],
+  ["辨別", "Discernment", "審慎評估它給的內容：對不對、合不合用、哪裡要改。", [4, 5, 6, 8]],
+  ["盡責", "Diligence", "負責任地使用：什麼能交給它、有沒有照實說明、對成果負責。", [12, 13]],
+];
+export const aiFluencySource = {
+  name: "AI Fluency Framework",
+  url: "https://aifluencyframework.org/",
+  credit: "© 2025 Rick Dakan、Joseph Feller 與 Anthropic",
+  license: "CC BY-NC-SA 4.0",
+  licenseUrl: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant",
 };
 
 /** 這門課的三個做法。 */

@@ -11,6 +11,8 @@ import {
   aiWorkshopGoal,
   aiWorkshopPrep,
   aiPrinciples,
+  aiFluency,
+  aiFluencySource,
 } from "../../../data/ai-course";
 import { url } from "../../../lib/url";
 
@@ -87,6 +89,41 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
             ))
           }
         </dl>
+      </div>
+    </section>
+
+    <section class="section how fluency" id="fluency">
+      <div class="wrap">
+        <h2>四項能力，對應哪幾堂</h2>
+        <p class="lede">
+          這門課的內容可以用「AI 流暢度」的 4D 框架來看。四項裡面，這門課花最多時間練的是辨別，實體課的重點也是它。
+        </p>
+        <dl>
+          {
+            aiFluency.map(([zh, en, note, nos]) => (
+              <div>
+                <dt>
+                  {zh} <span lang="en">{en}</span>
+                </dt>
+                <dd>
+                  {note}
+                  <span class="where">
+                    {nos.map((no, i) => (
+                      <>
+                        {i > 0 && "、"}
+                        <a href={url(`/courses/ai/lessons/${no}/`)}>第 {no} 堂</a>
+                      </>
+                    ))}
+                  </span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="credit">
+          <a href={aiFluencySource.url} lang="en">{aiFluencySource.name}</a>，由 Rick Dakan 與 Joseph Feller 提出。{aiFluencySource.credit}，以
+          <a href={aiFluencySource.licenseUrl}>{aiFluencySource.license}</a> 釋出。上面四項的說明是中文翻譯，定義以原文為準；這張對照表依同樣的授權分享。
+        </p>
       </div>
     </section>
 
@@ -259,6 +296,31 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
   .how dd {
     max-width: var(--measure);
     color: var(--muted);
+  }
+  .fluency .lede {
+    max-width: var(--measure);
+    margin-top: 0.75rem;
+  }
+  .fluency dt span {
+    display: block;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .fluency .where {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--ink);
+  }
+  .fluency a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  .fluency .credit {
+    max-width: var(--measure);
+    margin-top: 1.25rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
   }
 
   .when {
