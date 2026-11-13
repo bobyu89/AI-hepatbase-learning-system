@@ -9,13 +9,14 @@ import {
   aiOwnPaperRules,
   aiDoNotBring,
   aiWorkshopPaper,
+  aiSelfReflection,
 } from "../../../../data/ai-course";
 import { url } from "../../../../lib/url";
 
 const total = aiWorkshopFlow.reduce((sum, [, min]) => sum + min, 0);
 ---
 
-<Base title={`課前準備｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的課前準備清單：註冊工具、下載論文、試傳一次。`}>
+<Base title={`課前準備｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的課前準備清單：註冊工具、下載論文、試傳一次、寫下四句話。`}>
   <main class="handout">
     <div class="tools">
       <a class="btn btn-primary" href={url("/courses/ai/workshop/paper/")}>下載示範論文</a>
@@ -26,14 +27,14 @@ const total = aiWorkshopFlow.reduce((sum, [, min]) => sum + min, 0);
     <article class="paper">
       <h1>課前準備</h1>
       <p class="lede">
-        {aiCourse.title}　實體課 {total} 分鐘，要做出{aiWorkshopGoal}。時間很緊，下面這幾件事請在家做完，大約十分鐘。
+        {aiCourse.title}　實體課 {total} 分鐘，要做出{aiWorkshopGoal}。時間很緊，下面這幾件事請在家做完，大約十五分鐘。
       </p>
       <p class="when-line">
         {aiCourse.workshopDate || "日期與地點即將公布"}
         {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
       </p>
 
-      <h2>來之前做完這七件事</h2>
+      <h2>來之前做完這八件事</h2>
       <ul class="checklist">
         {
           aiWorkshopChecklist.map(([what, note], i) => (
@@ -49,7 +50,14 @@ const total = aiWorkshopFlow.reduce((sum, [, min]) => sum + min, 0);
           ))
         }
       </ul>
-      <p class="saved" data-saved hidden>七件都做完了，上課見。</p>
+      <p class="saved" data-saved hidden>八件都做完了，上課見。</p>
+
+      <h2>先寫下這四句話</h2>
+      <p>先不要問 AI，寫你自己的想法，每句一兩行就好。上課時，這四句會變成你給 AI 的指示的開頭。</p>
+      <ol class="bullets four">
+        {aiSelfReflection.map((item) => <li>{item}</li>)}
+      </ol>
+      <p class="notice">不要寫任何一位病人的資料。</p>
 
       <h2>預設的論文</h2>
       <p class="ref">
@@ -68,7 +76,7 @@ const total = aiWorkshopFlow.reduce((sum, [, min]) => sum + min, 0);
       <ul class="bullets">
         {aiDoNotBring.map((item) => <li>{item}</li>)}
       </ul>
-      <p class="notice">能不能把資料交給 AI 工具，以學校與實習單位的規定為準。</p>
+      <p class="notice">能不能把資料交給 AI 工具，以醫院、學校與系所的規定為準。</p>
 
       <h2>卡住了怎麼辦</h2>
       <ul class="bullets">
