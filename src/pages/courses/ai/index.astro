@@ -13,6 +13,7 @@ import {
   aiPrinciples,
   aiFluency,
   aiFluencySource,
+  aiNext,
 } from "../../../data/ai-course";
 import { url } from "../../../lib/url";
 
@@ -124,6 +125,37 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
           <a href={aiFluencySource.url} lang="en">{aiFluencySource.name}</a>，由 Rick Dakan 與 Joseph Feller 提出。{aiFluencySource.credit}，以
           <a href={aiFluencySource.licenseUrl}>{aiFluencySource.license}</a> 釋出。上面四項的說明是中文翻譯，定義以原文為準；這張對照表依同樣的授權分享。
         </p>
+      </div>
+    </section>
+
+    <section class="section how next" id="next">
+      <div class="wrap">
+        <h2>學完之後：找文獻的延伸練習</h2>
+        <p class="lede">{aiNext.what}</p>
+        <p class="needs">{aiNext.needs}</p>
+        <dl>
+          {
+            aiNext.cautions.map(([head, note, no]) => (
+              <div>
+                <dt>{head}</dt>
+                <dd>
+                  {note}
+                  {no > 0 && (
+                    <span class="where">
+                      <a href={url(`/courses/ai/lessons/${no}/`)}>第 {no} 堂</a>教過
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="go">
+          <a class="btn btn-quiet" href={aiNext.url} rel="noopener" lang="zh-Hant">
+            {aiNext.title}（{aiNext.source}，另開網站）
+          </a>
+        </p>
+        <p class="credit">這個練習是 {aiNext.source} 的內容，不是這門課寫的。做的時候請帶著上面三個提醒。</p>
       </div>
     </section>
 
@@ -297,9 +329,33 @@ const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
     max-width: var(--measure);
     color: var(--muted);
   }
-  .fluency .lede {
+  .fluency .lede,
+  .next .lede,
+  .next .needs {
     max-width: var(--measure);
     margin-top: 0.75rem;
+  }
+  .next .needs {
+    color: var(--muted);
+  }
+  .next .where {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--ink);
+  }
+  .next .where a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  .next .go {
+    margin-top: 1.5rem;
+  }
+  .next .credit {
+    max-width: var(--measure);
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
   }
   .fluency dt span {
     display: block;

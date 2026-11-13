@@ -165,6 +165,23 @@ export const aiFluencySource = {
   licenseUrl: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant",
 };
 
+/**
+ * 選修延伸：學完之後想繼續練的人可以做。連到外部的頁面，內容不是這門課寫的，所以只放連結與我們自己的提醒。
+ * 那一頁的版權屬於 Anthropic，沒有開放授權，不要複製它的文字。
+ */
+export const aiNext = {
+  title: "規劃你的文獻回顧",
+  source: "Claude Academy",
+  url: "https://academy.claude.com/zh-TW/use-cases/plan-your-literature-review",
+  needs: "需要 Claude 和它的 PubMed 連接器，約 15 分鐘。這門課不綁定工具，所以這是選修。",
+  what: "這門課教你把一篇論文讀對。這個練習是下一步：從很多篇裡找出該讀的那幾篇，排出閱讀順序。",
+  cautions: [
+    ["每一篇都點開", "確認這篇論文真的存在，而且原文是這樣說的。", 6],
+    ["排序是它的建議", "哪幾篇要納入、哪幾篇不要，由你決定。", 11],
+    ["檢索過程自己記", "要寫進論文的話，用了哪個資料庫、哪些關鍵字、怎麼篩選，自己留下紀錄。它幫你找到的，不等於一份可以重做的檢索策略。", 0],
+  ] as [string, string, number][],
+};
+
 /** 這門課的三個做法。 */
 export const aiPrinciples = [
   ["不綁定工具", "每堂只教各家都有的動作：對話、貼上或上傳檔案、附來源的搜尋。畫面以你用的那一個為準。"],
