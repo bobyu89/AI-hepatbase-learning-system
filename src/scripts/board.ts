@@ -1,5 +1,5 @@
 // 學習白板：拖曳移動畫面、縮放、拖動卡片、選取卡片、學習進度。
-import { CARD_W, CARD_H } from "../data/course";
+import { CARD_W, CARD_H } from "../data/board";
 import { edgeGeometry } from "../lib/edges";
 import { getDone, setDone, nextLesson, getPositions, setPositions, clearPositions } from "./progress";
 

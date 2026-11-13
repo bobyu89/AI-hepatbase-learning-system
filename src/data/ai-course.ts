@@ -1,6 +1,6 @@
 // 「AI 不只是聊天：初學者的生成式 AI 實用入門」的課程資料。
 // 14 堂的大綱在這個檔案，每堂的投影片在 ai-lessons.ts。投影片是初稿。
-import { CARD_W, CARD_H, type BoardNode, type BoardEdge } from "./course";
+import { CARD_W, CARD_H, type BoardNode, type BoardEdge } from "./board";
 import { aiSlides } from "./ai-lessons";
 
 export const aiCourse = {
