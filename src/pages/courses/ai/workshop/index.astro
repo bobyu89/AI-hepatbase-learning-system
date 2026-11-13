@@ -1,14 +1,14 @@
 ---
 import Base from "../../../../layouts/Base.astro";
 import "../../../../styles/handout.css";
-import { aiCourse, aiWorkshopFlow, aiWorkshopGoal, aiReadingSheet } from "../../../../data/ai-course";
+import { aiCourse, aiWorkshopFlow, aiWorkshopGoal, aiWorkshopSheet, aiPledge, aiPartnerRules, aiSelfReflection, aiPolicyParts } from "../../../../data/ai-course";
 import { url } from "../../../../lib/url";
 
 const min = (i: number) => aiWorkshopFlow[i][1];
 const from = (i: number) => aiWorkshopFlow[i][2];
 ---
 
-<Base title={`實體課步驟單｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的步驟單：帶一篇論文，做出${aiWorkshopGoal}。`}>
+<Base title={`實體課步驟單｜${aiCourse.title}`} current="ai" description={`${aiCourse.title}實體課的步驟單：做出${aiWorkshopGoal}。`}>
   <main class="handout">
     <div class="tools">
       <a class="btn btn-primary" href={url("/files/ai/step-sheet.docx")} download="AI課_實體課步驟單.docx">下載 Word 版（可打字）</a>
@@ -21,87 +21,37 @@ const from = (i: number) => aiWorkshopFlow[i][2];
     <article class="paper">
       <h1>實體課步驟單</h1>
       <p class="lede">
-        {aiCourse.title}　60 分鐘。照著做，下課時你會有{aiWorkshopGoal}：你的臨床問題、閱讀單六格、查證紀錄，和一句適用性。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
+        {aiCourse.title}　60 分鐘。照著做，下課時你會有{aiWorkshopGoal}。之後讀文獻、寫論文、準備考試都用得上。跟不上的時候，回到這張單子，從沒打勾的那一格接著做。
       </p>
 
       <section class="stage">
         <span class="n">1</span>
         <div>
-          <h2>打開工具和論文</h2>
+          <h2>打開工具、論文，和課前寫的四句話</h2>
           <p class="meta">{min(0)} 分鐘</p>
           <ul>
-            <li>登入你的 AI 工具，開一個新的對話</li>
-            <li>打開你帶來的論文 PDF。沒帶的話，用預設的那一篇；沒有自己的臨床問題，就用「住院病人的跌倒預防」</li>
-            <li>工具登不進去：先和旁邊的同學共用一台，下課再處理</li>
+            <li>登入你的 AI 工具，開一個新的對話，先不要打字</li>
+            <li>打開你帶來的論文 PDF。沒帶的話，用預設的那一篇</li>
+            <li>打開課前寫的四句話。還沒寫的，現在各寫一句：</li>
           </ul>
+          <ol class="mini">
+            {aiSelfReflection.map((item) => <li>{item}</li>)}
+          </ol>
         </div>
       </section>
 
       <section class="stage">
         <span class="n">2</span>
         <div>
-          <h2>先檢查：能不能上傳、有沒有病人資料</h2>
+          <h2>先不開 AI：寫下我的 AI 使用約定</h2>
           <p class="meta">{min(1)} 分鐘　想再看一次：{from(1)}</p>
-          <ul>
-            <li>是開放取用的論文，或學校圖書館有授權</li>
-            <li>是已經發表的論文，不是別人還沒發表的稿子</li>
-            <li>檔案裡沒有病人或同學的個人資料</li>
-            <li>我等一下要打的臨床問題，只寫病人族群和情境，沒有任何一位病人的資料</li>
-          </ul>
-          <p>論文有任何一格不確定，就改用預設的那一篇。</p>
-        </div>
-      </section>
-
-      <section class="stage">
-        <span class="n">3</span>
-        <div>
-          <h2>把臨床問題寫成 PICO，再問它</h2>
-          <p class="meta">{min(2)} 分鐘　想再看一次：{from(2)}</p>
-          <table>
+          <p>這四句自己想、自己寫。沒有標準答案，寫你做得到的。</p>
+          <table class="fill">
             <thead>
-              <tr><th>我的臨床問題</th><th>用一句話寫</th></tr>
+              <tr><th>我的 AI 使用約定</th><th>用一兩句話寫</th></tr>
             </thead>
             <tbody>
-              <tr><th scope="row">P <small>（哪一群病人）</small></th><td>&nbsp;</td></tr>
-              <tr><th scope="row">I <small>（想了解的介入或做法）</small></th><td>&nbsp;</td></tr>
-              <tr><th scope="row">C <small>（和什麼比較）</small></th><td>&nbsp;</td></tr>
-              <tr><th scope="row">O <small>（看什麼結果）</small></th><td>&nbsp;</td></tr>
-            </tbody>
-          </table>
-          <ul>
-            <li>先不上傳論文，只打下面這一句，看它回什麼</li>
-          </ul>
-          <p class="say"><b>先打這句</b><span class="blank"></span>（你的臨床問題）有什麼證據？</p>
-          <ul>
-            <li>開一個新的對話，上傳論文，把身分、問題、材料、格式都交代清楚</li>
-          </ul>
-          <p class="say">
-            <b>再打這句，並上傳論文</b>
-            我是專科護理師組的研究生，正在寫碩士論文。我的臨床問題是：<span class="blank"></span>。請只根據我上傳的這篇論文回答，論文沒寫的請說「論文沒有提到」。先用三句話告訴我，這篇論文能回答我的問題到什麼程度。
-          </p>
-          <ul>
-            <li>老師把第一句換成「我是護理系的老師」</li>
-            <li>兩個答案比較：第一個答案提到的研究，你查得到出處嗎</li>
-            <li>追問一次，例如：「這篇的研究對象，和我問的病人族群差在哪裡？」</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="stage">
-        <span class="n">4</span>
-        <div>
-          <h2>填出閱讀單的六格</h2>
-          <p class="meta">{min(3)} 分鐘　想再看一次：{from(3)}</p>
-          <p class="say">
-            <b>一格一格問</b>
-            請只根據這篇論文，回答：<span class="blank"></span>。並告訴我你是根據論文的哪一段。
-          </p>
-          <table>
-            <thead>
-              <tr><th>閱讀單</th><th>AI 的回答，用自己的話寫下來</th></tr>
-            </thead>
-            <tbody>
-              {aiReadingSheet.map(([head, hint]) => (
+              {aiPledge.map(([head, hint]) => (
                 <tr>
                   <th scope="row">
                     {head} <small>（{hint}）</small>
@@ -111,15 +61,63 @@ const from = (i: number) => aiWorkshopFlow[i][2];
               ))}
             </tbody>
           </table>
+          <p>老師把「我」換成「這門課的學生」，寫出來就是課堂規定的草稿。</p>
         </div>
       </section>
 
       <section class="stage">
-        <span class="n">5</span>
+        <span class="n">3</span>
         <div>
-          <h2>查證：每一格挑一句，回原文核對</h2>
-          <p class="meta">{min(4)} 分鐘　想再看一次：{from(4)}</p>
-          <p>優先挑數字、研究設計的名稱，和講得很肯定的句子。</p>
+          <h2>把它寫成一段給 AI 的指示</h2>
+          <p class="meta">{min(2)} 分鐘　想再看一次：{from(2)}</p>
+          <ul>
+            <li>照下面的樣子，把空格換成你自己的話，貼進新的對話</li>
+          </ul>
+          <p class="say">
+            <b>給 AI 的指示</b>
+            我是 <span class="blank"></span>（課前第一句）。我最卡的是 <span class="blank"></span>（課前第二句）。請當我的學習夥伴，幫我學會，不要替我完成工作。請照這些規則：
+            {aiPartnerRules.map((rule, i) => <span class="rule">{i + 1}. {rule}。</span>)}
+            <span class="rule">{aiPartnerRules.length + 1}. <span class="blank"></span>（從你的約定裡，再加一條自己的）。</span>
+          </p>
+          <ul>
+            <li>接著打：「看完這段指示，問我三個問題，幫我補上漏掉的地方。」</li>
+            <li>依它問的，把指示改一次</li>
+            <li>把改好的指示存成一個檔案</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">4</span>
+        <div>
+          <h2>拿論文試用，並回原文查證</h2>
+          <p class="meta">{min(3)} 分鐘　想再看一次：{from(3)}</p>
+          <p>上傳之前先檢查：</p>
+          <ul>
+            <li>是開放取用的論文，或學校圖書館有授權</li>
+            <li>是已經發表的論文，不是別人還沒發表的稿子</li>
+            <li>我要打的臨床問題，只寫病人族群和情境，沒有任何一位病人的資料</li>
+          </ul>
+          <p class="say">
+            <b>上傳論文，接著打</b>
+            照上面的規則，帶我讀這篇論文。我的臨床問題是：<span class="blank"></span>。
+          </p>
+          <table class="fill">
+            <thead>
+              <tr><th>閱讀單</th><th>用自己的話寫下來</th></tr>
+            </thead>
+            <tbody>
+              {aiWorkshopSheet.map(([head, hint]) => (
+                <tr>
+                  <th scope="row">
+                    {head} <small>（{hint}）</small>
+                  </th>
+                  <td>&nbsp;</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p>每一格挑一句，回原文核對。優先挑數字、研究設計的名稱，和講得很肯定的句子。</p>
           <table>
             <thead>
               <tr><th>AI 說的句子</th><th>原文在第幾頁、哪一段</th><th>一樣嗎</th></tr>
@@ -132,9 +130,26 @@ const from = (i: number) => aiWorkshopFlow[i][2];
           </table>
           <ul>
             <li>原文找不到的句子，從閱讀單上劃掉</li>
-            <li>研究設計的名稱和原文不一樣，照原文改</li>
             <li>原文寫「有關聯」，它寫成「有效」的地方，圈起來</li>
-            <li>和原文不一樣的數字，照原文改</li>
+          </ul>
+          <table class="fill">
+            <tbody>
+              <tr><th scope="row">它有沒有守住角色 <small>（在哪一句直接給了答案）</small></th><td>&nbsp;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="stage">
+        <span class="n">5</span>
+        <div>
+          <h2>互看：約定守得住嗎</h2>
+          <p class="meta">{min(4)} 分鐘　想再看一次：{from(4)}</p>
+          <ul>
+            <li>交換約定。出一個真實的情境給對方，例如：「指導教授要你三天內交文獻回顧的初稿。」</li>
+            <li>問他：照你的約定，這裡可以用 AI 做什麼、不可以做什麼？</li>
+            <li>看他的對話：AI 在哪裡沒有守住角色</li>
+            <li>拿回自己的，改一句約定，或改一條指示</li>
           </ul>
         </div>
       </section>
@@ -142,38 +157,61 @@ const from = (i: number) => aiWorkshopFlow[i][2];
       <section class="stage">
         <span class="n">6</span>
         <div>
-          <h2>互看：這個結果和你的病人族群像不像</h2>
+          <h2>收尾：寫上日期，存起來</h2>
           <p class="meta">{min(5)} 分鐘　想再看一次：{from(5)}</p>
-          <ul>
-            <li>在他的閱讀單上，找一句他還沒查過的，幫他回原文對</li>
-            <li>問他：這篇的研究對象，和你關心的病人族群像不像？哪裡不像？</li>
-            <li>拿回自己的，寫下適用性的一句話 <span class="blank"></span></li>
-          </ul>
-          <p>這一句只寫「像不像、差在哪裡」，不寫該怎麼處置。</p>
+          <table class="fill">
+            <tbody>
+              <tr><th scope="row">今天的日期</th><td>&nbsp;</td></tr>
+              <tr><th scope="row">下次檢視的日期 <small>（建議一學期一次）</small></th><td>&nbsp;</td></tr>
+              <tr><th scope="row">約定和指示存在哪兩個地方</th><td>&nbsp;</td></tr>
+              <tr><th scope="row">明天第一個要用它的情境</th><td>&nbsp;</td></tr>
+            </tbody>
+          </table>
+          <p>論文裡怎麼標註 AI 的使用，以學校、系所和指導教授的規定為準。</p>
         </div>
       </section>
 
-      <section class="stage">
-        <span class="n">7</span>
-        <div>
-          <h2>收尾：放進論文的哪裡、怎麼標註</h2>
-          <p class="meta">{min(6)} 分鐘　想再看一次：{from(6)}</p>
-          <ul>
-            <li>這一頁會放進我論文的哪一段（例如文獻回顧） <span class="blank"></span></li>
-            <li>我用的工具是 <span class="blank"></span>，用它來做 <span class="blank"></span></li>
-            <li>我自己查證和修改了 <span class="blank"></span></li>
-            <li>今天學到、明天就會用的一個動作是 <span class="blank"></span></li>
-          </ul>
-          <p>論文裡怎麼標註 AI 的使用，以學校、系所和指導教授的規定為準。</p>
-          <p><b>如果你是老師，改寫這四句：</b></p>
-          <ul>
-            <li>我會把這個活動放進哪一門課 <span class="blank"></span></li>
-            <li>我會指定學生讀的論文是 <span class="blank"></span></li>
-            <li>我會要求學生交出的查證紀錄是 <span class="blank"></span></li>
-            <li>我對學生使用 AI 的規定會寫成 <span class="blank"></span></li>
-          </ul>
-        </div>
-      </section>
+      <h2>課後：把約定補完整</h2>
+      <p>課堂上只寫了四句。有空的時候，照這六個部分把它寫完整，寫的時候可以請你的學習夥伴問你問題。</p>
+      <table>
+        <tbody>
+          {aiPolicyParts.map(([head, note]) => (
+            <tr>
+              <th scope="row">{head}</th>
+              <td>{note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="ref">
+        約定、指示與課前四句話的練習，改寫自 <span lang="en">AI Fluency for Students</span>（© 2025 Rick Dakan、Joseph Feller 與 Anthropic，以
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant">CC BY-NC-SA 4.0</a> 釋出）。這張步驟單依同樣的授權分享。
+      </p>
     </article>
   </main>
 </Base>
+
+<style>
+  .mini {
+    margin: 0.25rem 0 0 1.4rem;
+    padding: 0;
+    color: var(--muted);
+  }
+  .mini li {
+    margin: 0.15rem 0;
+  }
+  table.fill {
+    table-layout: fixed;
+    width: 100%;
+  }
+  table.fill th:first-child {
+    width: 40%;
+  }
+  table.fill th small {
+    display: block;
+  }
+  .say .rule {
+    display: block;
+    margin-top: 0.3rem;
+  }
+</style>
