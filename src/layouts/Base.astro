@@ -19,9 +19,9 @@ const courses = {
     short: "AI 入門",
     home: url("/courses/ai/"),
     links: [
-      ["白板", url("/courses/ai/#board")],
-      ["大綱", url("/courses/ai/#lessons")],
-      ["實體課", url("/courses/ai/#workshop")],
+      ["四輪", url("/courses/ai/#rounds")],
+      ["要帶什麼", url("/courses/ai/#bring")],
+      ["講義", url("/courses/ai/#handout")],
     ],
   },
 } as const;
@@ -79,7 +79,7 @@ const fullTitle = title && !title.includes(titleSite) ? `${title}｜${titleSite}
         <footer class="site-foot">
           <div class="wrap">
             <span>{course ? course.name : site.name}</span>
-            <span>學習進度只存在你這台裝置的瀏覽器裡。</span>
+            <span>AI 會換，這幾個動作不會換。</span>
           </div>
         </footer>
       )
