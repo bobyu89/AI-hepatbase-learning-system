@@ -1,13 +1,6 @@
 ---
-import Base from "../../../layouts/Base.astro";
-import AiBoard from "../../../components/boards/AiBoard.astro";
-import { aiCourse, aiLessons } from "../../../data/ai-course";
+import Moved from "../../../components/Moved.astro";
 import { url } from "../../../lib/url";
 ---
 
-<Base bare title={`課程白板｜${aiCourse.title}`} description={`${aiCourse.title}的課程白板：${aiLessons.length} 堂課與它們之間的呼應。`}>
-  <AiBoard />
-  <noscript>
-    <p style="padding:1rem">白板需要 JavaScript。你也可以直接看<a href={url("/courses/ai/#lessons")}>課程大綱</a>。</p>
-  </noscript>
-</Base>
+<Moved to={url("/courses/ai/")} title="這一頁已經收起來了，前往課程首頁" />

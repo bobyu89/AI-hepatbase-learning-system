@@ -1,0 +1,447 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Art from "../../../components/Art.astro";
+import AiBoard from "../../../components/boards/AiBoard.astro";
+import {
+  aiCourse,
+  aiLessons,
+  aiModules,
+  aiLessonsOf,
+  aiWorkshopFlow,
+  aiWorkshopGoal,
+  aiWorkshopPrep,
+  aiPrinciples,
+  aiFluency,
+  aiFluencySource,
+  aiNext,
+} from "../../../data/ai-course";
+import { url } from "../../../lib/url";
+
+const total = aiWorkshopFlow.reduce((n, [, m]) => n + m, 0);
+---
+
+<Base title={aiCourse.title} current="ai" description={`${aiCourse.subtitle}。給${aiCourse.audience}的 ${aiLessons.length} 堂短課與一堂實體課。`}>
+  <main>
+    <section class="top">
+      <div class="wrap">
+        <h1>AI <span class="scribble">不只是聊天</span></h1>
+        <p class="sub">{aiCourse.subtitle}</p>
+        <p class="lede">
+          給{aiCourse.audience}。學完之後，你能用 AI 讀懂一篇論文、把重點整理出來、寫出文獻回顧的大綱。而且知道什麼時候不能信它，什麼資料不能貼給它。
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#board">看課程白板</a>
+          <a class="btn btn-quiet" href={url("/courses/ai/lessons/0/")}>從第 0 堂開始</a>
+        </div>
+        <p class="draft">
+          <Art name="wip" size={74} rotate={-6} />
+          <span>{aiLessons.length} 堂的簡報已經可以看，內容是初稿，之後可能調整。影片還在製作。</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="board-embed" id="board" aria-label="課程白板">
+      <AiBoard embed />
+      <p class="board-hint wrap">拖曳可以移動畫面，點卡片看那一堂的內容。想看大一點，按右上角的「放大看」。</p>
+    </section>
+
+    <section class="section lessons" id="lessons">
+      <div class="wrap">
+        <Art name="notebook" size={100} rotate={-6} class="pinned" />
+        <h2>課程大綱</h2>
+        <p class="lede">{aiLessons.length} 堂預錄短課，每堂大約 10 分鐘，每堂只學一個動作。</p>
+        {
+          aiModules.map((m) => (
+            <div class="module">
+              <h3>
+                {m.name}　{m.label}
+              </h3>
+              <ol>
+                {aiLessonsOf(m.id).map((l) => (
+                  <li data-lesson={l.no}>
+                    <a href={url(`/courses/ai/lessons/${l.no}/`)}>
+                      <span class="no">{l.no}</span>
+                      <span class="title">{l.title}</span>
+                      <span class="task">
+                        <b>換你做</b>
+                        {l.task}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section how">
+      <div class="wrap">
+        <Art name="magnifier" size={100} rotate={8} class="pinned" />
+        <h2>這門課的三個做法</h2>
+        <dl>
+          {
+            aiPrinciples.map(([head, note]) => (
+              <div>
+                <dt>{head}</dt>
+                <dd>{note}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section class="section how fluency" id="fluency">
+      <div class="wrap">
+        <h2>四項能力，對應哪幾堂</h2>
+        <p class="lede">
+          這門課的內容可以用「AI 流暢度」的 4D 框架來看。預錄課花最多時間練的是辨別。實體課四項都會做到：寫約定是委派與盡責，寫指示是描述，試用和查證是辨別。
+        </p>
+        <dl>
+          {
+            aiFluency.map(([zh, en, note, nos]) => (
+              <div>
+                <dt>
+                  {zh} <span lang="en">{en}</span>
+                </dt>
+                <dd>
+                  {note}
+                  <span class="where">
+                    {nos.map((no, i) => (
+                      <>
+                        {i > 0 && "、"}
+                        <a href={url(`/courses/ai/lessons/${no}/`)}>第 {no} 堂</a>
+                      </>
+                    ))}
+                  </span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="credit">
+          <a href={aiFluencySource.url} lang="en">{aiFluencySource.name}</a>，由 Rick Dakan 與 Joseph Feller 提出。{aiFluencySource.credit}，以
+          <a href={aiFluencySource.licenseUrl}>{aiFluencySource.license}</a> 釋出。上面四項的說明是中文翻譯，定義以原文為準；這張對照表依同樣的授權分享。
+        </p>
+      </div>
+    </section>
+
+    <section class="section how next" id="next">
+      <div class="wrap">
+        <h2>學完之後：找文獻的延伸練習</h2>
+        <p class="lede">{aiNext.what}</p>
+        <p class="needs">{aiNext.needs}</p>
+        <dl>
+          {
+            aiNext.cautions.map(([head, note, no]) => (
+              <div>
+                <dt>{head}</dt>
+                <dd>
+                  {note}
+                  {no > 0 && (
+                    <span class="where">
+                      <a href={url(`/courses/ai/lessons/${no}/`)}>第 {no} 堂</a>教過
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="go">
+          <a class="btn btn-quiet" href={aiNext.url} rel="noopener" lang="zh-Hant">
+            {aiNext.title}（{aiNext.source}，另開網站）
+          </a>
+        </p>
+        <p class="credit">這個練習是 {aiNext.source} 的內容，不是這門課寫的。做的時候請帶著上面三個提醒。</p>
+      </div>
+    </section>
+
+    <section class="section events kraft" id="workshop">
+      <div class="wrap">
+        <Art name="coffee-to-go" size={100} rotate={6} class="pinned" />
+        <h2>實體課　{total} 分鐘</h2>
+        <p class="when">
+          {aiCourse.workshopDate || "日期與地點即將公布"}
+          {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
+        </p>
+        <p class="lede">
+          把整門課的動作，照實際使用的順序串起來做一次。不用先看完預錄課，每一段都會先示範再動手。下課時帶走{aiWorkshopGoal}。論文是試用題：帶一個你想回答的臨床問題和一篇相關的論文來，現場拿它來試。
+        </p>
+        <figure class="intro-video">
+          <video controls preload="metadata" playsinline poster={url("/video/ai-workshop-intro.jpg")} src={url("/video/ai-workshop-intro.mp4")}>
+            你的瀏覽器不能播放這支影片，請改用下面的步驟單。
+          </video>
+          <figcaption>課前短片（約 90 秒）：這堂課要做什麼、來之前準備哪五樣。有字幕，旁白是合成語音。</figcaption>
+        </figure>
+        <p class="prep-link">
+          課堂只有 {total} 分鐘，註冊工具和下載論文請在課前做完。
+          <a href={url("/courses/ai/workshop/prep/")}>照著課前準備清單做一次</a>，大約十分鐘。
+        </p>
+        <ol class="flow">
+          {
+            aiWorkshopFlow.map(([what, min, from]) => (
+              <li>
+                <span>
+                  {what}
+                  {from && <small>想再看一次：{from}</small>}
+                </span>
+                <span class="min">{min} 分</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+  </main>
+</Base>
+
+<style>
+  .prep-link {
+    max-width: 62ch;
+    margin: 0 0 1.5rem;
+  }
+  .prep-link a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+</style>
+
+<script>
+  import { getDone } from "../../../scripts/progress";
+  const paint = () => {
+    const done = getDone("ai");
+    document.querySelectorAll<HTMLElement>("[data-lesson]").forEach((li) => {
+      li.classList.toggle("is-done", done.has(Number(li.dataset.lesson)));
+    });
+  };
+  paint();
+  document.addEventListener("lb:progress", paint);
+</script>
+
+<style>
+  .top {
+    padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem);
+  }
+  .sub {
+    margin: 0.75rem 0 1rem;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    line-height: 1.4;
+  }
+  .top .lede {
+    color: var(--ink);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.75rem;
+  }
+  .draft {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    max-width: 36rem;
+    margin-top: 2rem;
+    padding: 0.7rem 1.1rem;
+    background: linear-gradient(to bottom, rgb(255 252 235 / 0.35), transparent 30%), var(--sticky);
+    box-shadow: var(--shadow);
+    rotate: -0.6deg;
+  }
+  .board-embed {
+    padding-block: clamp(1rem, 3vw, 2rem) clamp(1.5rem, 4vw, 2.5rem);
+    scroll-margin-top: 1rem;
+  }
+  .board-hint {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .module {
+    margin-top: 2.25rem;
+  }
+  .module h3 {
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .module li a {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0.5rem 0.8rem 0;
+    border-bottom: 1.5px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.15s ease-out;
+  }
+  .module li a:hover {
+    background: var(--paper);
+  }
+  .module .no {
+    padding-left: 0.5rem;
+    font-size: 1.7rem;
+    line-height: 1.2;
+    color: var(--blue);
+  }
+  .module .title {
+    font-weight: 700;
+  }
+  .module li.is-done .no {
+    color: var(--green);
+  }
+  .module li.is-done .title::after {
+    content: "　學完了";
+    color: var(--green);
+    font-weight: 400;
+    font-size: 0.9375rem;
+  }
+  .module .task {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .module .task b {
+    margin-right: 0.6em;
+    color: var(--marker-deep);
+  }
+
+  .how dl {
+    margin-top: 1.25rem;
+    border-top: 2px solid var(--ink);
+  }
+  .how dl > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 0.5rem clamp(1.5rem, 5vw, 4rem);
+    padding: 1.4rem 0;
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .how dt {
+    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+    line-height: 1.4;
+  }
+  .how dd {
+    max-width: var(--measure);
+    color: var(--muted);
+  }
+  .fluency .lede,
+  .next .lede,
+  .next .needs {
+    max-width: var(--measure);
+    margin-top: 0.75rem;
+  }
+  .next .needs {
+    color: var(--muted);
+  }
+  .next .where {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--ink);
+  }
+  .next .where a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  .next .go {
+    margin-top: 1.5rem;
+  }
+  .next .credit {
+    max-width: var(--measure);
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .fluency dt span {
+    display: block;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .fluency .where {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--ink);
+  }
+  .fluency a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  .fluency .credit {
+    max-width: var(--measure);
+    margin-top: 1.25rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .when {
+    color: var(--red);
+  }
+  .intro-video {
+    max-width: 44rem;
+    margin-top: 1.5rem;
+  }
+  .intro-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--desk);
+    border: 8px solid var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .intro-video figcaption {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .flow {
+    max-width: 44rem;
+    margin-top: 1.5rem;
+    border-top: 1.5px solid rgb(var(--shade) / 0.35);
+  }
+  .flow li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1.5px solid rgb(var(--shade) / 0.22);
+  }
+  .flow .min {
+    flex: none;
+    color: var(--muted);
+  }
+  .prep-head {
+    margin-top: 2rem;
+  }
+  .prep {
+    margin-top: 0.5rem;
+    padding-left: 1.3em;
+    list-style: disc;
+  }
+  .prep li {
+    padding: 0.15rem 0;
+  }
+  .flow small {
+    display: block;
+    color: var(--blue-deep);
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 720px) {
+    .module li a {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+    }
+    .module .task {
+      grid-column: 2;
+    }
+    .how dl > div {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
