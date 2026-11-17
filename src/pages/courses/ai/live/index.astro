@@ -1,0 +1,745 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import Art from "../../../../components/Art.astro";
+import { aiCourse } from "../../../../data/ai-course";
+import {
+  aiSession,
+  aiRounds,
+  aiOpeningStats,
+  aiTimeline,
+  aiLandscape,
+  aiLandscapeAsOf,
+  aiBoards,
+  aiBoardQuestions,
+  aiPolicyStats,
+  aiNames,
+  aiFrameworkSource,
+} from "../../../../data/ai-session";
+import { url } from "../../../../lib/url";
+
+const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
+---
+
+<Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、四輪做法。`}>
+  <main class="live" data-live>
+    <nav class="live-nav" aria-label="投影控制">
+      <a class="home" href={url("/courses/ai/")}>課程首頁</a>
+      <button type="button" data-prev aria-label="上一頁">←</button>
+      <output data-count aria-live="polite">1</output>
+      <button type="button" data-next aria-label="下一頁">→</button>
+    </nav>
+
+    <section class="panel cover">
+      <div class="inner">
+        <h1>AI <span class="scribble">不只是聊天</span></h1>
+        <p class="motto">{aiSession.motto}</p>
+        <p class="meta">
+          {aiCourse.workshopDate}{aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
+        </p>
+        <p class="hint">按 → 或空白鍵往下，← 往上</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner">
+        <h2>問題已經不是「要不要用」</h2>
+        <ul class="bars">
+          {
+            aiOpeningStats.bars.map(([label, n], i) => (
+              <li class:list={{ low: i === 2 }}>
+                <span class="label">{label}</span>
+                <span class="track">
+                  <i style={`--n:${n}`} />
+                </span>
+                <b>{n}%</b>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="take">幾乎人人都在用。把它寫的字直接交出去的，是少數。</p>
+        <p class="src">
+          <a href={aiOpeningStats.url}>{aiOpeningStats.source}</a>。這是英國的情況。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>四年，三步</h2>
+        <ol class="timeline">
+          {
+            aiTimeline.map(([year, what, human]) => (
+              <li>
+                <span class="year">{year}</span>
+                <span class="what">{what}</span>
+                {human && <span class="human">人在學：{human}</span>}
+              </li>
+            ))
+          }
+        </ol>
+        <p class="take">先是會講話，再來會想一下再講，現在會自己動手做、做完自己檢查。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>現在有哪些</h2>
+        <p class="asof">查詢日期：{aiLandscapeAsOf}　這一頁下個月就過時了</p>
+        <ul class="cards">
+          {
+            aiLandscape.map(([who, model, when, good], i) => (
+              <li style={`--tilt:${tilt[i % tilt.length]}deg`} class:list={{ open: i === aiLandscape.length - 1 }}>
+                <b class="who">{who}</b>
+                <span class="model">{model}</span>
+                <span class="when">{when}</span>
+                <span class="good">{good}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="src">整理自第三方的彙整網站，各站數字不一致。實際排名以 arena.ai 與 artificialanalysis.ai 當天的榜單為準。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>同一個月，兩個榜，兩個第一名</h2>
+        <ul class="boards">
+          {
+            aiBoards.map(([board, measures, first]) => (
+              <li>
+                <span class="board">{board}</span>
+                <span class="measures">量的是：{measures}</span>
+                <span class="first">
+                  第一名 <b>{first}</b>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <ol class="ask">
+          {aiBoardQuestions.map((q) => <li>{q}</li>)}
+        </ol>
+        <p class="take">沒有一個榜在量「它在你的專業上會不會講錯」。那個只有你能量。</p>
+      </div>
+    </section>
+
+    <section class="panel kraft">
+      <div class="inner">
+        <Art name="magnifier" size={110} rotate={8} class="pin" />
+        <h2>今天只做一件事，做四次</h2>
+        <p class="task">{aiSession.task}</p>
+        <ul class="fill">
+          <li>我最懂的一個概念是 <span class="blank"></span></li>
+          <li>我要講給 <span class="blank"></span> 聽</li>
+        </ul>
+        <p class="warn">題目裡不要有任何一位病人的資料。</p>
+      </div>
+    </section>
+
+    {
+      aiRounds.map((r) => (
+        <section class="panel round">
+          <div class="inner wide">
+            <p class="round-no">
+              <span>{r.no}</span> 第 {r.no} 輪　約 {r.min} 分鐘
+            </p>
+            <h2>{r.title}</h2>
+            <p class="change">
+              <b>這一輪只改</b>
+              {r.change}
+            </p>
+            {r.type.map(([label, text]) => (
+              <p class="type">
+                <b>{label}</b>
+                {text}
+              </p>
+            ))}
+            <ul class="todo">
+              {r.todo.map((t) => <li>{t}</li>)}
+            </ul>
+            <details class="idea">
+              <summary>這一輪看到的觀念（做完再打開）</summary>
+              <p>{r.idea}</p>
+            </details>
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="panel">
+      <div class="inner">
+        <h2>規定還沒跟上</h2>
+        <ul class="bars">
+          {
+            aiPolicyStats.bars.map(([label, n], i) => (
+              <li class:list={{ low: i === 1 }}>
+                <span class="label">{label}</span>
+                <span class="track">
+                  <i style={`--n:${n}`} />
+                </span>
+                <b>{n}%</b>
+              </li>
+            ))
+          }
+        </ul>
+        <blockquote>
+          <p>{aiPolicyStats.quote}</p>
+          <footer>{aiPolicyStats.quoteSource}</footer>
+        </blockquote>
+        <p class="src">
+          <a href={aiPolicyStats.url}>{aiPolicyStats.source}</a>。這是美國中小學的情況。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>名詞每年換，動作沒有換</h2>
+        <table class="names">
+          <thead>
+            <tr><th>這幾年流行的說法</th><th>它在問的問題</th><th>就是今天的哪一輪</th></tr>
+          </thead>
+          <tbody>
+            {
+              aiNames.map(([name, ask, round]) => (
+                <tr>
+                  <th scope="row">{name}</th>
+                  <td>{ask}</td>
+                  <td class="round-cell">{round}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="take">以前是你自己檢查，以後是你設計讓它自己檢查。目標、什麼時候算完成、出錯誰負責，還是你的。</p>
+      </div>
+    </section>
+
+    <section class="panel cover">
+      <div class="inner">
+        <h2>四個不太會過時的動作</h2>
+        <ol class="four">
+          {aiRounds.map((r) => <li>{r.idea}</li>)}
+        </ol>
+        <p class="motto">{aiSession.motto}</p>
+        <p class="src">
+          四個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
+          <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>）。這一頁依同樣的授權分享。
+        </p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-live]");
+  if (root) {
+    const panels = [...root.querySelectorAll<HTMLElement>(".panel")];
+    const count = root.querySelector<HTMLOutputElement>("[data-count]");
+    let current = 0;
+    const show = (i: number) => {
+      current = Math.max(0, Math.min(panels.length - 1, i));
+      panels[current].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    };
+    const seen = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            current = panels.indexOf(e.target as HTMLElement);
+            if (count) count.value = `${current + 1} / ${panels.length}`;
+          }
+        }
+      },
+      { threshold: 0.55 },
+    );
+    panels.forEach((p) => seen.observe(p));
+    if (count) count.value = `1 / ${panels.length}`;
+    root.querySelector("[data-next]")?.addEventListener("click", () => show(current + 1));
+    root.querySelector("[data-prev]")?.addEventListener("click", () => show(current - 1));
+    document.addEventListener("keydown", (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest("summary, a, button, input, textarea")) return;
+      if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault();
+        show(current + 1);
+      } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        show(current - 1);
+      }
+    });
+  }
+</script>
+
+<style>
+  :global(html:has(.live)) {
+    scroll-snap-type: y mandatory;
+  }
+  .live {
+    --big: clamp(1.8rem, 3.9vw, 3.2rem);
+    --mid: clamp(1.25rem, 2.3vw, 1.9rem);
+    --body: clamp(1.05rem, 1.6vw, 1.45rem);
+  }
+  .panel {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding: clamp(3.2rem, 6vh, 4.5rem) var(--gutter) clamp(1rem, 3vh, 2.5rem);
+    scroll-snap-align: start;
+  }
+  .inner {
+    position: relative;
+    width: min(100%, 58rem);
+    margin-inline: auto;
+    padding: clamp(1.25rem, 3.2vh, 2.75rem) clamp(1.5rem, 4vw, 3.25rem);
+    background: var(--grain), var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+    font-size: var(--body);
+    line-height: 1.6;
+  }
+  .inner.wide {
+    width: min(100%, 72rem);
+  }
+  .panel:nth-of-type(odd) .inner {
+    rotate: -0.3deg;
+  }
+  .panel:nth-of-type(even) .inner {
+    rotate: 0.25deg;
+  }
+  .panel.kraft .inner {
+    background: var(--grain), var(--kraft);
+  }
+  .panel.cover .inner {
+    background: none;
+    box-shadow: none;
+    rotate: 0deg;
+  }
+  h1 {
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 1.1;
+  }
+  h2 {
+    font-size: var(--big);
+    line-height: 1.25;
+    margin-bottom: 0.45em;
+  }
+  .motto {
+    margin-top: 0.6em;
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    line-height: 1.35;
+  }
+  .meta {
+    margin-top: 1.2em;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .hint {
+    margin-top: 2.5em;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .take {
+    margin-top: 1.1em;
+    font-size: var(--mid);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .src,
+  .asof {
+    margin-top: 1em;
+    color: var(--muted);
+    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    line-height: 1.5;
+  }
+  .asof {
+    margin-top: -0.4em;
+    margin-bottom: 1em;
+    color: var(--red);
+  }
+  .src a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  /* 長條 */
+  .bars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .bars li {
+    display: grid;
+    grid-template-columns: minmax(8em, 15em) minmax(0, 1fr) 3.4em;
+    gap: 0.9rem;
+    align-items: center;
+  }
+  .bars .track {
+    height: 1.7em;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--card);
+    overflow: hidden;
+  }
+  .bars i {
+    display: block;
+    width: calc(var(--n) * 1%);
+    height: 100%;
+    background: var(--blue);
+  }
+  .bars .low i {
+    background: var(--marker);
+  }
+  .bars b {
+    font-size: var(--mid);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* 時間軸 */
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.9rem;
+    border-top: 3px solid var(--ink);
+  }
+  .timeline li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    padding-top: 1.1rem;
+    font-size: clamp(1rem, 1.4vw, 1.3rem);
+    line-height: 1.45;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    top: -0.55rem;
+    left: 0;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+  .timeline li:last-child::before {
+    background: var(--marker);
+  }
+  .timeline .year {
+    color: var(--blue);
+    font-size: var(--mid);
+    line-height: 1.1;
+  }
+  .timeline .human {
+    padding: 0.35rem 0.5rem;
+    background: var(--sticky);
+    font-weight: 700;
+    rotate: -1deg;
+  }
+
+  /* 廠商卡 */
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+  .cards li {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 1.6rem 0.9rem 1rem;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 1.1rem / 100% 2px no-repeat,
+      var(--card);
+    box-shadow: var(--shadow);
+    rotate: var(--tilt, 0deg);
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    line-height: 1.45;
+  }
+  .cards li.open {
+    background: var(--sticky);
+  }
+  .cards .who {
+    color: var(--blue);
+    font-size: var(--mid);
+    line-height: 1.2;
+  }
+  .cards .model {
+    font-weight: 700;
+  }
+  .cards .when {
+    color: var(--muted);
+    font-size: 0.9em;
+  }
+
+  /* 兩個榜 */
+  .boards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+  .boards li {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 1.3rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+    background: var(--card);
+  }
+  .boards .board {
+    font-size: var(--mid);
+    line-height: 1.25;
+  }
+  .boards .measures {
+    color: var(--muted);
+  }
+  .boards .first b {
+    color: var(--marker-deep);
+    font-size: var(--mid);
+  }
+  .ask {
+    margin: 1.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 2.2rem;
+    counter-reset: ask;
+    font-size: var(--mid);
+  }
+  .ask li {
+    counter-increment: ask;
+  }
+  .ask li::before {
+    content: counter(ask) "　";
+    color: var(--blue);
+  }
+
+  /* 任務 */
+  .pin {
+    position: absolute;
+    right: -1rem;
+    top: -2.2rem;
+  }
+  .task {
+    font-size: var(--big);
+    line-height: 1.3;
+  }
+  .fill {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--mid);
+    line-height: 1.8;
+  }
+  .blank {
+    display: inline-block;
+    min-width: 6em;
+    border-bottom: 2px solid var(--ink);
+  }
+  .warn {
+    margin-top: 1rem;
+    font-weight: 700;
+  }
+
+  /* 四輪 */
+  .round-no {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    color: var(--muted);
+  }
+  .round-no span {
+    color: var(--blue);
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    line-height: 0.9;
+  }
+  .change b,
+  .type b {
+    display: block;
+    font-size: 0.75em;
+  }
+  .change b {
+    color: var(--muted);
+  }
+  .type {
+    margin-top: 0.9rem;
+    padding: 0.75rem 1.1rem;
+    border: 2px dashed var(--pencil);
+    border-radius: var(--wob-b);
+    background: var(--card);
+    line-height: 1.5;
+  }
+  .type b {
+    color: var(--marker-deep);
+  }
+  .todo {
+    margin: 0.9rem 0 0;
+    padding-left: 1.2em;
+  }
+  .idea {
+    margin-top: 1.2rem;
+    border-top: 2px solid var(--ink);
+    padding-top: 0.8rem;
+  }
+  .idea summary {
+    cursor: pointer;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .idea p {
+    margin-top: 0.5rem;
+    font-size: var(--mid);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  blockquote {
+    margin: 1.6rem 0 0;
+    padding: 1rem 1.3rem;
+    background: var(--sticky);
+    rotate: -0.8deg;
+  }
+  blockquote p {
+    font-size: var(--mid);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  blockquote footer {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.8em;
+  }
+
+  .names {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.95rem, 1.4vw, 1.3rem);
+    line-height: 1.45;
+  }
+  .names th,
+  .names td {
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1.5px solid var(--rule);
+    text-align: left;
+    vertical-align: top;
+  }
+  .names thead th {
+    border-bottom: 2px solid var(--ink);
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+  .names .round-cell {
+    font-weight: 700;
+    color: var(--marker-deep);
+  }
+
+  .four {
+    margin: 0;
+    padding-left: 1.3em;
+    font-size: var(--mid);
+    line-height: 1.5;
+  }
+  .four li {
+    margin: 0.4em 0;
+  }
+  .four li::marker {
+    color: var(--blue);
+  }
+
+  .live-nav {
+    position: fixed;
+    right: 1rem;
+    top: 0.8rem;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    font-size: 0.95rem;
+  }
+  .live-nav .home {
+    color: inherit;
+    padding-inline: 0.4rem;
+  }
+  .live-nav button {
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .live-nav button:hover {
+    background: var(--paper);
+  }
+  .live-nav output {
+    min-width: 4.2em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 56rem) {
+    :global(html:has(.live)) {
+      scroll-snap-type: none;
+    }
+    .panel {
+      min-height: 0;
+    }
+    .timeline,
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .timeline {
+      border-top: 0;
+    }
+    .timeline li {
+      border-top: 3px solid var(--ink);
+    }
+    .boards {
+      grid-template-columns: 1fr;
+    }
+    .bars li {
+      grid-template-columns: 1fr 3.2em;
+    }
+    .bars .label {
+      grid-column: 1 / -1;
+    }
+    .pin {
+      display: none;
+    }
+    .live-nav .home {
+      display: none;
+    }
+  }
+  @media print {
+    .live-nav,
+    .hint {
+      display: none;
+    }
+    .panel {
+      min-height: 0;
+      break-inside: avoid;
+    }
+    .idea p {
+      display: block;
+    }
+  }
+</style>
