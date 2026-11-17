@@ -16,6 +16,8 @@ import {
   aiAgenda,
   aiScenarios,
   aiRoundPages,
+  aiRoundFrame,
+  aiSessionFrame,
   aiFrameworkSource,
 } from "../../../../data/ai-session";
 import { url } from "../../../../lib/url";
@@ -145,8 +147,8 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
       </div>
     </section>
 
-    <section class="panel kraft">
-      <div class="inner">
+    <section class="panel kraft start">
+      <div class="inner wide">
         <Art name="magnifier" size={110} rotate={8} class="pin" />
         <h2>今天只做一件事，做四次</h2>
         <p class="task">{aiSession.task}</p>
@@ -155,6 +157,16 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
           <li>我要講給 <span class="blank"></span> 聽</li>
         </ul>
         <p class="warn">題目裡不要有任何一位病人的資料。</p>
+        <dl class="frame">
+          <div>
+            <dt>今天的目標</dt>
+            <dd>{aiSessionFrame.goal}</dd>
+          </div>
+          <div>
+            <dt>下課時你會有</dt>
+            <dd>{aiSessionFrame.have.join("、")}。</dd>
+          </div>
+        </dl>
       </div>
     </section>
 
@@ -168,6 +180,18 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
               </p>
               <h2>{pg.title}</h2>
               {pg.lead && !pg.cards && <p class="lead">{pg.lead}</p>}
+              {i === 0 && (
+                <dl class="frame">
+                  <div>
+                    <dt>這一輪的目標</dt>
+                    <dd>{aiRoundFrame[r.no].goal}</dd>
+                  </div>
+                  <div>
+                    <dt>做完你會有</dt>
+                    <dd>{aiRoundFrame[r.no].have}</dd>
+                  </div>
+                </dl>
+              )}
               {pg.guess && (
                 <p class="guess">
                   <b>先猜</b>
@@ -212,12 +236,19 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
                   <span class="blank long" />
                 </p>
               )}
+              {pg.note && <p class="note">{pg.note}</p>}
               {pg.items && (
                 <ul class="todo">
                   {pg.items.map((t) => (
                     <li>{t}</li>
                   ))}
                 </ul>
+              )}
+              {pg.idea && (
+                <p class="result">
+                  <b>這一輪的結果，多數人會看到</b>
+                  {aiRoundFrame[r.no].see}
+                </p>
               )}
               {pg.talk && (
                 <p class="talk">
@@ -232,6 +263,7 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
                   <p class="metaphor">{r.metaphor}</p>
                 </details>
               )}
+              {pg.idea && <p class="nextup">{aiRoundFrame[r.no].next}</p>}
             </div>
           </section>
         )),
@@ -322,13 +354,14 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
       </div>
     </section>
 
-    <section class="panel cover">
+    <section class="panel cover end">
       <div class="inner">
         <h2>四個不太會過時的動作</h2>
         <ol class="four">
           {aiRounds.map((r) => <li>{r.idea}</li>)}
         </ol>
         <p class="motto">{aiSession.motto}</p>
+        <p class="carry">今天帶走的：{aiSessionFrame.have.join("、")}。</p>
         <p class="src">
           四個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>）。這一頁依同樣的授權分享。
@@ -851,6 +884,81 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     content: "↺　";
   }
 
+  .start .task {
+    font-size: clamp(1.6rem, min(3.6vw, 6vh), 3.2rem);
+  }
+  .start .fill {
+    margin-top: 0.5rem;
+    font-size: clamp(1.2rem, min(2.3vw, 3.9vh), 2.1rem);
+    line-height: 1.6;
+  }
+  .start .warn {
+    margin-top: 0.4rem;
+  }
+  .start h2 {
+    font-size: clamp(1.4rem, min(2.6vw, 4.4vh), 2.3rem);
+    color: var(--muted);
+    margin-bottom: 0.2em;
+  }
+  .end h2 {
+    font-size: clamp(1.8rem, min(3.8vw, 6.4vh), 3.4rem);
+  }
+  .end .four {
+    font-size: clamp(1.2rem, min(2.4vw, 4vh), 2.2rem);
+    line-height: 1.4;
+  }
+  .end .motto {
+    font-size: clamp(1.5rem, min(3.4vw, 5.6vh), 2.8rem);
+  }
+  .end .carry {
+    font-size: clamp(1.1rem, min(2vw, 3.4vh), 1.8rem);
+  }
+  .round .result {
+    font-size: clamp(1.4rem, min(2.9vw, 4.9vh), 2.7rem);
+  }
+  /* 目標與結果 */
+  .frame {
+    margin: 0.9rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .frame > div {
+    padding: 0.7rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--card);
+  }
+  .frame dt {
+    color: var(--marker-deep);
+    font-size: 0.7em;
+    font-weight: 700;
+  }
+  .frame dd {
+    margin: 0.15rem 0 0;
+    line-height: 1.4;
+  }
+  .note {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .result {
+    padding: 0.7rem 1rem;
+    background: var(--paper);
+    line-height: 1.45;
+  }
+  .result b {
+    display: block;
+    color: var(--green);
+    font-size: 0.7em;
+  }
+  .carry {
+    margin-top: 1em;
+    font-size: var(--mid);
+    line-height: 1.45;
+  }
+
   /* 四輪 */
   .round.first .inner {
     background: var(--grain), var(--kraft);
@@ -1099,6 +1207,7 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     .boards {
       grid-template-columns: 1fr;
     }
+    .frame,
     .agenda,
     .kinds,
     .kinds.two,
