@@ -13,6 +13,8 @@ import {
   aiCost,
   aiHealth,
   aiFamilies,
+  aiEffort,
+  aiProgress,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -55,6 +57,14 @@ const labelAt: Record<string, [number, number, "start" | "end" | "middle"]> = {
 };
 const ticksX = [0.5, 1, 2, 5, 10, 20];
 const ticksY = [30, 40, 50, 60, 70];
+
+// 三家能力指數隨時間：x 是距 2022-11 的月數（0–48），y 是指數（75–375）。
+const PW = 1000, PH = 430, QL = 60, QR = 30, QT = 15, QB = 50;
+const px = (m: number) => QL + (m / 48) * (PW - QL - QR);
+const py = (v: number) => QT + ((375 - v) / 300) * (PH - QT - QB);
+const stepPath = (pts: [number, number][]) =>
+  pts.map(([m, v], i) => (i === 0 ? `M${px(m)},${py(v)}` : `H${px(m)}V${py(v)}`)).join("");
+const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], [38, "2026"]];
 ---
 
 <Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、三輪做法。`}>
@@ -139,6 +149,42 @@ const ticksY = [30, 40, 50, 60, 70];
 
     <section class="panel">
       <div class="inner wide">
+        <h2>三家輪流領先，現在幾乎並列</h2>
+        <p class="asof">三家最強模型的能力指數，2022 年 11 月到 2026 年 11 月，越上越強</p>
+        <svg class="scatter progress" viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="OpenAI、Anthropic、Google 能力指數隨時間的變化">
+          {[100, 150, 200, 250, 300, 350].map((t) => (
+            <g>
+              <line x1={QL} x2={PW - QR} y1={py(t)} y2={py(t)} class="grid" />
+              <text x={QL - 10} y={py(t) + 6} text-anchor="end" class="tick">{t}</text>
+            </g>
+          ))}
+          {yearTicks.map(([m, y]) => (
+            <text x={px(m)} y={PH - QB + 30} text-anchor="middle" class="tick">{y}</text>
+          ))}
+          {aiProgress.map((f) => {
+            const last = f.pts[f.pts.length - 1];
+            return (
+              <g>
+                <title>{`${f.who}：最近約 ${last[1]}`}</title>
+                <path d={stepPath(f.pts)} fill="none" stroke={f.color} stroke-width="3" />
+                {f.pts.map(([m, v]) => <rect x={px(m) - 4} y={py(v) - 4} width="8" height="8" fill={f.color} />)}
+              </g>
+            );
+          })}
+          {aiProgress.map((f, i) => (
+            <g>
+              <rect x={QL + 20} y={QT + 8 + i * 30} width="22" height="6" fill={f.color} />
+              <text x={QL + 52} y={QT + 18 + i * 30} class="who" fill={f.color}>{f.who}</text>
+            </g>
+          ))}
+        </svg>
+        <p class="take">以前 OpenAI 領先；現在三家幾乎並列，第一名幾週就換人。</p>
+        <p class="src">依 Artificial Analysis Progress Index v1（各家最強的推理強度）的圖描繪，數值是約略值。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
         <h2>現在有哪些：誰考得最好</h2>
         <p class="asof">綜合考試分數，越高越好　查詢日期：{aiLandscapeAsOf}　下個月就過時了</p>
         <ol class="hbars" aria-label="綜合考試分數">
@@ -192,6 +238,32 @@ const ticksY = [30, 40, 50, 60, 70];
         </table>
         <p class="take">覺得「AI 好笨」之前，先看你用的是哪一個。</p>
         <p class="src">分數：artificialanalysis.ai，{aiLandscapeAsOf}。Google 把 Carbon 放在最高的方案，但晚出的 Neon 分數略高。方案常調整，以官方方案頁為準。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>同一個模型，想久一點就不一樣</h2>
+        <p class="asof">同一個模型，調整「想多久」（推理強度），綜合分數就變。空格是沒有測這一檔</p>
+        <table class="family effort">
+          <thead>
+            <tr><th></th><th>低</th><th>中</th><th>高</th><th>最高</th></tr>
+          </thead>
+          <tbody>
+            {
+              aiEffort.map(([m, rows]) => (
+                <tr>
+                  <th scope="row">{m}</th>
+                  {rows.map(([, n]) => (
+                    <td>{n ? n : ""}</td>
+                  ))}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="take">App 裡的「思考」「Thinking」「深入研究」按鈕，就是這一檔。難的問題，讓它想久一點；代價是比較慢。</p>
+        <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}，Google 三個模型各推理強度的綜合分數。各家都有類似的設定。</p>
       </div>
     </section>
 
@@ -879,6 +951,11 @@ const ticksY = [30, 40, 50, 60, 70];
   .family .free {
     background: var(--sticky);
   }
+  .effort td {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.25em;
+    font-weight: 700;
+  }
   .hbars.health i {
     background: #2f8f6b;
   }
@@ -912,6 +989,10 @@ const ticksY = [30, 40, 50, 60, 70];
     stroke-width: 2;
     stroke-dasharray: 2 6;
     stroke-linecap: round;
+  }
+  .progress .who {
+    font-size: 20px;
+    font-weight: 700;
   }
   .scatter .pt circle {
     fill: var(--blue);
