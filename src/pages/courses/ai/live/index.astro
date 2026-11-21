@@ -15,6 +15,7 @@ import {
   aiFamilies,
   aiEffort,
   aiProgress,
+  aiHalluc,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -326,6 +327,31 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
         </ol>
         <p class="take">換成醫療的考卷，排名就變了。看排行榜，先看它考什麼。</p>
         <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}查詢。分數高不代表在你的病房不會講錯。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>不會的時候，敢不敢編</h2>
+        <p class="asof">3,000 題知識題。藍：答對率。橘：不會的題目裡，硬給錯答案、不說「不知道」的比例</p>
+        <ol class="pairs" aria-label="答對率與亂編率">
+          {
+            aiHalluc.map(([who, model, ok, bad], i) => (
+              <li class:list={{ gap: i > 0 && aiHalluc[i - 1][0] !== who }} title={`${model}：答對 ${ok}%，亂編 ${bad}%`}>
+                <span class="name">
+                  <small>{who}</small>
+                  {model}
+                </span>
+                <span class="two">
+                  <span class="bar ok"><i style={`--w:${ok}%`} /><b>{ok}%</b></span>
+                  <span class="bar bad"><i style={`--w:${bad}%`} /><b>{bad}%</b></span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="take">Gemini 比較會說「不知道」；Claude、GPT 答得多，也比較敢編。</p>
+        <p class="src">資料：artificialanalysis.ai AA-Omniscience v1.1，{aiLandscapeAsOf}。免費版的 GPT-6 Luna，不會的題目近八成會硬答。所以第 2 輪要你當考官。</p>
       </div>
     </section>
 
@@ -955,6 +981,59 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
     font-variant-numeric: tabular-nums;
     font-size: 1.25em;
     font-weight: 700;
+  }
+  .pairs {
+    list-style: none;
+    margin: 0.2em 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2px, 0.5vh, 5px);
+    font-size: clamp(0.75rem, min(1.25vw, 1.95vh), 1.3rem);
+  }
+  .pairs li {
+    display: grid;
+    grid-template-columns: minmax(12em, 34%) 1fr;
+    gap: 0.6em;
+    align-items: center;
+  }
+  .pairs li.gap {
+    margin-top: 0.3em;
+  }
+  .pairs .name {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .pairs .name small {
+    color: var(--muted);
+    margin-right: 0.4em;
+    font-size: 0.85em;
+  }
+  .pairs .two {
+    display: grid;
+    gap: 2px;
+  }
+  .pairs .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    height: 0.85em;
+    font-size: 0.85em;
+  }
+  .pairs .bar i {
+    display: block;
+    height: 100%;
+    width: calc(var(--w) * 0.85);
+    border-radius: 0 3px 3px 0;
+  }
+  .pairs .ok i {
+    background: var(--blue);
+  }
+  .pairs .bad i {
+    background: var(--marker);
+  }
+  .pairs .bar b {
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
   }
   .hbars.health i {
     background: #2f8f6b;

@@ -238,6 +238,24 @@ export const aiProgress: { who: string; color: string; pts: [number, number][] }
 ];
 
 /**
+ * AA-Omniscience v1.1（artificialanalysis.ai，2026-11-21，滑過圖表讀出的精確值）。
+ * 答對率：全部題目答對的比例。亂編率（Hallucination Rate）：沒答對的題目裡，硬給錯答案、而不是說不知道的比例。
+ * [家族, 模型, 答對率, 亂編率]
+ */
+export const aiHalluc: [string, string, number, number][] = [
+  ["Anthropic", "Claude Fable 5.2", 79.1, 59.3],
+  ["Anthropic", "Claude Opus 5.5", 65.5, 50.3],
+  ["Anthropic", "Claude Sonnet 5.5", 51.5, 43.3],
+  ["Anthropic", "Claude Haiku 5.5", 34.7, 34.2],
+  ["OpenAI", "GPT-6.2 Astra", 68.6, 59.1],
+  ["OpenAI", "GPT-6.2 Sol", 61.6, 55.4],
+  ["OpenAI", "GPT-6 Luna", 39.6, 79.4],
+  ["Google", "Gemini 4 Neon", 60.5, 14.4],
+  ["Google", "Gemini 4 Carbon", 58.3, 11.4],
+  ["Google", "Gemini 4 Hydrogen", 50.5, 8.5],
+];
+
+/**
  * 同一個模型，讓它想久一點（推理強度），分數就不一樣。Intelligence Index v5.0.1，2026-11-21。
  * [模型, [[強度, 分數], ...]]
  */
