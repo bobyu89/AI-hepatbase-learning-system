@@ -205,6 +205,17 @@ export const aiCost: [string, string, number][] = [
 ];
 
 /**
+ * 三大家的模型家族：同一家都有大、中、小。分數是 Intelligence Index v5.0.1（2026-11-21）。
+ * 免費版用到哪一個，來自各家方案說明的二手整理，課前請再看一次官方方案頁。
+ * [公司, 最強, 主力, 輕量, 免費版用到的]，每格 [名稱, 分數]
+ */
+export const aiFamilies: [string, [string, number], [string, number], [string, number], string][] = [
+  ["OpenAI", ["GPT-6.2 Astra", 62], ["GPT-6.2 Sol", 57], ["GPT-6 Luna", 28], "GPT-6 Luna（28）"],
+  ["Anthropic", ["Claude Fable 5.2", 65], ["Claude Opus 5.5", 59], ["Claude Haiku 5.5", 36], "Sonnet 5.5（55）、Haiku 5.5（36）"],
+  ["Google", ["Gemini 4 Carbon", 60], ["Gemini 4 Neon", 61], ["Gemini 4 Hydrogen", 54], "自動選，最多到 Hydrogen（54）"],
+];
+
+/**
  * Healthcare & Medical Index（artificialanalysis.ai，2026-11-21）。
  * 合成 5 項測驗：AA-Omniscience v1.1、AA-Briefcase v1.1、MLCR-AA、AutomationBench-AA、HLE-Diamond。
  * 同一批模型，換一份考卷，排名就變。[模型, 公司, 醫療分數, 綜合分數]

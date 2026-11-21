@@ -12,6 +12,7 @@ import {
   aiIndexSource,
   aiCost,
   aiHealth,
+  aiFamilies,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -161,6 +162,36 @@ const ticksY = [30, 40, 50, 60, 70];
         <p class="src">
           資料：<a href={aiIndexSource.url} lang="en">{aiIndexSource.name}</a>，9 項測驗合成的分數。只量它考題答得多好，不量它在你的專業上會不會講錯。
         </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>同一家，也有大中小</h2>
+        <p class="asof">括號裡是綜合分數。免費版用到的，通常不是最強的那個</p>
+        <table class="family">
+          <thead>
+            <tr><th></th><th>最強</th><th>主力</th><th>輕量、快</th><th>免費版用到的</th></tr>
+          </thead>
+          <tbody>
+            {
+              aiFamilies.map(([who, top, mid, small, free]) => (
+                <tr>
+                  <th scope="row">{who}</th>
+                  {[top, mid, small].map(([m, n]) => (
+                    <td>
+                      {m}
+                      <small>（{n}）</small>
+                    </td>
+                  ))}
+                  <td class="free">{free}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="take">覺得「AI 好笨」之前，先看你用的是哪一個。</p>
+        <p class="src">分數：artificialanalysis.ai，{aiLandscapeAsOf}。Google 把 Carbon 放在最高的方案，但晚出的 Neon 分數略高。方案常調整，以官方方案頁為準。</p>
       </div>
     </section>
 
@@ -820,6 +851,34 @@ const ticksY = [30, 40, 50, 60, 70];
     background: var(--marker);
   }
 
+  .family {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4em 0;
+    font-size: clamp(0.95rem, min(1.6vw, 2.7vh), 1.55rem);
+  }
+  .family th,
+  .family td {
+    border-bottom: 2px solid var(--ink);
+    padding: 0.45em 0.5em;
+    text-align: left;
+    vertical-align: top;
+  }
+  .family thead th {
+    color: var(--marker);
+    white-space: nowrap;
+  }
+  .family tbody th {
+    color: var(--blue);
+    white-space: nowrap;
+  }
+  .family small {
+    color: var(--muted);
+    font-size: 0.8em;
+  }
+  .family .free {
+    background: var(--sticky);
+  }
   .hbars.health i {
     background: #2f8f6b;
   }
