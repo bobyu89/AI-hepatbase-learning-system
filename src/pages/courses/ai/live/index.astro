@@ -12,6 +12,9 @@ import {
   aiIndexSource,
   aiCost,
   aiHealth,
+  aiFamilies,
+  aiProgress,
+  aiHalluc,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -54,6 +57,14 @@ const labelAt: Record<string, [number, number, "start" | "end" | "middle"]> = {
 };
 const ticksX = [0.5, 1, 2, 5, 10, 20];
 const ticksY = [30, 40, 50, 60, 70];
+
+// 三家能力指數隨時間：x 是距 2022-11 的月數（0–48），y 是指數（75–375）。
+const PW = 1000, PH = 430, QL = 60, QR = 30, QT = 15, QB = 50;
+const px = (m: number) => QL + (m / 48) * (PW - QL - QR);
+const py = (v: number) => QT + ((375 - v) / 300) * (PH - QT - QB);
+const stepPath = (pts: [number, number][]) =>
+  pts.map(([m, v], i) => (i === 0 ? `M${px(m)},${py(v)}` : `H${px(m)}V${py(v)}`)).join("");
+const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], [38, "2026"]];
 ---
 
 <Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、三輪做法。`}>
@@ -135,6 +146,88 @@ const ticksY = [30, 40, 50, 60, 70];
         <p class="take">先是會講話，再來會想一下再講，現在會自己動手做、做完自己檢查。</p>
       </div>
     </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>三家輪流領先，現在幾乎並列</h2>
+        <p class="asof">三家最強模型的能力指數，2022 年 11 月到 2026 年 11 月，越上越強</p>
+        <svg class="scatter progress" viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="OpenAI、Anthropic、Google 能力指數隨時間的變化">
+          {[100, 150, 200, 250, 300, 350].map((t) => (
+            <g>
+              <line x1={QL} x2={PW - QR} y1={py(t)} y2={py(t)} class="grid" />
+              <text x={QL - 10} y={py(t) + 6} text-anchor="end" class="tick">{t}</text>
+            </g>
+          ))}
+          {yearTicks.map(([m, y]) => (
+            <text x={px(m)} y={PH - QB + 30} text-anchor="middle" class="tick">{y}</text>
+          ))}
+          {aiProgress.map((f) => {
+            const last = f.pts[f.pts.length - 1];
+            return (
+              <g>
+                <title>{`${f.who}：最近約 ${last[1]}`}</title>
+                <path d={stepPath(f.pts)} fill="none" stroke={f.color} stroke-width="3" />
+                {f.pts.map(([m, v]) => <rect x={px(m) - 4} y={py(v) - 4} width="8" height="8" fill={f.color} />)}
+              </g>
+            );
+          })}
+          {aiProgress.map((f, i) => (
+            <g>
+              <rect x={QL + 20} y={QT + 8 + i * 30} width="22" height="6" fill={f.color} />
+              <text x={QL + 52} y={QT + 18 + i * 30} class="who" fill={f.color}>{f.who}</text>
+            </g>
+          ))}
+        </svg>
+        <p class="take">以前 OpenAI 領先；現在三家幾乎並列，第一名幾週就換人。</p>
+        <p class="src">依 Artificial Analysis Progress Index v1（各家最強的推理強度）的圖描繪，數值是約略值。</p>
+      </div>
+    </section>
+
+    {
+      aiFamilies.map((f) => (
+        <section class="panel">
+          <div class="inner wide">
+            <h2>{f.who}：{f.family}</h2>
+            <p class="asof">長條是綜合分數。淺色：想最少時的分數；深色：讓它想久一點多出來的</p>
+            <ul class="fam2">
+              {f.models.map((m) => (
+                <li class:list={{ free: m.free }}>
+                  <span class="who2">
+                    <b>{m.name}</b>
+                    <small>{m.role}</small>
+                  </span>
+                  <span class="bar2">
+                    <i class="base" style={`width:${(m.lo / 70) * 100}%`} />
+                    <i class="more" style={`left:${(m.lo / 70) * 100}%;width:${((m.hi - m.lo) / 70) * 100}%`} />
+                    <b style={`left:calc(${(m.hi / 70) * 100}% + 0.4em)`}>{m.hi}</b>
+                  </span>
+                  {m.free ? <em>免費</em> : <span />}
+                </li>
+              ))}
+            </ul>
+            <p class="sub2">知識題：<span class="k ok">答對率</span>　<span class="k bad">不會時硬答的比例</span></p>
+            <ul class="mini">
+              {aiHalluc
+                .filter(([w]) => w === f.who)
+                .map(([, m, ok, bad]) => (
+                  <li>
+                    <span class="mn">{m}</span>
+                    <span class="mb">
+                      <i class="ok" style={`width:${ok}%`} />
+                      <i class="bad" style={`width:${bad}%`} />
+                    </span>
+                    <span class="mv">
+                      {Math.round(ok)}%／{Math.round(bad)}%
+                    </span>
+                  </li>
+                ))}
+            </ul>
+            <p class="take">{f.note}</p>
+            <p class="src">分數：artificialanalysis.ai 綜合分數與 AA-Omniscience，{aiLandscapeAsOf}。誰在免費版，以官方方案頁為準。</p>
+          </div>
+        </section>
+      ))
+    }
 
     <section class="panel">
       <div class="inner wide">
@@ -327,7 +420,7 @@ const ticksY = [30, 40, 50, 60, 70];
               )}
               {pg.guess && (
                 <p class="guess">
-                  <b>先猜</b>
+                  <b>先想一想</b>
                   {pg.guess}
                 </p>
               )}
@@ -421,7 +514,7 @@ const ticksY = [30, 40, 50, 60, 70];
               )}
               {pg.idea && (
                 <p class="result">
-                  <b>這一輪的結果，多數人會看到</b>
+                  <b>和旁邊的人對一下</b>
                   {aiRoundFrame[r.no].see}
                 </p>
               )}
@@ -820,6 +913,348 @@ const ticksY = [30, 40, 50, 60, 70];
     background: var(--marker);
   }
 
+  .family {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4em 0;
+    font-size: clamp(0.95rem, min(1.6vw, 2.7vh), 1.55rem);
+  }
+  .family th,
+  .family td {
+    border-bottom: 2px solid var(--ink);
+    padding: 0.45em 0.5em;
+    text-align: left;
+    vertical-align: top;
+  }
+  .family thead th {
+    color: var(--marker);
+    white-space: nowrap;
+  }
+  .family tbody th {
+    color: var(--blue);
+    white-space: nowrap;
+  }
+  .family small {
+    color: var(--muted);
+    font-size: 0.8em;
+  }
+  .family .free {
+    background: var(--sticky);
+  }
+  .effort {
+    font-size: clamp(0.75rem, min(1.2vw, 1.85vh), 1.25rem);
+    margin: 0.2em 0;
+  }
+  .effort th,
+  .effort td {
+    padding: 0.1em 0.5em;
+    border-bottom-width: 1px;
+  }
+  .effort td {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    text-align: right;
+  }
+  .effort thead th {
+    text-align: right;
+  }
+  .effort tr.gap th,
+  .effort tr.gap td {
+    border-top: 2px solid var(--ink);
+  }
+  .effort tbody th small {
+    color: var(--muted);
+    font-size: 0.8em;
+  }
+  .pairs {
+    list-style: none;
+    margin: 0.2em 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2px, 0.5vh, 5px);
+    font-size: clamp(0.75rem, min(1.25vw, 1.95vh), 1.3rem);
+  }
+  .pairs li {
+    display: grid;
+    grid-template-columns: minmax(12em, 34%) 1fr;
+    gap: 0.6em;
+    align-items: center;
+  }
+  .pairs li.gap {
+    margin-top: 0.3em;
+  }
+  .pairs .name {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .pairs .name small {
+    color: var(--muted);
+    margin-right: 0.4em;
+    font-size: 0.85em;
+  }
+  .pairs .two {
+    display: grid;
+    gap: 2px;
+  }
+  .pairs .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    height: 0.85em;
+    font-size: 0.85em;
+  }
+  .pairs .bar i {
+    display: block;
+    height: 100%;
+    width: calc(var(--w) * 0.85);
+    border-radius: 0 3px 3px 0;
+  }
+  .pairs .ok i {
+    background: var(--blue);
+  }
+  .pairs .bad i {
+    background: var(--marker);
+  }
+  .pairs .bar b {
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+  }
+  .fam2 {
+    list-style: none;
+    margin: 0.6em 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5em;
+    font-size: clamp(0.9rem, min(1.55vw, 2.5vh), 1.6rem);
+  }
+  .fam2 li {
+    display: grid;
+    grid-template-columns: minmax(10em, 34%) 1fr 3.4em;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .who2 {
+    display: grid;
+    line-height: 1.25;
+  }
+  .who2 small {
+    color: var(--muted);
+    font-size: 0.78em;
+  }
+  .bar2 {
+    position: relative;
+    height: 1.3em;
+  }
+  .bar2 i {
+    position: absolute;
+    top: 0;
+    height: 100%;
+  }
+  .bar2 .base {
+    left: 0;
+    background: color-mix(in srgb, var(--blue) 30%, var(--card));
+    border-radius: 0;
+  }
+  .bar2 .more {
+    background: var(--blue);
+    border-radius: 0 5px 5px 0;
+  }
+  .fam2 li.free .bar2 .base {
+    background: color-mix(in srgb, var(--marker) 30%, var(--card));
+  }
+  .fam2 li.free .bar2 .more {
+    background: var(--marker);
+  }
+  .bar2 b {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85em;
+    font-variant-numeric: tabular-nums;
+  }
+  .fam2 em {
+    font-style: normal;
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 0.05em 0.4em;
+    background: var(--sticky);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    text-align: center;
+  }
+  .sub2 {
+    margin: 0.6em 0 0.2em;
+    font-size: clamp(0.85rem, min(1.3vw, 2.1vh), 1.3rem);
+    font-weight: 700;
+  }
+  .sub2 .k::before {
+    content: "";
+    display: inline-block;
+    width: 0.9em;
+    height: 0.6em;
+    margin-right: 0.3em;
+    border-radius: 2px;
+  }
+  .sub2 .ok::before {
+    background: var(--blue);
+  }
+  .sub2 .bad::before {
+    background: var(--marker);
+  }
+  .mini {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3em;
+    font-size: clamp(0.8rem, min(1.25vw, 2vh), 1.25rem);
+  }
+  .mini li {
+    display: grid;
+    grid-template-columns: minmax(10em, 34%) 1fr 6em;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .mini .mn {
+    white-space: nowrap;
+  }
+  .mini .mb {
+    display: grid;
+    gap: 2px;
+  }
+  .mini .mb i {
+    display: block;
+    height: 0.5em;
+    border-radius: 0 3px 3px 0;
+  }
+  .mini .mb .ok {
+    background: var(--blue);
+  }
+  .mini .mb .bad {
+    background: var(--marker);
+  }
+  .mini .mv {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9em;
+  }
+  .fams {
+    display: grid;
+    gap: 0.35em;
+    font-size: clamp(0.8rem, min(1.35vw, 2.15vh), 1.4rem);
+  }
+  .fam {
+    display: grid;
+    grid-template-columns: 6.5em 1fr;
+    gap: 0.6em;
+    align-items: start;
+    padding-top: 0.35em;
+    border-top: 2px solid var(--ink);
+  }
+  .fam-who {
+    color: var(--blue);
+  }
+  .fam-name {
+    white-space: nowrap;
+  }
+  .fam ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.15em;
+  }
+  .fam li {
+    display: grid;
+    grid-template-columns: 12.5em 1fr 3.2em;
+    gap: 0.6em;
+    align-items: center;
+  }
+  .fam-track i {
+    display: block;
+    height: 0.9em;
+    width: var(--w);
+    background: color-mix(in srgb, var(--blue) 35%, var(--card));
+    border-radius: 0 4px 4px 0;
+  }
+  .fam li.free .fam-track i {
+    background: var(--marker);
+  }
+  .fam em {
+    font-style: normal;
+    font-size: 0.8em;
+    font-weight: 700;
+    padding: 0.05em 0.4em;
+    background: var(--sticky);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    text-align: center;
+  }
+  .effort-chart {
+    list-style: none;
+    margin: 0.3em 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(3px, 0.7vh, 7px);
+    font-size: clamp(0.8rem, min(1.35vw, 2.1vh), 1.35rem);
+  }
+  .effort-chart li {
+    display: grid;
+    grid-template-columns: minmax(12em, 32%) 1fr;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .effort-chart li.gap {
+    margin-top: 0.35em;
+  }
+  .effort-chart .name {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .effort-chart .name small {
+    color: var(--muted);
+    font-size: 0.8em;
+  }
+  .effort-chart .lane {
+    position: relative;
+    height: 1.1em;
+    background: linear-gradient(color-mix(in srgb, var(--ink) 15%, transparent), color-mix(in srgb, var(--ink) 15%, transparent)) 0 50% / 100% 1px no-repeat;
+  }
+  .effort-chart .span {
+    position: absolute;
+    top: 30%;
+    height: 40%;
+    background: color-mix(in srgb, var(--marker) 30%, transparent);
+    border-radius: 4px;
+  }
+  .effort-chart .dot,
+  .legend-line .dot {
+    position: absolute;
+    top: 50%;
+    width: 0.8em;
+    height: 0.8em;
+    margin: -0.4em 0 0 -0.4em;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--marker) calc(25% + var(--k) * 75%), var(--card));
+    border: 2px solid var(--marker);
+  }
+  .legend-line {
+    font-size: clamp(0.8rem, min(1.2vw, 2vh), 1.2rem);
+    color: var(--muted);
+    margin: 0.2em 0 0;
+  }
+  .legend-line .dot {
+    position: relative;
+    display: inline-block;
+    top: 0.1em;
+    margin: 0 0.3em 0 0;
+  }
+  .legend-line .dot.lo {
+    --k: 0;
+  }
+  .legend-line .dot.hi {
+    --k: 1;
+  }
   .hbars.health i {
     background: #2f8f6b;
   }
@@ -853,6 +1288,10 @@ const ticksY = [30, 40, 50, 60, 70];
     stroke-width: 2;
     stroke-dasharray: 2 6;
     stroke-linecap: round;
+  }
+  .progress .who {
+    font-size: 20px;
+    font-weight: 700;
   }
   .scatter .pt circle {
     fill: var(--blue);

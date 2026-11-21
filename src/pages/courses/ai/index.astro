@@ -61,7 +61,7 @@ import { url } from "../../../lib/url";
                 <div>
                   <h3>{r.title}</h3>
                   <p class="change">
-                    <b>這一輪只改</b>
+                    <b>這一輪不一樣的地方</b>
                     {r.change}　約 {r.min} 分鐘
                   </p>
                   {r.type.map(([label, text]) => (
@@ -184,7 +184,7 @@ import { url } from "../../../lib/url";
         <Art name="notebook" size={96} rotate={-6} class="pinned" />
         <h2>學習單</h2>
         <p class="lede">
-          A4 五頁。第 1 頁是三輪要打的話，上課照著做；第 2 頁是五個題目，每一題的問法、第 2 輪常抓到的問題和第 3 輪做簡報的第一句；第 3 頁是 HTML 簡報和 PPT 的比較、六個風格句；第 4 頁是「現在有哪些」的三張圖；第 5 頁留給你自己：你抓到的那一句、有一件事你不會交給 AI。不用交。
+          A4 五頁。第 1 頁是三輪要打的話，上課照著做；第 2 頁是五個題目，每一題的問法、第 2 輪檢查時可以問的問題和第 3 輪做簡報的第一句；第 3 頁是 HTML 簡報和 PPT 的比較、六個風格句；第 4 頁是「現在有哪些」的三張圖；第 5 頁留給你自己：你抓到的那一句、有一件事你不會交給 AI。不用交。
         </p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">下載 PDF（直接印）</a>
