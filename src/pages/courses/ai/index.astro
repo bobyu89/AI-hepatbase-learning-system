@@ -2,7 +2,7 @@
 import Base from "../../../layouts/Base.astro";
 import Art from "../../../components/Art.astro";
 import { aiCourse } from "../../../data/ai-course";
-import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics, aiStyles, aiStylesSource, aiCompare } from "../../../data/ai-session";
+import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics, aiStyles, aiStylesSource, aiCompare, aiFourD } from "../../../data/ai-session";
 import { url } from "../../../lib/url";
 ---
 
@@ -141,21 +141,21 @@ import { url } from "../../../lib/url";
 
     <section class="section how ideas" id="ideas">
       <div class="wrap">
-        <h2>三個不太會過時的動作</h2>
+        <h2>AI 流暢度的 4 個 D</h2>
         <dl>
           {
-            aiRounds.map((r) => (
+            aiFourD.map(([en, zh, what, today]) => (
               <div>
-                <dt>{r.idea}</dt>
+                <dt>{zh}（<span lang="en">{en}</span>）</dt>
                 <dd>
-                  第 {r.no} 輪會親眼看到。對應「{r.fluency}」。
+                  {what}今天：{today}。
                 </dd>
               </div>
             ))
           }
         </dl>
         <p class="credit">
-          這三個動作的整理，參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a> 的四項能力：描述、辨別、委派、盡責，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
+          4 個 D 出自 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a> 釋出；這一頁改寫的內容依同樣的授權分享。工具會進步，所以說的是「不太會過時」，不是永遠不變。
         </p>
       </div>
