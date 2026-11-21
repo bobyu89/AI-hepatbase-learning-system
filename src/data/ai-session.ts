@@ -204,6 +204,27 @@ export const aiCost: [string, string, number][] = [
   ["Claude Fable 5.2", "Anthropic", 26.54],
 ];
 
+/**
+ * Healthcare & Medical Index（artificialanalysis.ai，2026-11-21）。
+ * 合成 5 項測驗：AA-Omniscience v1.1、AA-Briefcase v1.1、MLCR-AA、AutomationBench-AA、HLE-Diamond。
+ * 同一批模型，換一份考卷，排名就變。[模型, 公司, 醫療分數, 綜合分數]
+ */
+export const aiHealth: [string, string, number, number][] = [
+  ["Claude Fable 5.2", "Anthropic", 65, 65],
+  ["Gemini 4 Neon", "Google", 60, 61],
+  ["Claude Opus 5.5", "Anthropic", 58, 59],
+  ["GPT-6.2 Astra", "OpenAI", 57, 62],
+  ["Gemini 4 Carbon", "Google", 57, 60],
+  ["GPT-6.2 Sol", "OpenAI", 53, 57],
+  ["Muse Wonder Full", "Meta", 52, 50],
+  ["Kimi K3.1 Pro", "Moonshot", 52, 46],
+  ["Muse Wonder", "Meta", 49, 44],
+  ["Qwen4 Max", "阿里巴巴", 48, 43],
+  ["Grok 4.7", "xAI", 47, 35],
+  ["DeepSeek V4.1 Flash", "DeepSeek", 41, 33],
+  ["GLM-5.3", "智譜", 39, 32],
+];
+
 /** 同一個月，兩個榜，兩個第一名。[榜, 量的是什麼, 第一名] */
 export const aiBoards: [string, string, string][] = [
   ["真人盲測投票", "人覺得哪個回答比較好", "Google"],
