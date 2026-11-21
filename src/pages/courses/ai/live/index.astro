@@ -7,8 +7,11 @@ import {
   aiRounds,
   aiOpeningStats,
   aiTimeline,
-  aiLandscape,
   aiLandscapeAsOf,
+  aiIndex,
+  aiIndexSource,
+  aiCost,
+  aiHealth,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -27,6 +30,30 @@ import {
 import { url } from "../../../../lib/url";
 
 const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
+
+// 分數 vs 成本的散點圖：x 用對數刻度（0.4 到 40 美元），y 是綜合分數（30 到 70）。
+const SW = 1000, SH = 470, PL = 70, PR = 30, PT = 20, PB = 60;
+const sx = (usd: number) => PL + ((Math.log10(usd) - Math.log10(0.4)) / (Math.log10(40) - Math.log10(0.4))) * (SW - PL - PR);
+const sy = (n: number) => PT + ((70 - n) / 40) * (SH - PT - PB);
+const scoreOf = (m: string) => aiIndex.find(([name]) => name === m)?.[2] ?? 0;
+// 同樣的錢裡分數最高的那幾個（由便宜到貴，分數一路往上）。
+const pareto = ["DeepSeek V4.1 Flash", "GPT-6.2 Sol", "GPT-6.2 Astra", "Claude Fable 5.2"];
+// 標籤位置：[dx, dy, 對齊]
+const labelAt: Record<string, [number, number, "start" | "end" | "middle"]> = {
+  "Claude Fable 5.2": [-12, -10, "end"],
+  "GPT-6.2 Astra": [-12, -10, "end"],
+  "Gemini 4 Neon": [-8, 30, "end"],
+  "Claude Opus 5.5": [12, 6, "start"],
+  "GPT-6.2 Sol": [0, -16, "middle"],
+  "Kimi K3.1 Pro": [-12, -6, "end"],
+  "Qwen4 Max": [-12, 14, "end"],
+  "Muse Wonder": [12, 5, "start"],
+  "Grok 4.7": [12, 5, "start"],
+  "DeepSeek V4.1 Flash": [12, 5, "start"],
+  "GLM-5.3": [12, 5, "start"],
+};
+const ticksX = [0.5, 1, 2, 5, 10, 20];
+const ticksY = [30, 40, 50, 60, 70];
 ---
 
 <Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、三輪做法。`}>
@@ -110,21 +137,91 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
 
     <section class="panel">
       <div class="inner wide">
-        <h2>現在有哪些</h2>
-        <p class="asof">查詢日期：{aiLandscapeAsOf}　這一頁下個月就過時了</p>
-        <ul class="cards">
+        <h2>現在有哪些：誰考得最好</h2>
+        <p class="asof">綜合考試分數，越高越好　查詢日期：{aiLandscapeAsOf}　下個月就過時了</p>
+        <ol class="hbars" aria-label="綜合考試分數">
           {
-            aiLandscape.map(([who, model, when, good], i) => (
-              <li style={`--tilt:${tilt[i % tilt.length]}deg`} class:list={{ open: i === aiLandscape.length - 1 }}>
-                <b class="who">{who}</b>
-                <span class="model">{model}</span>
-                <span class="when">{when}</span>
-                <span class="good">{good}</span>
+            aiIndex.map(([model, who, n, tag]) => (
+              <li class:list={[tag]} title={`${who} ${model}：${n} 分`}>
+                <span class="name">
+                  <small>{who}</small>
+                  {model}
+                  {tag === "open" && <em>開放權重</em>}
+                  {tag === "noapi" && <em>沒有公開 API</em>}
+                </span>
+                <span class="track">
+                  <i style={`--w:${(n / 65) * 100}%`} />
+                </span>
+                <b>{n}</b>
               </li>
             ))
           }
-        </ul>
-        <p class="src">整理自第三方的彙整網站，各站數字不一致。實際排名以 arena.ai 與 artificialanalysis.ai 當天的榜單為準。</p>
+        </ol>
+        <p class="src">
+          資料：<a href={aiIndexSource.url} lang="en">{aiIndexSource.name}</a>，9 項測驗合成的分數。只量它考題答得多好，不量它在你的專業上會不會講錯。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>分數高的，也比較貴</h2>
+        <p class="asof">橫軸：做一題的平均成本（美元，越右越貴）　縱軸：綜合考試分數（越上越好）</p>
+        <svg class="scatter" viewBox={`0 0 ${SW} ${SH}`} role="img" aria-label="綜合分數和每題成本的散點圖">
+          {ticksY.map((t) => (
+            <g>
+              <line x1={PL} x2={SW - PR} y1={sy(t)} y2={sy(t)} class="grid" />
+              <text x={PL - 10} y={sy(t) + 5} text-anchor="end" class="tick">{t}</text>
+            </g>
+          ))}
+          {ticksX.map((t) => (
+            <text x={sx(t)} y={SH - PB + 26} text-anchor="middle" class="tick">${t}</text>
+          ))}
+          <polyline
+            class="pareto"
+            points={pareto.map((m) => `${sx(aiCost.find(([n]) => n === m)![2])},${sy(scoreOf(m))}`).join(" ")}
+          />
+          {aiCost.map(([model, who, usd]) => {
+            const [dx, dy, anchor] = labelAt[model] ?? [12, 5, "start"];
+            const on = pareto.includes(model);
+            return (
+              <g class:list={["pt", { on }]}>
+                <title>{`${who} ${model}：${scoreOf(model)} 分，每題 ${usd.toFixed(2)} 美元`}</title>
+                <circle cx={sx(usd)} cy={sy(scoreOf(model))} r="9" />
+                <text x={sx(usd) + dx} y={sy(scoreOf(model)) + dy} text-anchor={anchor}>{model}</text>
+              </g>
+            );
+          })}
+        </svg>
+        <p class="take">橘線是同樣的錢裡分數最高的。多 8 分，貴 26 倍。</p>
+        <p class="src">資料：<a href={aiIndexSource.url} lang="en">artificialanalysis.ai</a>，{aiLandscapeAsOf}查詢。成本是用 API 計費，不是網頁版的月費。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>換一份考卷：醫療</h2>
+        <p class="asof">Healthcare & Medical Index，越高越好。右邊小字是剛剛的綜合分數</p>
+        <ol class="hbars health" aria-label="醫療分數">
+          {
+            aiHealth.map(([model, who, n, overall]) => (
+              <li title={`${who} ${model}：醫療 ${n} 分（綜合 ${overall} 分）`}>
+                <span class="name">
+                  <small>{who}</small>
+                  {model}
+                </span>
+                <span class="track">
+                  <i style={`--w:${(n / 65) * 100}%`} />
+                </span>
+                <b>
+                  {n}<small class="was">{overall}</small>
+                </b>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="take">換成醫療的考卷，排名就變了。看排行榜，先看它考什麼。</p>
+        <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}查詢。分數高不代表在你的病房不會講錯。</p>
       </div>
     </section>
 
@@ -642,27 +739,140 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     rotate: -1deg;
   }
 
+  /* 橫條圖 */
+  .hbars {
+    list-style: none;
+    margin: 0.3em 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2px, 0.6vh, 6px);
+    font-size: clamp(0.85rem, min(1.45vw, 2.35vh), 1.45rem);
+  }
+  .hbars li {
+    display: grid;
+    grid-template-columns: minmax(12em, 38%) 1fr 3.4em;
+    align-items: center;
+    gap: 0.6em;
+    line-height: 1.15;
+  }
+  .hbars .name {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .hbars small {
+    color: var(--muted);
+    margin-right: 0.4em;
+    font-size: 0.85em;
+  }
+  .hbars em {
+    font-style: normal;
+    font-size: 0.75em;
+    margin-left: 0.4em;
+    padding: 0 0.35em;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .hbars .track {
+    height: 1.05em;
+    display: block;
+  }
+  .hbars i {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    background: var(--blue);
+    border-radius: 0 4px 4px 0;
+  }
+  .hbars li.open i {
+    background: #5b7fc4;
+  }
+  .hbars li.noapi i {
+    background: repeating-linear-gradient(45deg, var(--blue) 0 6px, #9fb3dc 6px 12px);
+  }
+  .hbars li:hover .name,
+  .hbars li:hover b {
+    color: var(--marker);
+  }
+  .hbars b {
+    font-variant-numeric: tabular-nums;
+  }
+  .hbars.cost i {
+    background: var(--marker);
+  }
+
+  .hbars.health i {
+    background: #2f8f6b;
+  }
+  .hbars .was {
+    margin-left: 0.35em;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 0.75em;
+  }
+  .hbars.health li {
+    grid-template-columns: minmax(12em, 38%) 1fr 4.4em;
+  }
+  .scatter {
+    width: 100%;
+    height: auto;
+    max-height: 46vh;
+    display: block;
+    font-family: inherit;
+  }
+  .scatter .grid {
+    stroke: color-mix(in srgb, var(--ink) 18%, transparent);
+    stroke-dasharray: 3 5;
+  }
+  .scatter .tick {
+    fill: var(--muted);
+    font-size: 18px;
+  }
+  .scatter .pareto {
+    fill: none;
+    stroke: var(--marker);
+    stroke-width: 2;
+    stroke-dasharray: 2 6;
+    stroke-linecap: round;
+  }
+  .scatter .pt circle {
+    fill: var(--blue);
+    stroke: var(--card);
+    stroke-width: 2;
+  }
+  .scatter .pt.on circle {
+    fill: var(--marker);
+  }
+  .scatter .pt text {
+    fill: var(--ink);
+    font-size: 19px;
+  }
+  .scatter .pt:hover text {
+    fill: var(--marker);
+  }
+
   /* 廠商卡 */
   .cards {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.9rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem 1.2rem;
   }
   .cards li {
     display: grid;
     align-content: start;
     gap: 0.35rem;
-    padding: 1.6rem 0.9rem 1rem;
+    padding: 1.4rem 1rem 0.8rem;
     background:
-      linear-gradient(var(--rule-red), var(--rule-red)) 0 1.1rem / 100% 2px no-repeat,
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 0.9rem / 100% 2px no-repeat,
       var(--card);
     box-shadow: var(--shadow);
     rotate: var(--tilt, 0deg);
-    font-size: clamp(1.05rem, 1.65vw, 1.6rem);
-    line-height: 1.4;
+    font-size: clamp(1rem, min(1.6vw, 2.7vh), 1.6rem);
+    line-height: 1.35;
+    gap: 0.15rem;
   }
   .cards li.open {
     background: var(--sticky);

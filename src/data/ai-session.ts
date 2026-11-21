@@ -164,13 +164,65 @@ export const aiTimeline: [string, string, string][] = [
  * 目前的內容來自第三方彙整網站，各站數字互相矛盾，沒有對過官方榜單。
  * [誰, 目前的旗艦, 何時, 常被提到的長處]
  */
-export const aiLandscapeAsOf = "2026 年 11 月 17 日";
-export const aiLandscape: [string, string, string, string][] = [
-  ["OpenAI", "GPT-6 Astra", "2026 年 9 月", "長時間自主作業、操作電腦、進階數學"],
-  ["Google", "Gemini 4 Carbon", "2026 年 10–11 月", "真人盲測投票的榜上排第一"],
-  ["Anthropic", "Claude Fable 5.2", "2026 年", "綜合指數與寫程式的評測領先"],
-  ["Meta", "Muse Spark 1.3", "2026 年 9 月", "真人投票的榜上排前段"],
-  ["開放權重", "Kimi K3.1 Pro、DeepSeek V4.1 Flash", "2026 年", "可以下載到自己的機器上跑"],
+export const aiLandscapeAsOf = "2026 年 11 月 21 日";
+
+/**
+ * 「現在有哪些」的長條圖，數字取自 artificialanalysis.ai（Intelligence Index v5.0.1，2026-11-21 查詢）。
+ * 每列：[模型, 公司, 分數, 標記]。標記 open＝開放權重，noapi＝沒有公開 API。
+ */
+export const aiIndexSource = {
+  name: "Artificial Analysis Intelligence Index v5.0.1",
+  url: "https://artificialanalysis.ai/leaderboards/models",
+};
+export const aiIndex: [string, string, number, "" | "open" | "noapi"][] = [
+  ["Claude Fable 5.2", "Anthropic", 65, ""],
+  ["GPT-6.2 Astra", "OpenAI", 62, ""],
+  ["Gemini 4 Neon", "Google", 61, ""],
+  ["Gemini 4 Carbon", "Google", 60, ""],
+  ["Claude Opus 5.5", "Anthropic", 59, ""],
+  ["GPT-6.2 Sol", "OpenAI", 57, ""],
+  ["Muse Wonder Full", "Meta", 50, "noapi"],
+  ["Kimi K3.1 Pro", "Moonshot", 46, "open"],
+  ["Muse Wonder", "Meta", 44, ""],
+  ["Qwen4 Max", "阿里巴巴", 43, ""],
+  ["Grok 4.7", "xAI", 35, ""],
+  ["DeepSeek V4.1 Flash", "DeepSeek", 33, "open"],
+  ["GLM-5.3", "智譜", 32, ""],
+];
+/** 做一題 Intelligence Index 題目的平均成本（美元），同一來源。由便宜到貴。 */
+export const aiCost: [string, string, number][] = [
+  ["DeepSeek V4.1 Flash", "DeepSeek", 0.6],
+  ["GPT-6.2 Sol", "OpenAI", 1.01],
+  ["Qwen4 Max", "阿里巴巴", 3.27],
+  ["Kimi K3.1 Pro", "Moonshot", 3.68],
+  ["GPT-6.2 Astra", "OpenAI", 4.0],
+  ["GLM-5.3", "智譜", 5.01],
+  ["Gemini 4 Neon", "Google", 6.44],
+  ["Muse Wonder", "Meta", 6.95],
+  ["Grok 4.7", "xAI", 7.77],
+  ["Claude Opus 5.5", "Anthropic", 10.04],
+  ["Claude Fable 5.2", "Anthropic", 26.54],
+];
+
+/**
+ * Healthcare & Medical Index（artificialanalysis.ai，2026-11-21）。
+ * 合成 5 項測驗：AA-Omniscience v1.1、AA-Briefcase v1.1、MLCR-AA、AutomationBench-AA、HLE-Diamond。
+ * 同一批模型，換一份考卷，排名就變。[模型, 公司, 醫療分數, 綜合分數]
+ */
+export const aiHealth: [string, string, number, number][] = [
+  ["Claude Fable 5.2", "Anthropic", 65, 65],
+  ["Gemini 4 Neon", "Google", 60, 61],
+  ["Claude Opus 5.5", "Anthropic", 58, 59],
+  ["GPT-6.2 Astra", "OpenAI", 57, 62],
+  ["Gemini 4 Carbon", "Google", 57, 60],
+  ["GPT-6.2 Sol", "OpenAI", 53, 57],
+  ["Muse Wonder Full", "Meta", 52, 50],
+  ["Kimi K3.1 Pro", "Moonshot", 52, 46],
+  ["Muse Wonder", "Meta", 49, 44],
+  ["Qwen4 Max", "阿里巴巴", 48, 43],
+  ["Grok 4.7", "xAI", 47, 35],
+  ["DeepSeek V4.1 Flash", "DeepSeek", 41, 33],
+  ["GLM-5.3", "智譜", 39, 32],
 ];
 
 /** 同一個月，兩個榜，兩個第一名。[榜, 量的是什麼, 第一名] */
