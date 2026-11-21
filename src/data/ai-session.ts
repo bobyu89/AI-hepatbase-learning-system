@@ -164,12 +164,12 @@ export const aiTimeline: [string, string, string][] = [
  * 目前的內容來自第三方彙整網站，各站數字互相矛盾，沒有對過官方榜單。
  * [誰, 目前的旗艦, 何時, 常被提到的長處]
  */
-export const aiLandscapeAsOf = "2026 年 11 月 17 日";
+export const aiLandscapeAsOf = "2026 年 11 月 21 日";
 export const aiLandscape: [string, string, string, string][] = [
-  ["OpenAI", "GPT-6 Astra", "2026 年 9 月", "長時間自主作業、操作電腦、進階數學"],
-  ["Google", "Gemini 4 Carbon", "2026 年 10–11 月", "真人盲測投票的榜上排第一"],
-  ["Anthropic", "Claude Fable 5.2", "2026 年", "綜合指數與寫程式的評測領先"],
-  ["Meta", "Muse Spark 1.3", "2026 年 9 月", "真人投票的榜上排前段"],
+  ["OpenAI", "GPT-6.2 Astra", "2026 年 11 月 17 日", "綜合考試分數排第二"],
+  ["Google", "Gemini 4 Carbon", "2026 年 10–11 月", "真人盲測投票排第一"],
+  ["Anthropic", "Claude Fable 5.2", "2026 年", "綜合考試分數排第一"],
+  ["Meta", "Muse Wonder", "2026 年 10 月", "綜合分數排前段"],
   ["開放權重", "Kimi K3.1 Pro、DeepSeek V4.1 Flash", "2026 年", "可以下載到自己的機器上跑"],
 ];
 
