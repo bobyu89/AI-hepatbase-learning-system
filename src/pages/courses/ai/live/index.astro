@@ -70,6 +70,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
 
 <Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、三輪做法。`}>
   <main class="live" data-live>
+    <div class="topbar" aria-hidden="true"><i data-progress></i></div>
     <nav class="live-nav" aria-label="投影控制">
       <a class="home" href={url("/courses/ai/")}>課程首頁</a>
       <a class="home" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">學習單</a>
@@ -104,6 +105,15 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
           }
         </ol>
         <p class="take">不教哪一個 AI 比較好。只講不太會過時的東西。</p>
+      </div>
+    </section>
+
+    <section class="panel divider">
+      <div class="inner">
+        <p class="dv-no">01</p>
+        <h2 class="dv-title">先看地圖</h2>
+        <svg class="dv-line" viewBox="0 0 600 24" aria-hidden="true"><path d="M4 16 C 120 4, 240 22, 360 10 S 540 6, 596 14" pathLength="1" /></svg>
+        <p class="dv-sub">AI 這幾年走到哪裡、現在有哪些、排行榜怎麼看</p>
       </div>
     </section>
 
@@ -167,7 +177,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
             return (
               <g>
                 <title>{`${f.who}：最近約 ${last[1]}`}</title>
-                <path d={stepPath(f.pts)} fill="none" stroke={f.color} stroke-width="3" />
+                <path d={stepPath(f.pts)} fill="none" stroke={f.color} stroke-width="3" pathLength="1" class="draw" />
                 {f.pts.map(([m, v]) => <rect x={px(m) - 4} y={py(v) - 4} width="8" height="8" fill={f.color} />)}
               </g>
             );
@@ -340,6 +350,15 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
           {aiBoardQuestions.map((q) => <li>{q}</li>)}
         </ol>
         <p class="take">沒有一個榜在量「它在你的專業上會不會講錯」。那個只有你能量。</p>
+      </div>
+    </section>
+
+    <section class="panel divider">
+      <div class="inner">
+        <p class="dv-no">02</p>
+        <h2 class="dv-title">動手做三輪</h2>
+        <svg class="dv-line" viewBox="0 0 600 24" aria-hidden="true"><path d="M4 16 C 120 4, 240 22, 360 10 S 540 6, 596 14" pathLength="1" /></svg>
+        <p class="dv-sub">同一題：先請 AI 寫，再由你檢查，最後做成簡報帶走</p>
       </div>
     </section>
 
@@ -566,6 +585,15 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
       </div>
     </section>
 
+    <section class="panel divider">
+      <div class="inner">
+        <p class="dv-no">03</p>
+        <h2 class="dv-title">回頭看</h2>
+        <svg class="dv-line" viewBox="0 0 600 24" aria-hidden="true"><path d="M4 16 C 120 4, 240 22, 360 10 S 540 6, 596 14" pathLength="1" /></svg>
+        <p class="dv-sub">名詞每年換，動作沒有換</p>
+      </div>
+    </section>
+
     <section class="panel">
       <div class="inner wide">
         <h2>今年的新說法：loop</h2>
@@ -666,24 +694,79 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
   if (root) {
     const panels = [...root.querySelectorAll<HTMLElement>(".panel")];
     const count = root.querySelector<HTMLOutputElement>("[data-count]");
+    const bar = root.querySelector<HTMLElement>("[data-progress]");
+    const html = document.documentElement;
+    const wide = matchMedia("(min-width: 56rem)");
     let current = 0;
-    const show = (i: number) => {
-      current = Math.max(0, Math.min(panels.length - 1, i));
-      panels[current].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+
+    // 讓每頁裡的元素依序進場：給第一層子元素和清單項目一個順序編號。
+    panels.forEach((p) => {
+      p.querySelectorAll<HTMLElement>(".inner > *").forEach((el, i) => el.style.setProperty("--i", String(i)));
+      p.querySelectorAll<HTMLElement>("li, tr, .pt, .fam2 li").forEach((el) => {
+        const sib = [...(el.parentElement?.children ?? [])].indexOf(el);
+        el.style.setProperty("--j", String(sib));
+      });
+    });
+
+    const paint = () => {
+      if (count) count.value = `${current + 1} / ${panels.length}`;
+      if (bar) bar.style.width = `${((current + 1) / panels.length) * 100}%`;
     };
+    const stage = (i: number, dir: number) => {
+      const prev = panels[current];
+      current = Math.max(0, Math.min(panels.length - 1, i));
+      const next = panels[current];
+      if (prev !== next) {
+        prev.classList.remove("is-active", "from-left", "from-right");
+        prev.classList.add(dir > 0 ? "leave-left" : "leave-right");
+        setTimeout(() => prev.classList.remove("leave-left", "leave-right"), 700);
+      }
+      next.classList.remove("leave-left", "leave-right", "from-left", "from-right");
+      next.classList.add(dir >= 0 ? "from-right" : "from-left");
+      void next.offsetWidth; // 重新觸發動畫
+      next.classList.add("is-active");
+      history.replaceState(null, "", `#${current + 1}`);
+      paint();
+    };
+    const show = (i: number) => {
+      if (html.classList.contains("stage")) stage(i, i >= current ? 1 : -1);
+      else {
+        current = Math.max(0, Math.min(panels.length - 1, i));
+        panels[current].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      }
+    };
+    (window as any).__go = show;
+
+    // 寬螢幕：一次一頁，有轉場；窄螢幕：照原本往下捲。
     const seen = new IntersectionObserver(
       (entries) => {
+        if (html.classList.contains("stage")) return;
         for (const e of entries) {
           if (e.isIntersecting) {
             current = panels.indexOf(e.target as HTMLElement);
-            if (count) count.value = `${current + 1} / ${panels.length}`;
+            panels.forEach((p) => p.classList.toggle("is-active", p === e.target));
+            paint();
           }
         }
       },
       { threshold: 0.55 },
     );
-    panels.forEach((p) => seen.observe(p));
-    if (count) count.value = `1 / ${panels.length}`;
+    const setMode = () => {
+      const start = Math.max(0, Math.min(panels.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+      if (wide.matches) {
+        html.classList.add("stage");
+        panels.forEach((p) => p.classList.remove("is-active"));
+        current = start;
+        panels[current].classList.add("is-active");
+        paint();
+      } else {
+        html.classList.remove("stage");
+        panels.forEach((p) => seen.observe(p));
+      }
+    };
+    setMode();
+    wide.addEventListener("change", () => location.reload());
+
     root.querySelector("[data-next]")?.addEventListener("click", () => show(current + 1));
     root.querySelector("[data-prev]")?.addEventListener("click", () => show(current - 1));
     document.addEventListener("keydown", (e) => {
@@ -695,7 +778,22 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
       } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
         e.preventDefault();
         show(current - 1);
+      } else if (e.key === "Home") {
+        show(0);
+      } else if (e.key === "End") {
+        show(panels.length - 1);
+      } else if (e.key === "f" || e.key === "F") {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen?.();
       }
+    });
+    // 觸控：左右滑換頁
+    let sx = 0;
+    document.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
+    document.addEventListener("touchend", (e) => {
+      if (!html.classList.contains("stage")) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
     });
   }
 </script>
@@ -703,6 +801,202 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
 <style>
   :global(html:has(.live)) {
     scroll-snap-type: y mandatory;
+  }
+  /* ───── 投影模式：一次一頁、轉場 ───── */
+  :global(html.stage) {
+    scroll-snap-type: none;
+    overflow: hidden;
+  }
+  :global(html.stage) .panel {
+    position: fixed;
+    inset: 0;
+    min-height: 0;
+    height: 100vh;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+  :global(html.stage) .panel.is-active {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+  }
+  :global(html.stage) .panel.is-active .inner {
+    animation: page-in 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  :global(html.stage) .panel.is-active.from-left .inner {
+    animation-name: page-in-left;
+  }
+  :global(html.stage) .panel.leave-left,
+  :global(html.stage) .panel.leave-right {
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
+  }
+  :global(html.stage) .panel.leave-left .inner {
+    animation: page-out-left 0.55s ease-in both;
+  }
+  :global(html.stage) .panel.leave-right .inner {
+    animation: page-out-right 0.55s ease-in both;
+  }
+  @keyframes page-in {
+    from {
+      transform: translateX(7vw) rotate(1.5deg) scale(0.97);
+      opacity: 0;
+    }
+  }
+  @keyframes page-in-left {
+    from {
+      transform: translateX(-7vw) rotate(-1.5deg) scale(0.97);
+      opacity: 0;
+    }
+  }
+  @keyframes page-out-left {
+    to {
+      transform: translateX(-12vw) rotate(-3deg) scale(0.95);
+      opacity: 0;
+    }
+  }
+  @keyframes page-out-right {
+    to {
+      transform: translateX(12vw) rotate(3deg) scale(0.95);
+      opacity: 0;
+    }
+  }
+  /* 頁內元素依序進場 */
+  .panel.is-active .inner > * {
+    animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.12s + var(--i, 0) * 0.07s);
+  }
+  .panel.is-active .inner > h2 {
+    animation-name: rise-title;
+  }
+  .panel.is-active :is(.topics, .todo, .scenarios, .four, .agenda, .fourd, .kinds, .styles, .timeline, .names tbody, .compare tbody, .family tbody) > * {
+    animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.35s + var(--j, 0) * 0.08s);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  @keyframes rise-title {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+      filter: blur(4px);
+    }
+  }
+  /* 圖表：長條長出來、線畫出來、點冒出來 */
+  .panel.is-active :is(.hbars i, .pairs .bar i, .mini .mb i, .bar2 i, .fam-track i, .bars .track i) {
+    transform-origin: left center;
+    animation: grow 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.45s + var(--j, 0) * 0.06s);
+  }
+  .panel.is-active .bar2 .more {
+    animation-delay: calc(0.95s + var(--j, 0) * 0.06s);
+  }
+  @keyframes grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  .panel.is-active .draw {
+    stroke-dasharray: 1;
+    animation: draw 1.6s ease-out 0.4s both;
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .panel.is-active .pareto {
+    animation: fade 0.8s ease 1.2s both;
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+  .panel.is-active .pt circle,
+  .panel.is-active .scatter.progress rect {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+    animation-delay: calc(0.6s + var(--j, 0) * 0.07s);
+  }
+  @keyframes pop {
+    from {
+      transform: scale(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel *,
+    .panel .inner,
+    .panel .inner > * {
+      animation: none !important;
+    }
+  }
+  /* 進度條 */
+  .topbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 5px;
+    z-index: 6;
+    background: color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .topbar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--marker);
+    transition: width 0.5s ease;
+  }
+  /* 章節頁 */
+  .panel.divider .inner {
+    background: none;
+    box-shadow: none;
+    rotate: 0deg;
+    text-align: left;
+  }
+  .dv-no {
+    font-size: clamp(6rem, min(22vw, 34vh), 16rem);
+    line-height: 0.9;
+    font-weight: 700;
+    color: var(--marker);
+    letter-spacing: -0.04em;
+  }
+  .dv-title {
+    font-size: clamp(2.6rem, min(7vw, 11vh), 6rem) !important;
+    margin: 0.1em 0 0 !important;
+  }
+  .dv-line {
+    width: min(60%, 36rem);
+    height: auto;
+    display: block;
+    margin: 0.2em 0 0.6em;
+  }
+  .dv-line path {
+    fill: none;
+    stroke: var(--marker);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+  }
+  .panel.is-active .dv-line path {
+    animation: draw 1s ease-out 0.5s both;
+  }
+  .dv-sub {
+    font-size: var(--mid);
+    color: var(--muted);
   }
   .live {
     --big: clamp(2rem, 4.5vw, 4rem);
