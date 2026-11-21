@@ -1,0 +1,483 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import { aiCourse } from "../../../../data/ai-course";
+import { aiSession, aiTopics, aiStyles, aiStylesSource, aiFourD, aiFrameworkSource } from "../../../../data/ai-session";
+import { url } from "../../../../lib/url";
+
+const deckRest =
+  "只用一個 HTML 檔，所有程式寫在同一個檔案裡。一頁一個重點，字要大，按鍵盤左右鍵可以換頁。內容只能用剛剛修改好的版本，不要加新的資訊。";
+---
+
+<Base title={`學習單｜${aiCourse.title}`} current="ai" description="AI 不只是聊天的網頁版學習單：選題目、組問法、檢查、做成 HTML 簡報，寫的內容只存在你自己的瀏覽器。">
+  <main class="ws" data-ws>
+    <section class="ws-top">
+      <div class="wrap">
+        <p class="kicker">{aiCourse.title}　網頁版學習單</p>
+        <h1>今天的三輪，照著填就好</h1>
+        <p class="lede">{aiSession.motto}　你在這裡打的字只存在這台電腦的瀏覽器，不會傳到任何地方。做完可以存成 PDF 帶走。</p>
+        <p class="actions">
+          <button type="button" class="btn btn-primary" data-print>存成 PDF／列印</button>
+          <button type="button" class="btn btn-quiet" data-clear>全部清除</button>
+          <a class="btn btn-quiet" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">紙本版 PDF</a>
+        </p>
+        <p class="warn">不要在這裡或 AI 裡打任何一位病人的資料。</p>
+      </div>
+    </section>
+
+    <section class="ws-sec" id="topic">
+      <div class="wrap">
+        <h2><span class="no">0</span>選一個題目</h2>
+        <p class="hint">選你最熟的那一題。下面的問法會跟著換。</p>
+        <div class="topics">
+          {
+            aiTopics.map((t, i) => (
+              <label class="topic">
+                <input type="radio" name="topic" value={String(i)} data-save="topic" checked={i === 0} />
+                <span>
+                  <b>{i + 1}　{t.title}</b>
+                  <small>{t.use}</small>
+                </span>
+              </label>
+            ))
+          }
+        </div>
+        <label class="field">做出來要給誰用<input data-save="for" placeholder="例如：阿嬤、家屬、新人、我自己" /></label>
+      </div>
+    </section>
+
+    <section class="ws-sec" id="r1">
+      <div class="wrap">
+        <h2><span class="no">1</span>同一題問兩次</h2>
+        <p class="hint">你要做：同一題問 AI 兩次。兩次只差在你給它的資訊多寡。</p>
+
+        <h3>第一次：你只打一句</h3>
+        <div class="prompt">
+          <p data-topic-text="one"></p>
+          <button type="button" class="copy" data-copy-from="[data-topic-text='one']">複製</button>
+        </div>
+
+        <h3>第二次：開新對話，你多說明四件事</h3>
+        <div class="builder">
+          <label>我是<input data-save="b0" data-b placeholder="例如：病房護理師" /></label>
+          <label>請幫我<input data-save="b1" data-b placeholder="例如：寫一份居家防跌衛教" /></label>
+          <label>給誰用（他們的情況）<input data-save="b2" data-b placeholder="例如：75 歲、獨居、眼睛不好的阿嬤" /></label>
+          <label>要（長度、格式）<input data-save="b3" data-b placeholder="例如：五件她做得到的事，每件一句話" /></label>
+          <label>不要<input data-save="b4" data-b placeholder="例如：不要用專有名詞" /></label>
+        </div>
+        <div class="prompt out">
+          <p data-b-out></p>
+          <button type="button" class="copy" data-copy-from="[data-b-out]">複製</button>
+        </div>
+        <details class="example">
+          <summary>看這一題的完整範例</summary>
+          <div class="prompt">
+            <p data-topic-text="clear"></p>
+            <button type="button" class="copy" data-copy-from="[data-topic-text='clear']">複製範例</button>
+          </div>
+        </details>
+        <label class="field">兩段回答，哪裡不一樣？哪一段比較能直接用？<textarea data-save="r1note" rows="3"></textarea></label>
+      </div>
+    </section>
+
+    <section class="ws-sec" id="r2">
+      <div class="wrap">
+        <h2><span class="no">2</span>你來檢查：找出有問題的句子</h2>
+        <p class="hint">你要做：用你的專業，從頭讀一次 AI 第二次的回答。</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-save="c1" /> 有沒有錯誤：和你所學、或可信的資料不一致</label></li>
+          <li><label><input type="checkbox" data-save="c2" /> 有沒有說得太絕對：應該是「通常」「可能」，卻寫成「一定」「都會」</label></li>
+          <li><label><input type="checkbox" data-save="c3" /> 有沒有漏掉或不符合實際：照著做會出問題，或臨床上不會這樣</label></li>
+        </ul>
+        <p class="topic-q">這一題可以問自己：<span data-topic-text="catch"></span></p>
+        <div class="builder two">
+          <label>AI 寫的那一句<input data-save="f0" data-f placeholder="把有問題的句子貼在這裡" /></label>
+          <label>問題在哪<input data-save="f1" data-f placeholder="例如：說得太絕對" /></label>
+          <label>正確的是<input data-save="f2" data-f placeholder="你的專業判斷或可信的資料" /></label>
+        </div>
+        <div class="prompt out">
+          <p data-f-out></p>
+          <button type="button" class="copy" data-copy-from="[data-f-out]">複製</button>
+        </div>
+        <label class="field">沒找到的話：你檢查了哪些地方？用什麼確認？<textarea data-save="r2note" rows="2"></textarea></label>
+        <p class="note">問 AI「你確定嗎」，它多半會說確定，這不能當證據。請以你的專業知識或可信的資料為準。</p>
+      </div>
+    </section>
+
+    <section class="ws-sec" id="r3">
+      <div class="wrap">
+        <h2><span class="no">3</span>做成 HTML 簡報，帶走</h2>
+        <p class="hint">你要做：挑一個風格，請 AI 把修改好的內容做成 HTML 簡報，存檔、打開、檢查。</p>
+
+        <h3>挑一個風格</h3>
+        <div class="styles">
+          {
+            aiStyles.map((st, i) => (
+              <label class="style">
+                <input type="radio" name="style" value={String(i)} data-save="style" checked={i === 0} />
+                <img src={url(`/files/ai/styles/${st.slug}.jpg`)} alt="" width="800" height="450" loading="lazy" />
+                <b>{st.zh}</b>
+                <small>{st.fit}</small>
+              </label>
+            ))
+          }
+        </div>
+        <p class="note">
+          想做得更像：<a href="#" data-style-dl>下載這個風格的範本檔</a>，附給 AI，再加一句「照附件範本的版型、配色和字體」。範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license}）。
+        </p>
+
+        <h3>在同一個對話裡，你打給 AI</h3>
+        <div class="prompt out">
+          <p data-deck-out></p>
+          <button type="button" class="copy" data-copy-from="[data-deck-out]">複製</button>
+        </div>
+
+        <h3>存成檔案，打開</h3>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-save="s1" /> AI 工具旁邊有預覽或下載按鈕：直接下載</label></li>
+          <li><label><input type="checkbox" data-save="s2" /> 沒有：複製程式碼，貼進記事本（Mac 用文字編輯，先選「格式 → 製作純文字」）</label></li>
+          <li><label><input type="checkbox" data-save="s3" /> 另存新檔「我的簡報.html」，編碼選 UTF-8</label></li>
+          <li><label><input type="checkbox" data-save="s4" /> 雙擊打開，按左右鍵換頁</label></li>
+        </ul>
+        <p class="note">打開是一堆字，或中文變亂碼：多半是沒選 UTF-8，或副檔名還是 .txt。</p>
+
+        <h3>你檢查簡報</h3>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-save="k1" /> 對照修改好的版本：內容有沒有被改動？</label></li>
+          <li><label><input type="checkbox" data-save="k2" /> 有沒有多出你沒寫過的？</label></li>
+          <li><label><input type="checkbox" data-save="k3" /> 需要的話，請 AI 改一處，再存一次</label></li>
+        </ul>
+        <label class="field">檔名和存在哪裡<input data-save="file" placeholder="例如：桌面／我的簡報.html" /></label>
+        <p class="note"><a href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">看一份做好的範例</a>（居家防跌衛教）</p>
+      </div>
+    </section>
+
+    <section class="ws-sec" id="end">
+      <div class="wrap">
+        <h2><span class="no">✎</span>帶回去的一句話</h2>
+        <label class="field">有一件事，我不會交給 AI：<textarea data-save="line" rows="2"></textarea></label>
+        <p class="hint">研究生：論文裡哪一部分一定要是你自己的？老師：課上哪一件事希望學生一定自己做？</p>
+
+        <h3>AI 流暢度的 4 個 D</h3>
+        <dl class="fourd">
+          {
+            aiFourD.map(([en, zh, what, today]) => (
+              <div>
+                <dt>{zh} <span lang="en">{en}</span></dt>
+                <dd>{what}<br /><small>今天：{today}</small></dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="credit">
+          4 個 D 出自 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>，Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，<a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>。
+        </p>
+        <p class="actions">
+          <button type="button" class="btn btn-primary" data-print>存成 PDF／列印</button>
+          <a class="btn btn-quiet" href={url("/courses/ai/")}>回課程首頁</a>
+        </p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script define:vars={{ topics: aiTopics, styles: aiStyles, deckRest, base: url("/files/ai/styles/") }}>
+  const root = document.querySelector("[data-ws]");
+  const KEY = "ai-worksheet-v1";
+  let store = {};
+  try {
+    store = JSON.parse(localStorage.getItem(KEY) || "{}");
+  } catch {}
+  const save = () => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(store));
+    } catch {}
+  };
+  const fields = [...root.querySelectorAll("[data-save]")];
+  fields.forEach((el) => {
+    const k = el.dataset.save;
+    if (el.type === "radio") {
+      if (store[k] != null) el.checked = el.value === store[k];
+    } else if (el.type === "checkbox") el.checked = !!store[k];
+    else if (store[k] != null) el.value = store[k];
+  });
+  const val = (k) => {
+    const el = root.querySelector(`[data-save="${k}"]:checked`) || root.querySelector(`[data-save="${k}"]`);
+    return el ? el.value : "";
+  };
+  const blank = (v) => (v && v.trim()) || "＿＿";
+
+  const render = () => {
+    const t = topics[Number(val("topic")) || 0];
+    root.querySelectorAll("[data-topic-text]").forEach((el) => (el.textContent = t[el.dataset.topicText]));
+    const b = [0, 1, 2, 3, 4].map((i) => val("b" + i));
+    const no = blank(b[4]);
+    root.querySelector("[data-b-out]").textContent = `我是${blank(b[0])}。請幫我${blank(b[1])}，給${blank(b[2])}用。要${blank(b[3])}。${no.startsWith("不要") ? no : "不要" + no}。`;
+    const f = [0, 1, 2].map((i) => val("f" + i));
+    root.querySelector("[data-f-out]").textContent = `你寫的「${blank(f[0])}」有問題：${blank(f[1])}。正確的是${blank(f[2])}。請修改。`;
+    const st = styles[Number(val("style")) || 0];
+    root.querySelector("[data-deck-out]").textContent = `${t.deck}${deckRest}風格：${st.sentence}。請給我完整的程式碼。`;
+    const dl = root.querySelector("[data-style-dl]");
+    dl.href = `${base}${st.slug}/template.html`;
+    dl.setAttribute("download", `範本_${st.slug}.html`);
+  };
+  fields.forEach((el) =>
+    el.addEventListener(el.type === "radio" || el.type === "checkbox" ? "change" : "input", () => {
+      const k = el.dataset.save;
+      store[k] = el.type === "checkbox" ? el.checked : el.value;
+      save();
+      render();
+    }),
+  );
+  render();
+
+  root.querySelectorAll("[data-copy-from]").forEach((btn) =>
+    btn.addEventListener("click", async () => {
+      const src = btn.closest(".prompt").querySelector("p");
+      const old = btn.textContent;
+      try {
+        await navigator.clipboard.writeText(src.textContent);
+        btn.textContent = "已複製";
+      } catch {
+        const r = document.createRange();
+        r.selectNodeContents(src);
+        const s = getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        btn.textContent = "已選取，請按 Ctrl+C";
+      }
+      setTimeout(() => (btn.textContent = old), 1600);
+    }),
+  );
+  root.querySelectorAll("[data-print]").forEach((b) => b.addEventListener("click", () => print()));
+  root.querySelector("[data-clear]").addEventListener("click", () => {
+    if (!confirm("清除這份學習單上你填的所有內容？")) return;
+    store = {};
+    save();
+    location.reload();
+  });
+</script>
+
+<style>
+  .ws-top {
+    padding-block: clamp(2rem, 6vw, 4rem) 1rem;
+  }
+  .kicker {
+    color: var(--red);
+    font-weight: 700;
+  }
+  .ws h1 {
+    margin: 0.2em 0;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .warn {
+    font-weight: 700;
+  }
+  .ws-sec {
+    padding-block: 1.5rem;
+  }
+  .ws-sec .wrap {
+    background: var(--grain, none), var(--surface);
+    box-shadow: var(--shadow);
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    border-radius: 2px;
+  }
+  .ws h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+  }
+  .no {
+    color: var(--marker);
+    font-size: 1.4em;
+  }
+  .ws h3 {
+    margin: 1.4rem 0 0.5rem;
+  }
+  .hint,
+  .note {
+    color: var(--muted);
+  }
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 0.6rem;
+    margin: 0.8rem 0;
+  }
+  .topic,
+  .style {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.7rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    background: var(--card);
+    cursor: pointer;
+  }
+  .topic {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.5rem;
+  }
+  .topic span {
+    display: grid;
+  }
+  .topic small,
+  .style small {
+    color: var(--muted);
+  }
+  .topic:has(input:checked),
+  .style:has(input:checked) {
+    background: var(--sticky);
+    box-shadow: 0 0 0 3px var(--marker);
+  }
+  .styles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+    gap: 0.6rem;
+  }
+  .style input {
+    position: absolute;
+    opacity: 0;
+  }
+  .style img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .field {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0.8rem 0;
+    font-weight: 700;
+  }
+  .ws input:not([type]),
+  .ws textarea {
+    font: inherit;
+    font-weight: 400;
+    padding: 0.45em 0.6em;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: var(--card);
+    width: 100%;
+  }
+  .builder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 0.6rem 1rem;
+  }
+  .builder label {
+    display: grid;
+    gap: 0.2rem;
+    color: var(--muted);
+  }
+  .prompt {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.8rem;
+    align-items: start;
+    margin: 0.7rem 0;
+    padding: 0.8rem 1rem;
+    border: 2px dashed var(--marker);
+    border-radius: 8px;
+    background: var(--sticky);
+  }
+  .prompt p {
+    margin: 0;
+    line-height: 1.6;
+  }
+  .copy {
+    font: inherit;
+    font-weight: 700;
+    padding: 0.3em 0.9em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--card);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .example summary {
+    cursor: pointer;
+    color: var(--blue);
+  }
+  .checks {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .checks label {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    cursor: pointer;
+  }
+  .checks input {
+    width: 1.1em;
+    height: 1.1em;
+    accent-color: var(--marker);
+  }
+  .topic-q {
+    padding: 0.6rem 0.8rem;
+    border-left: 4px solid var(--blue);
+    background: var(--card);
+  }
+  .fourd {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.8rem;
+  }
+  .fourd div {
+    padding: 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .fourd dt {
+    font-weight: 700;
+    color: var(--marker);
+  }
+  .fourd dt span {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 0.85em;
+  }
+  .fourd dd {
+    margin: 0.3rem 0 0;
+  }
+  .fourd small {
+    color: var(--blue);
+  }
+  .credit {
+    color: var(--muted);
+    font-size: 0.9em;
+  }
+  @media print {
+    :global(header),
+    :global(footer),
+    .actions,
+    .copy,
+    .example,
+    .style img,
+    .note a {
+      display: none !important;
+    }
+    .ws-sec {
+      break-inside: avoid-page;
+      padding-block: 0.4rem;
+    }
+    .ws-sec .wrap {
+      box-shadow: none;
+      border: 1px solid #999;
+    }
+    .topic:not(:has(input:checked)),
+    .style:not(:has(input:checked)) {
+      display: none;
+    }
+  }
+</style>

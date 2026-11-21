@@ -20,8 +20,8 @@ import { url } from "../../../lib/url";
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">下載學習單（PDF）</a>
-          <a class="btn btn-quiet" href={url("/files/ai/handout.docx")} download="AI課_學習單.docx">學習單 Word 版（可打字）</a>
+          <a class="btn btn-primary" href={url("/courses/ai/worksheet/")}>打開網頁版學習單</a>
+          <a class="btn btn-quiet" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">學習單 PDF</a>
           <a class="btn btn-quiet" href="#rounds">看三輪怎麼做</a>
           <a class="btn btn-quiet" href="#bring">要帶什麼來</a>
           <a class="btn btn-quiet" href={url("/courses/ai/live/")}>現場投影用的圖文頁</a>
@@ -187,7 +187,8 @@ import { url } from "../../../lib/url";
           A4 五頁。第 1 頁是三輪要打的話，上課照著做；第 2 頁是五個題目，每一題的問法、第 2 輪檢查時可以問的問題和第 3 輪做簡報的第一句；第 3 頁是 HTML 簡報和 PPT 的比較、六個風格句；第 4 頁是「現在有哪些」的三張圖；第 5 頁留給你自己：你抓到的那一句、有一件事你不會交給 AI。不用交。
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">下載 PDF（直接印）</a>
+          <a class="btn btn-primary" href={url("/courses/ai/worksheet/")}>網頁版（可以填、可以複製問法）</a>
+          <a class="btn btn-quiet" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">下載 PDF（直接印）</a>
           <a class="btn btn-quiet" href={url("/files/ai/handout.docx")} download="AI課_學習單.docx">下載 Word 版（可打字）</a>
         </div>
       </div>

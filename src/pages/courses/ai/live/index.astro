@@ -75,7 +75,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
     <div class="topbar" aria-hidden="true"><i data-progress></i></div>
     <nav class="live-nav" aria-label="投影控制">
       <a class="home" href={url("/courses/ai/")}>課程首頁</a>
-      <a class="home" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">學習單</a>
+      <a class="home" href={url("/courses/ai/worksheet/")} target="_blank" rel="noopener">學習單</a>
       <button type="button" data-prev aria-label="上一頁">←</button>
       <output data-count aria-live="polite">1</output>
       <button type="button" data-next aria-label="下一頁">→</button>
@@ -374,15 +374,15 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
 
     <section class="panel">
       <div class="inner wide">
-        <h2>先下載學習單</h2>
+        <h2>打開學習單</h2>
         <div class="get">
-          <img class="qr" src={url("/files/ai/handout-qr.svg")} alt="學習單下載頁的 QR code" width="240" height="240" />
+          <img class="qr" src={url("/files/ai/handout-qr.svg")} alt="網頁版學習單的 QR code" width="240" height="240" />
           <div>
-            <p class="lead">用手機掃，或在瀏覽器打開課程網站，按最上面的「下載學習單」。</p>
-            <p class="url">bobyu89.github.io/AI-hepatbase-learning-system/courses/ai</p>
+            <p class="lead">用手機掃，或在電腦瀏覽器打開下面的網址。網頁版可以選題目、填空、一鍵複製問法，做完存成 PDF。</p>
+            <p class="url">bobyu89.github.io/AI-hepatbase-learning-system/courses/ai/worksheet</p>
             <p class="get-btns">
-              <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">下載學習單（PDF）</a>
-              <a class="btn btn-quiet" href={url("/files/ai/handout.docx")} download="AI課_學習單.docx">Word 版（可以直接打字）</a>
+              <a class="btn btn-primary" href={url("/courses/ai/worksheet/")} target="_blank" rel="noopener">打開網頁版學習單</a>
+              <a class="btn btn-quiet" href={url("/files/ai/handout.pdf")} download="AI課_學習單.pdf">紙本版 PDF</a>
             </p>
             <p class="note">五頁：三輪要打的話、五個題目、HTML 簡報和風格、現在有哪些、帶回去的一頁。下課帶走，不用交。</p>
           </div>
