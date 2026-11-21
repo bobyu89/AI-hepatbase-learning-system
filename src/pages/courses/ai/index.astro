@@ -2,11 +2,11 @@
 import Base from "../../../layouts/Base.astro";
 import Art from "../../../components/Art.astro";
 import { aiCourse } from "../../../data/ai-course";
-import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics } from "../../../data/ai-session";
+import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics, aiStyles, aiStylesSource, aiCompare } from "../../../data/ai-session";
 import { url } from "../../../lib/url";
 ---
 
-<Base title={aiCourse.title} current="ai" description={`${aiSession.motto}一場 ${aiSession.minutes} 分鐘的現場課，同一件事做四輪，看見四個不太會過時的觀念。`}>
+<Base title={aiCourse.title} current="ai" description={`${aiSession.motto}一場 ${aiSession.minutes} 分鐘的現場課，同一件事做三輪，最後做成一份 HTML 簡報帶走。`}>
   <main>
     <section class="top">
       <div class="wrap">
@@ -20,7 +20,7 @@ import { url } from "../../../lib/url";
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href="#rounds">看四輪怎麼做</a>
+          <a class="btn btn-primary" href="#rounds">看三輪怎麼做</a>
           <a class="btn btn-quiet" href="#bring">要帶什麼來</a>
           <a class="btn btn-quiet" href={url("/courses/ai/live/")}>現場投影用的圖文頁</a>
         </div>
@@ -30,10 +30,10 @@ import { url } from "../../../lib/url";
     <section class="section task">
       <div class="wrap">
         <Art name="magnifier" size={100} rotate={8} class="pinned" />
-        <h2>整堂課只做一件事，做四次</h2>
+        <h2>整堂課只做一件事，做三輪</h2>
         <p class="big">{aiSession.task}</p>
         <p class="lede">
-          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目從下面五個挑一個，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。選你最熟的那一題，它講錯的地方，你一眼就看得出來。
+          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目從下面五個挑一個，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。選你最熟的那一題，它講錯的地方，你一眼就看得出來。最後一輪請 AI 把做好的內容變成一份 HTML 簡報，存在你自己的電腦裡帶走。<a href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">先看一份範例</a>
         </p>
         <ol class="topic-list">
           {
@@ -50,7 +50,7 @@ import { url } from "../../../lib/url";
 
     <section class="section rounds" id="rounds">
       <div class="wrap">
-        <h2>四輪，每輪只改一樣</h2>
+        <h2>三輪，每輪只改一樣</h2>
         <ol class="round-list">
           {
             aiRounds.map((r) => (
@@ -83,9 +83,63 @@ import { url } from "../../../lib/url";
       </div>
     </section>
 
+    <section class="section styles-sec" id="styles">
+      <div class="wrap">
+        <h2>第 3 輪：HTML 簡報，挑一個風格帶走</h2>
+        <p class="lede">
+          HTML 簡報是一個網頁檔，雙擊就用瀏覽器打開，電腦、手機都能看。做法是請 AI 寫，你負責說清楚要什麼、檢查、叫它改。
+        </p>
+        <table class="cmp">
+          <thead>
+            <tr><th></th><th>HTML 簡報</th><th>PPT</th></tr>
+          </thead>
+          <tbody>
+            {
+              aiCompare.map(([k, h, p]) => (
+                <tr>
+                  <th scope="row">{k}</th>
+                  <td>{h}</td>
+                  <td>{p}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="lede">
+          挑一個風格，把它的風格句貼在第 3 輪那段話的「風格：」後面。想做得更像，下載範本檔附給 AI，再寫「照附件範本的版型、配色和字體」。
+        </p>
+        <ul class="style-grid">
+          {
+            aiStyles.map((st) => (
+              <li>
+                <img src={url(`/files/ai/styles/${st.slug}.jpg`)} alt={`${st.name} 的封面`} width="800" height="450" loading="lazy" />
+                <h3>
+                  {st.zh}<small lang="en">{st.name}</small>
+                </h3>
+                <p class="fit">適合：{st.fit}</p>
+                <p class="sentence">風格：{st.sentence}</p>
+                <p class="links">
+                  <a href={url(`/files/ai/styles/${st.slug}/template.html`)} target="_blank" rel="noopener">看範本</a>
+                  <a href={url(`/files/ai/styles/${st.slug}/template.html`)} download={`範本_${st.slug}.html`}>下載範本檔</a>
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="credit">
+          範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license} 授權），共 {aiStylesSource.count} 種，這裡挑六種適合護理題目的；其他的到原網站看。完整範例：<a href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">居家防跌衛教</a>。
+        </p>
+        <h3>之後還可以：做成影片</h3>
+        <p class="lede">
+          <a href="https://hyperframes.heygen.com" lang="en">HyperFrames</a>（HeyGen 開源，Apache 2.0）用 HTML 寫畫面、輸出成 MP4。下面這支是這門課原本的預錄課第 0 堂，畫面是 HTML，旁白是 AI 合成的聲音。要裝在自己電腦上，搭配 Claude Code 這類 AI 工具使用。
+        </p>
+        <video class="example-video" controls preload="none" poster={url("/video/ai/hyperframes-example.jpg")} src={url("/video/ai/hyperframes-example.mp4")}></video>
+      </div>
+    </section>
+
     <section class="section how ideas" id="ideas">
       <div class="wrap">
-        <h2>四個不太會過時的動作</h2>
+        <h2>三個不太會過時的動作</h2>
         <dl>
           {
             aiRounds.map((r) => (
@@ -99,7 +153,7 @@ import { url } from "../../../lib/url";
           }
         </dl>
         <p class="credit">
-          這四個動作的整理，參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a> 的四項能力：描述、辨別、委派、盡責，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
+          這三個動作的整理，參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a> 的四項能力：描述、辨別、委派、盡責，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a> 釋出；這一頁改寫的內容依同樣的授權分享。工具會進步，所以說的是「不太會過時」，不是永遠不變。
         </p>
       </div>
@@ -128,7 +182,7 @@ import { url } from "../../../lib/url";
         <Art name="notebook" size={96} rotate={-6} class="pinned" />
         <h2>講義</h2>
         <p class="lede">
-          A4 三頁。第 1 頁是四輪要打的話，上課照著做；第 2 頁是五個題目，每一題的兩種問法和第 2 輪常抓到的問題；第 3 頁留給你自己：今天改過的那份成果、你抓到的那一句、有一件事你不會交給 AI。不用交。
+          A4 四頁。第 1 頁是三輪要打的話，上課照著做；第 2 頁是五個題目，每一題的問法、第 2 輪常抓到的問題和第 3 輪做簡報的第一句；第 3 頁是 HTML 簡報和 PPT 的比較、六個風格句；第 4 頁留給你自己：你抓到的那一句、有一件事你不會交給 AI。不用交。
         </p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_講義.pdf">下載 PDF（直接印）</a>
@@ -140,6 +194,18 @@ import { url } from "../../../lib/url";
 </Base>
 
 <style>
+  .cmp { width: 100%; max-width: 52rem; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+  .cmp th, .cmp td { border-bottom: 1.5px solid var(--ink); padding: 0.45rem 0.5rem; text-align: left; vertical-align: top; }
+  .cmp tbody th { white-space: nowrap; }
+  .style-grid { list-style: none; margin: 1rem 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 1.25rem; }
+  .style-grid li { background: var(--card, #fff); border: 2px solid var(--ink); border-radius: 10px; padding: 0.75rem; }
+  .style-grid img { width: 100%; height: auto; border-radius: 6px; display: block; }
+  .style-grid h3 { margin: 0.6rem 0 0.2rem; }
+  .style-grid small { margin-left: 0.5em; font-size: 0.75em; color: var(--muted); }
+  .style-grid .fit { margin: 0; color: var(--muted); }
+  .style-grid .sentence { margin: 0.4rem 0; font-size: 0.95em; }
+  .style-grid .links { display: flex; gap: 1rem; margin: 0; }
+  .example-video { display: block; width: 100%; max-width: 48rem; height: auto; aspect-ratio: 16 / 9; border: 2px solid var(--ink); border-radius: 8px; background: #000; margin: 1rem 0; }
   .topic-list {
     max-width: var(--measure);
     margin: 1rem 0 0;

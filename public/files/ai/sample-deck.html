@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在家防跌，五件事</title>
+<style>
+  :root { --bg: #fdf8ef; --ink: #2a2420; --accent: #b84a1e; --soft: #f3e6cf; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; }
+  .slide { display: none; height: 100vh; padding: 6vh 8vw; flex-direction: column; justify-content: center; }
+  .slide.on { display: flex; }
+  h1 { font-size: clamp(2.4rem, 8vw, 5.5rem); margin: 0 0 0.4em; line-height: 1.2; }
+  h2 { font-size: clamp(2rem, 6vw, 4.2rem); margin: 0 0 0.5em; color: var(--accent); line-height: 1.25; }
+  p, li { font-size: clamp(1.4rem, 4vw, 2.8rem); line-height: 1.5; margin: 0.2em 0; }
+  ul { padding-left: 1.2em; margin: 0; }
+  .num { font-size: clamp(1.2rem, 3vw, 2rem); color: var(--accent); font-weight: 700; }
+  .box { background: var(--soft); border-radius: 16px; padding: 0.6em 0.9em; margin-top: 0.6em; }
+  .foot { position: fixed; bottom: 2vh; right: 3vw; font-size: 1rem; opacity: 0.6; }
+  .note { font-size: clamp(0.9rem, 2vw, 1.2rem); opacity: 0.75; margin-top: 1.5em; }
+</style>
+</head>
+<body>
+<section class="slide on">
+  <h1>在家防跌，五件事</h1>
+  <p>給家裡的長輩，和陪伴他們的家人</p>
+  <p class="note">示範用的簡報。用鍵盤左右鍵，或點畫面右半邊、左半邊換頁。內容是一般的居家安全建議，不能取代醫護人員對個人的評估。</p>
+</section>
+<section class="slide">
+  <p class="num">第 1 件</p>
+  <h2>走道清乾淨</h2>
+  <ul>
+    <li>地上的電線、雜物、報紙收起來</li>
+    <li>會滑動的小地毯拿掉，或下面墊止滑墊</li>
+  </ul>
+</section>
+<section class="slide">
+  <p class="num">第 2 件</p>
+  <h2>晚上要有光</h2>
+  <ul>
+    <li>床邊伸手就開得到燈</li>
+    <li>房間到浴室的走道，留一盞小夜燈</li>
+  </ul>
+</section>
+<section class="slide">
+  <p class="num">第 3 件</p>
+  <h2>浴室最要小心</h2>
+  <ul>
+    <li>馬桶旁、洗澡的地方裝扶手</li>
+    <li>地上放止滑墊</li>
+  </ul>
+</section>
+<section class="slide">
+  <p class="num">第 4 件</p>
+  <h2>穿對鞋子</h2>
+  <ul>
+    <li>穿合腳、鞋底止滑的鞋</li>
+    <li>不要只穿襪子在地板上走</li>
+  </ul>
+</section>
+<section class="slide">
+  <p class="num">第 5 件</p>
+  <h2>每天動一動</h2>
+  <ul>
+    <li>練腿的力氣和平衡，走路比較穩</li>
+    <li>哪一種運動適合，先問醫護人員</li>
+  </ul>
+</section>
+<section class="slide">
+  <h2>這些時候，要告訴家人和醫護人員</h2>
+  <ul>
+    <li>最近跌倒過，就算沒有受傷</li>
+    <li>常常頭暈，或站起來時眼前發黑</li>
+    <li>覺得走路沒有以前穩</li>
+  </ul>
+  <p class="box">跌倒了起不來：不要急著站，先叫人，或打 119。</p>
+</section>
+<div class="foot" id="count"></div>
+<script>
+  var slides = document.querySelectorAll(".slide"), i = 0, count = document.getElementById("count");
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle("on", k === i); });
+    count.textContent = (i + 1) + " / " + slides.length;
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") show(i + 1);
+    if (e.key === "ArrowLeft" || e.key === "PageUp") show(i - 1);
+  });
+  document.addEventListener("click", function (e) { show(e.clientX > innerWidth / 2 ? i + 1 : i - 1); });
+  show(0);
+</script>
+</body>
+</html>
