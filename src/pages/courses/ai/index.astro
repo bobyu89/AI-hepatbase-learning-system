@@ -2,7 +2,7 @@
 import Base from "../../../layouts/Base.astro";
 import Art from "../../../components/Art.astro";
 import { aiCourse } from "../../../data/ai-course";
-import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource } from "../../../data/ai-session";
+import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics } from "../../../data/ai-session";
 import { url } from "../../../lib/url";
 ---
 
@@ -33,8 +33,18 @@ import { url } from "../../../lib/url";
         <h2>整堂課只做一件事，做四次</h2>
         <p class="big">{aiSession.task}</p>
         <p class="lede">
-          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目你自己選，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。因為是你最懂的事，它講錯的地方，你一眼就看得出來。
+          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目從下面五個挑一個，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。選你最熟的那一題，它講錯的地方，你一眼就看得出來。
         </p>
+        <ol class="topic-list">
+          {
+            aiTopics.map((t) => (
+              <li>
+                <b>{t.title}</b>
+                <span>{t.use}</span>
+              </li>
+            ))
+          }
+        </ol>
       </div>
     </section>
 
@@ -118,7 +128,7 @@ import { url } from "../../../lib/url";
         <Art name="notebook" size={96} rotate={-6} class="pinned" />
         <h2>講義</h2>
         <p class="lede">
-          A4 一張，正反兩面。正面是四輪要打的話，上課照著做；背面留給你自己：今天改過的那段說明、你抓到的那一句、有一件事你不會交給 AI。不用交。
+          A4 三頁。第 1 頁是四輪要打的話，上課照著做；第 2 頁是五個題目，每一題的兩種問法和第 2 輪常抓到的問題；第 3 頁留給你自己：今天改過的那份成果、你抓到的那一句、有一件事你不會交給 AI。不用交。
         </p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_講義.pdf">下載 PDF（直接印）</a>
@@ -130,6 +140,21 @@ import { url } from "../../../lib/url";
 </Base>
 
 <style>
+  .topic-list {
+    max-width: var(--measure);
+    margin: 1rem 0 0;
+    padding-left: 1.6em;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .topic-list b {
+    font-weight: 700;
+  }
+  .topic-list span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.92em;
+  }
   .top {
     padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem);
   }

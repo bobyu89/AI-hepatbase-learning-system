@@ -13,6 +13,12 @@ import {
   aiBoardQuestions,
   aiPolicyStats,
   aiNames,
+  aiAgenda,
+  aiScenarios,
+  aiTopics,
+  aiRoundPages,
+  aiRoundFrame,
+  aiSessionFrame,
   aiFrameworkSource,
 } from "../../../../data/ai-session";
 import { url } from "../../../../lib/url";
@@ -37,6 +43,24 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
           {aiCourse.workshopDate}{aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <p class="hint">按 → 或空白鍵往下，← 往上</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>今天怎麼走</h2>
+        <ol class="agenda">
+          {
+            aiAgenda.map(([head, what, min]) => (
+              <li>
+                <b>{head}</b>
+                <span>{what}</span>
+                <small>{min}</small>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="take">不教哪一個 AI 比較好。只講不太會過時的東西。</p>
       </div>
     </section>
 
@@ -124,47 +148,140 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
       </div>
     </section>
 
-    <section class="panel kraft">
-      <div class="inner">
+    <section class="panel kraft start">
+      <div class="inner wide">
         <Art name="magnifier" size={110} rotate={8} class="pin" />
         <h2>今天只做一件事，做四次</h2>
         <p class="task">{aiSession.task}</p>
-        <ul class="fill">
-          <li>我最懂的一個概念是 <span class="blank"></span></li>
-          <li>我要講給 <span class="blank"></span> 聽</li>
-        </ul>
         <p class="warn">題目裡不要有任何一位病人的資料。</p>
+        <dl class="frame">
+          <div>
+            <dt>今天的目標</dt>
+            <dd>{aiSessionFrame.goal}</dd>
+          </div>
+          <div>
+            <dt>下課時你會有</dt>
+            <dd>{aiSessionFrame.have.join("、")}。</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="panel kraft">
+      <div class="inner wide">
+        <h2>五個題目，挑一個</h2>
+        <ol class="topics">
+          {
+            aiTopics.map((t) => (
+              <li>
+                <b>{t.title}</b>
+                <span>{t.use}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="warn">選你最熟的那一題，等一下你要當它的考官。每一題的兩種問法都在講義上。</p>
       </div>
     </section>
 
     {
-      aiRounds.map((r) => (
-        <section class="panel round">
-          <div class="inner wide">
-            <p class="round-no">
-              <span>{r.no}</span> 第 {r.no} 輪　約 {r.min} 分鐘
-            </p>
-            <h2>{r.title}</h2>
-            <p class="change">
-              <b>這一輪只改</b>
-              {r.change}
-            </p>
-            {r.type.map(([label, text]) => (
-              <p class="type">
-                <b>{label}</b>
-                {text}
+      aiRounds.map((r) =>
+        aiRoundPages[r.no].map((pg, i, all) => (
+          <section class:list={["panel", "round", { first: i === 0 }]}>
+            <div class="inner wide">
+              <p class="round-no">
+                <span>{r.no}</span> 第 {r.no} 輪　{i === 0 ? `約 ${r.min} 分鐘` : `${i + 1} / ${all.length}`}
               </p>
-            ))}
-            <ul class="todo">
-              {r.todo.map((t) => <li>{t}</li>)}
-            </ul>
-            <details class="idea">
-              <summary>這一輪看到的觀念（做完再打開）</summary>
-              <p>{r.idea}</p>
-            </details>
-          </div>
-        </section>
-      ))
+              <h2>{pg.title}</h2>
+              {pg.lead && !pg.cards && <p class="lead">{pg.lead}</p>}
+              {i === 0 && (
+                <dl class="frame">
+                  <div>
+                    <dt>這一輪的目標</dt>
+                    <dd>{aiRoundFrame[r.no].goal}</dd>
+                  </div>
+                  <div>
+                    <dt>做完你會有</dt>
+                    <dd>{aiRoundFrame[r.no].have}</dd>
+                  </div>
+                </dl>
+              )}
+              {pg.guess && (
+                <p class="guess">
+                  <b>先猜</b>
+                  {pg.guess}
+                </p>
+              )}
+              {pg.type && (
+                <p class="type">
+                  <b>{pg.type[0]}</b>
+                  {pg.type[1]}
+                </p>
+              )}
+              {pg.cards && (
+                <ul class:list={["kinds", { two: pg.cards.length === 2 }]}>
+                  {pg.cards.map(([head, note]) => (
+                    <li>
+                      <b>{head}</b>
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {pg.lead && pg.cards && <p class="lead after">{pg.lead}</p>}
+              {pg.vote && (
+                <>
+                  <ol class="scenarios">
+                    {aiScenarios.map(([what, say]) => (
+                      <li>
+                        <details>
+                          <summary>{what}</summary>
+                          <p>{say}</p>
+                        </details>
+                      </li>
+                    ))}
+                  </ol>
+                  <p class="src">能不能貼，以醫院、學校與系所的規定為準。查不到規定，就當作不能貼。</p>
+                </>
+              )}
+              {pg.fill && (
+                <p class="fill-line">
+                  {pg.fill}
+                  <span class="blank long" />
+                </p>
+              )}
+              {pg.note && <p class="note">{pg.note}</p>}
+              {pg.items && (
+                <ul class="todo">
+                  {pg.items.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              )}
+              {pg.idea && (
+                <p class="result">
+                  <b>這一輪的結果，多數人會看到</b>
+                  {aiRoundFrame[r.no].see}
+                </p>
+              )}
+              {pg.talk && (
+                <p class="talk">
+                  <b>和旁邊的人講一分鐘</b>
+                  {pg.talk}
+                </p>
+              )}
+              {pg.idea && (
+                <details class="idea">
+                  <summary>這一輪看到的觀念（做完再打開）</summary>
+                  <p>{r.idea}</p>
+                  <p class="metaphor">{r.metaphor}</p>
+                </details>
+              )}
+              {pg.idea && <p class="nextup">{aiRoundFrame[r.no].next}</p>}
+            </div>
+          </section>
+        )),
+      )
     }
 
     <section class="panel">
@@ -195,6 +312,41 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
 
     <section class="panel">
       <div class="inner wide">
+        <h2>今年的新說法：loop</h2>
+        <p class="lead">不再由你一句一句問。設計一個流程，讓它做完自己檢查，不對就自己改，改到好為止。</p>
+        <ol class="loop" aria-label="目標，然後反覆做、檢查、修正，直到可以停">
+          <li class="you">
+            <b>目標</b>
+            <span>你訂的</span>
+          </li>
+          <li class="cycle">
+            <ol>
+              <li>
+                <b>做</b>
+                <span>它做</span>
+              </li>
+              <li class="check">
+                <b>檢查</b>
+                <span>以前是你。今天第 2 輪就是這一步</span>
+              </li>
+              <li>
+                <b>修正</b>
+                <span>不對就再來一次</span>
+              </li>
+            </ol>
+            <p class="again">沒過，再跑一圈</p>
+          </li>
+          <li class="you">
+            <b>停</b>
+            <span>什麼時候算完成，你訂的</span>
+          </li>
+        </ol>
+        <p class="take">它可以自己跑很多圈。目標、什麼時候停、出錯誰負責，還是你的。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
         <h2>名詞每年換，動作沒有換</h2>
         <table class="names">
           <thead>
@@ -216,13 +368,14 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
       </div>
     </section>
 
-    <section class="panel cover">
+    <section class="panel cover end">
       <div class="inner">
         <h2>四個不太會過時的動作</h2>
         <ol class="four">
           {aiRounds.map((r) => <li>{r.idea}</li>)}
         </ol>
         <p class="motto">{aiSession.motto}</p>
+        <p class="carry">今天帶走的：{aiSessionFrame.have.join("、")}。</p>
         <p class="src">
           四個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>）。這一頁依同樣的授權分享。
@@ -555,18 +708,387 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     font-weight: 700;
   }
 
-  /* 四輪 */
-  .round .inner {
-    font-size: clamp(1.1rem, min(1.8vw, 3vh), 1.75rem);
+  /* 今天怎麼走 */
+  .agenda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 2.2fr 1fr;
+    gap: 1.1rem;
+    counter-reset: agenda;
+  }
+  .agenda li {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 1.1rem 1.2rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+    background: var(--card);
+    counter-increment: agenda;
+  }
+  .agenda li:nth-child(2) {
+    background: var(--sticky);
+  }
+  .agenda b {
+    font-size: var(--mid);
+    line-height: 1.25;
+  }
+  .agenda b::before {
+    content: counter(agenda) "　";
+    color: var(--blue);
+  }
+  .agenda small {
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+
+  /* 三個情境 */
+  .vote {
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+  .scenarios {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    counter-reset: sc;
+  }
+  .scenarios li {
+    counter-increment: sc;
+    padding: 0.8rem 1rem;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 0.8rem / 100% 2px no-repeat,
+      var(--card);
+    box-shadow: var(--shadow);
+  }
+  .vote-panel .vote {
+    margin-bottom: 0.5rem;
+  }
+  .vote-panel .src {
+    margin-top: 0.6rem;
+  }
+  .scenarios summary {
+    cursor: pointer;
+    list-style: none;
+    font-size: clamp(1.3rem, min(2.4vw, 4vh), 2.3rem);
+    line-height: 1.3;
+    padding-top: 0.4rem;
+  }
+  .scenarios summary::-webkit-details-marker {
+    display: none;
+  }
+  .scenarios summary::before {
+    content: counter(sc);
+    display: block;
+    color: var(--blue);
+    font-size: 1.6em;
+    line-height: 1;
+  }
+  .scenarios details p {
+    margin-top: 0.45rem;
+    padding-top: 0.45rem;
+    font-size: 0.9em;
+    line-height: 1.4;
+    border-top: 2px dashed var(--pencil);
+    color: var(--marker-deep);
+    font-weight: 700;
+  }
+  .nextup {
+    margin-top: 1rem;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .metaphor {
+    color: var(--muted);
+    font-size: 0.75em !important;
+    font-weight: 400 !important;
+  }
+
+  /* loop */
+  .lead {
+    max-width: 38em;
+    margin-bottom: 1rem;
+  }
+  .loop {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 3.4fr 1fr;
+    gap: 2.4rem;
+    align-items: stretch;
+  }
+  .loop > li {
+    position: relative;
+  }
+  .loop > li:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -1.9rem;
+    top: 50%;
+    translate: 0 -50%;
+    font-size: var(--mid);
+  }
+  .loop .you,
+  .loop .cycle li {
+    display: grid;
+    align-content: center;
+    gap: 0.3rem;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--card);
+    line-height: 1.35;
+  }
+  .loop .you {
+    background: var(--sticky);
+  }
+  .loop b {
+    font-size: var(--mid);
+    line-height: 1.2;
+  }
+  .loop span {
+    font-size: 0.8em;
+    color: var(--muted);
+  }
+  .loop .cycle {
+    padding: 0.8rem;
+    border: 3px dashed var(--blue);
+    border-radius: 2.2rem;
+  }
+  .loop .cycle ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.9rem;
+  }
+  .loop .cycle li {
+    position: relative;
+  }
+  .loop .cycle li:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -1.5rem;
+    top: 50%;
+    translate: 0 -50%;
+  }
+  .loop .check {
+    border-color: var(--marker);
+    border-width: 3px;
+  }
+  .loop .check span {
+    color: var(--marker-deep);
+    font-weight: 700;
+  }
+  .loop .again {
+    margin-top: 0.5rem;
+    text-align: center;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.85em;
+  }
+  .loop .again::before {
+    content: "↺　";
+  }
+
+  .topics {
+    margin: 0.4em 0 0.6em;
+    padding: 0;
+    list-style: none;
+    counter-reset: topic;
+    display: grid;
+    gap: 0.25em;
+  }
+  .topics li {
+    counter-increment: topic;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2em 0.7em;
+    font-size: clamp(1.15rem, min(2.6vw, 4.4vh), 2.3rem);
+  }
+  .topics li::before {
+    content: counter(topic);
+    font-weight: 700;
+    color: var(--marker);
+    min-width: 1.2em;
+  }
+  .topics b {
+    font-weight: 700;
+  }
+  .topics span {
+    color: var(--muted, #555);
+    font-size: 0.8em;
+  }
+  .start .task {
+    font-size: clamp(1.6rem, min(3.6vw, 6vh), 3.2rem);
+  }
+  .start .fill {
+    margin-top: 0.5rem;
+    font-size: clamp(1.2rem, min(2.3vw, 3.9vh), 2.1rem);
+    line-height: 1.6;
+  }
+  .start .warn {
+    margin-top: 0.4rem;
+  }
+  .start h2 {
+    font-size: clamp(1.4rem, min(2.6vw, 4.4vh), 2.3rem);
+    color: var(--muted);
+    margin-bottom: 0.2em;
+  }
+  .end h2 {
+    font-size: clamp(1.8rem, min(3.8vw, 6.4vh), 3.4rem);
+  }
+  .end .four {
+    font-size: clamp(1.2rem, min(2.4vw, 4vh), 2.2rem);
+    line-height: 1.4;
+  }
+  .end .motto {
+    font-size: clamp(1.5rem, min(3.4vw, 5.6vh), 2.8rem);
+  }
+  .end .carry {
+    font-size: clamp(1.1rem, min(2vw, 3.4vh), 1.8rem);
+  }
+  .round .result {
+    font-size: clamp(1.4rem, min(2.9vw, 4.9vh), 2.7rem);
+  }
+  /* 目標與結果 */
+  .frame {
+    margin: 0.9rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .frame > div {
+    padding: 0.7rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--card);
+  }
+  .frame dt {
+    color: var(--marker-deep);
+    font-size: 0.7em;
+    font-weight: 700;
+  }
+  .frame dd {
+    margin: 0.15rem 0 0;
+    line-height: 1.4;
+  }
+  .note {
+    margin-top: 0.8rem;
+    color: var(--muted);
     line-height: 1.5;
-    padding-block: clamp(0.9rem, 2.2vh, 2.25rem);
+  }
+  .result {
+    padding: 0.7rem 1rem;
+    background: var(--paper);
+    line-height: 1.45;
+  }
+  .result b {
+    display: block;
+    color: var(--green);
+    font-size: 0.7em;
+  }
+  .carry {
+    margin-top: 1em;
+    font-size: var(--mid);
+    line-height: 1.45;
+  }
+
+  /* 四輪 */
+  .round.first .inner {
+    background: var(--grain), var(--kraft);
+  }
+  .round .lead {
+    max-width: none;
+    margin-bottom: 0.6rem;
+  }
+  .round .lead.after {
+    margin-top: 0.9rem;
+    font-weight: 700;
+  }
+  .guess,
+  .talk {
+    margin-top: 0.9rem;
+    padding: 0.7rem 1.1rem;
+    background: var(--sticky);
+    font-size: clamp(1.5rem, min(3.2vw, 5.4vh), 3rem);
+    line-height: 1.4;
+    rotate: -0.5deg;
+  }
+  .guess b,
+  .talk b {
+    display: block;
+    color: var(--marker-deep);
+    font-size: 0.6em;
+  }
+  .talk {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    rotate: 0deg;
+  }
+  .round .type {
+    font-size: clamp(1.5rem, min(3vw, 5vh), 2.8rem);
+    line-height: 1.5;
+  }
+  .round .todo {
+    font-size: clamp(1.3rem, min(2.6vw, 4.4vh), 2.4rem);
+    line-height: 1.5;
+  }
+  .kinds {
+    list-style: none;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .kinds.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kinds li {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    padding: 1.3rem 1.1rem 1rem;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 0.8rem / 100% 2px no-repeat,
+      var(--card);
+    box-shadow: var(--shadow);
+    line-height: 1.4;
+  }
+  .kinds b {
+    color: var(--blue);
+    font-size: clamp(1.6rem, min(3.4vw, 5.6vh), 3.1rem);
+    line-height: 1.2;
+  }
+  .fill-line {
+    margin-top: 0.4rem;
+    font-size: clamp(1.6rem, min(3.4vw, 5.6vh), 3.1rem);
+    line-height: 1.6;
+  }
+  .blank.long {
+    min-width: 9em;
+  }
+  .round .inner {
+    font-size: clamp(1.2rem, min(2.3vw, 3.9vh), 2.2rem);
+    line-height: 1.5;
+    padding-block: clamp(1.1rem, 3vh, 2.75rem);
   }
   .round h2 {
-    font-size: clamp(1.8rem, min(3.8vw, 6.2vh), 3.4rem);
-    margin-bottom: 0.3em;
+    font-size: clamp(2rem, min(4.8vw, 8vh), 4.2rem);
+    margin-bottom: 0.35em;
   }
   .round .idea p {
-    font-size: clamp(1.3rem, min(2.4vw, 4vh), 2.2rem);
+    font-size: clamp(1.5rem, min(3.2vw, 5.4vh), 3rem);
   }
   .round-no {
     display: flex;
@@ -576,7 +1098,7 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
   }
   .round-no span {
     color: var(--blue);
-    font-size: clamp(2.4rem, min(4.6vw, 7.5vh), 4rem);
+    font-size: clamp(2.6rem, min(5.4vw, 9vh), 4.8rem);
     line-height: 0.9;
   }
   .change b,
@@ -727,6 +1249,29 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     }
     .boards {
       grid-template-columns: 1fr;
+    }
+    .frame,
+    .agenda,
+    .kinds,
+    .kinds.two,
+    .scenarios,
+    .loop,
+    .loop .cycle ol {
+      grid-template-columns: 1fr;
+    }
+    .loop > li:not(:last-child)::after,
+    .loop .cycle li:not(:last-child)::after {
+      content: "↓";
+      right: 50%;
+      top: auto;
+      bottom: -1.7rem;
+      translate: 50% 0;
+    }
+    .loop {
+      gap: 2rem;
+    }
+    .loop .cycle ol {
+      gap: 1.8rem;
     }
     .bars li {
       grid-template-columns: 1fr 3.2em;
