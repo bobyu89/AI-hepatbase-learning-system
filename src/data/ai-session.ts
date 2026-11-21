@@ -170,6 +170,7 @@ export const aiLandscape: [string, string, string, string][] = [
   ["Google", "Gemini 4 Carbon", "2026 年 10–11 月", "真人盲測投票排第一"],
   ["Anthropic", "Claude Fable 5.2", "2026 年", "綜合考試分數排第一"],
   ["Meta", "Muse Wonder", "2026 年 10 月", "綜合分數排前段"],
+  ["xAI", "Grok 4.7", "2026 年 9 月 21 日", "接在 X（推特）裡；4.8 已宣布，還沒推出"],
   ["開放權重", "Kimi K3.1 Pro、DeepSeek V4.1 Flash", "2026 年", "可以下載到自己的機器上跑"],
 ];
 

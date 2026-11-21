@@ -648,21 +648,22 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.9rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem 1.2rem;
   }
   .cards li {
     display: grid;
     align-content: start;
     gap: 0.35rem;
-    padding: 1.6rem 0.9rem 1rem;
+    padding: 1.4rem 1rem 0.8rem;
     background:
-      linear-gradient(var(--rule-red), var(--rule-red)) 0 1.1rem / 100% 2px no-repeat,
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 0.9rem / 100% 2px no-repeat,
       var(--card);
     box-shadow: var(--shadow);
     rotate: var(--tilt, 0deg);
-    font-size: clamp(1.05rem, 1.65vw, 1.6rem);
-    line-height: 1.4;
+    font-size: clamp(1rem, min(1.6vw, 2.7vh), 1.6rem);
+    line-height: 1.35;
+    gap: 0.15rem;
   }
   .cards li.open {
     background: var(--sticky);
