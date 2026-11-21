@@ -129,9 +129,11 @@ import { url } from "../../../lib/url";
         <p class="credit">
           範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license} 授權），共 {aiStylesSource.count} 種，這裡挑六種適合護理題目的；其他的到原網站看。完整範例：<a href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">居家防跌衛教</a>。
         </p>
-        <p class="credit">
-          之後還可以做成影片：<a href="https://hyperframes.heygen.com" lang="en">HyperFrames</a>（HeyGen 開源，Apache 2.0）用 HTML 寫畫面、輸出成 MP4。要裝在自己電腦上，搭配 Claude Code 這類 AI 工具使用。
+        <h3>之後還可以：做成影片</h3>
+        <p class="lede">
+          <a href="https://hyperframes.heygen.com" lang="en">HyperFrames</a>（HeyGen 開源，Apache 2.0）用 HTML 寫畫面、輸出成 MP4。下面這支是這門課原本的預錄課第 0 堂，畫面是 HTML，旁白是 AI 合成的聲音。要裝在自己電腦上，搭配 Claude Code 這類 AI 工具使用。
         </p>
+        <video class="example-video" controls preload="none" poster={url("/video/ai/hyperframes-example.jpg")} src={url("/video/ai/hyperframes-example.mp4")}></video>
       </div>
     </section>
 
@@ -203,6 +205,7 @@ import { url } from "../../../lib/url";
   .style-grid .fit { margin: 0; color: var(--muted); }
   .style-grid .sentence { margin: 0.4rem 0; font-size: 0.95em; }
   .style-grid .links { display: flex; gap: 1rem; margin: 0; }
+  .example-video { display: block; width: 100%; max-width: 48rem; height: auto; aspect-ratio: 16 / 9; border: 2px solid var(--ink); border-radius: 8px; background: #000; margin: 1rem 0; }
   .topic-list {
     max-width: var(--measure);
     margin: 1rem 0 0;

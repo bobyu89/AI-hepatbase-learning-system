@@ -306,6 +306,8 @@ export interface RoundPage {
   compare?: boolean;
   /** 放六個風格的縮圖 */
   styles?: boolean;
+  /** 放 HyperFrames 做的範例影片 */
+  video?: boolean;
   /** 這一頁最後揭曉這一輪的觀念 */
   idea?: boolean;
   /** 這一步為什麼這樣做 */
@@ -442,13 +444,9 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
     },
     {
       title: "之後還可以：做成影片",
-      lead: "HTML 能做簡報，也能做影片。HyperFrames 是 HeyGen 開源的工具：用 HTML 寫畫面，輸出成 MP4。",
-      items: [
-        "要裝在自己的電腦上，搭配 Claude Code 這類 AI 工具，今天不操作",
-        "做法還是一樣：說清楚要什麼、看一次、叫它改",
-        "簡報加上旁白，就是一支衛教影片",
-        "Apache 2.0 授權開源，官網 hyperframes.heygen.com",
-      ],
+      lead: "HyperFrames（HeyGen 開源）用 HTML 寫畫面、輸出成 MP4。這支就是：畫面是 HTML，旁白是 AI 合成的聲音。",
+      video: true,
+      items: ["要裝在自己的電腦上，搭配 Claude Code 這類 AI 工具，今天不操作", "做法還是一樣：說清楚要什麼、看一次、叫它改"],
     },
     { title: "這一輪的結果", idea: true },
   ],

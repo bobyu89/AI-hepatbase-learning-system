@@ -287,6 +287,9 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
                   <span class="blank long" />
                 </p>
               )}
+              {pg.video && (
+                <video class="example-video" controls preload="none" poster={url("/video/ai/hyperframes-example.jpg")} src={url("/video/ai/hyperframes-example.mp4")}></video>
+              )}
               {pg.note && <p class="note">{pg.note}</p>}
               {pg.sample && (
                 <p class="sample">
@@ -986,6 +989,16 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
   .styles span {
     opacity: 0.75;
     font-size: 0.85em;
+  }
+  .example-video {
+    display: block;
+    height: 30vh;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: #000;
+    margin: 0.4em 0;
   }
   .sample {
     margin: 0.6em 0 0;
