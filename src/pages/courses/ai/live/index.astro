@@ -29,6 +29,7 @@ import {
   aiRoundFrame,
   aiSessionFrame,
   aiFrameworkSource,
+  aiFourD,
 } from "../../../../data/ai-session";
 import { url } from "../../../../lib/url";
 
@@ -529,6 +530,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
                   <summary>這一輪看到的觀念（做完再打開）</summary>
                   <p>{r.idea}</p>
                   <p class="metaphor">{r.metaphor}</p>
+                  <p class="metaphor">4D：{r.fluency}</p>
                 </details>
               )}
               {pg.idea && <p class="nextup">{aiRoundFrame[r.no].next}</p>}
@@ -622,16 +624,36 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
       </div>
     </section>
 
+    <section class="panel">
+      <div class="inner wide">
+        <h2>AI 流暢度的 4 個 D</h2>
+        <p class="asof">今天三輪練的，就是這四件事。不管用哪一個 AI 都用得上</p>
+        <ul class="fourd">
+          {aiFourD.map(([en, zh, what, today]) => (
+            <li>
+              <span class="dn"><b>{zh}</b> <span lang="en">{en}</span></span>
+              <span class="dw">{what}</span>
+              <span class="dt">今天：{today}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="src">
+          出自 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>，Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
+          <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>。這一頁依同樣的授權分享。
+        </p>
+      </div>
+    </section>
+
     <section class="panel cover end">
       <div class="inner">
-        <h2>三個不太會過時的動作</h2>
+        <h2>4 個 D，不太會過時</h2>
         <ol class="four">
-          {aiRounds.map((r) => <li>{r.idea}</li>)}
+          {aiFourD.map(([en, zh, what]) => <li><b>{zh}</b>　{what}</li>)}
         </ol>
         <p class="motto">{aiSession.motto}</p>
         <p class="carry">今天帶走的：{aiSessionFrame.have.join("、")}。</p>
         <p class="src">
-          三個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
+          4D 出自 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>）。這一頁依同樣的授權分享。
         </p>
       </div>
@@ -1136,6 +1158,44 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
   .mini .mv {
     color: var(--muted);
     font-variant-numeric: tabular-nums;
+    font-size: 0.9em;
+  }
+  .fourd {
+    list-style: none;
+    margin: 0.6em 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.2vw, 1.2rem);
+    font-size: clamp(0.85rem, min(1.4vw, 2.3vh), 1.4rem);
+  }
+  .fourd li {
+    display: grid;
+    align-content: start;
+    gap: 0.4em;
+    padding: 0.9em;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+  }
+  .fourd .d {
+    font-size: 2.6em;
+    line-height: 1;
+    color: var(--marker);
+  }
+  .fourd .dn b {
+    font-size: 1.6em;
+    color: var(--marker);
+  }
+  .fourd .dn span {
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+  .fourd .dt {
+    margin-top: 0.3em;
+    padding-top: 0.4em;
+    border-top: 1.5px dashed var(--ink);
+    color: var(--blue);
     font-size: 0.9em;
   }
   .fams {

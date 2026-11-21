@@ -128,6 +128,17 @@ export const aiBring = [
 
 export const aiNotBring = "不用帶論文，沒有課前作業。請不要帶、也不要貼病人的任何資料，包括去掉名字的紀錄。";
 
+/**
+ * AI Fluency Framework 的 4D（Rick Dakan、Joseph Feller；© 2025 Rick Dakan、Joseph Feller 與 Anthropic，CC BY-NC-SA 4.0）。
+ * [英文, 中文, 是什麼, 今天在哪裡練到]
+ */
+export const aiFourD: [string, string, string, string][] = [
+  ["Delegation", "委派", "決定哪些交給 AI、哪些自己做、用哪一個工具。", "選題目、選模型；第 3 輪交給 AI 做簡報；收尾寫下不交給 AI 的事"],
+  ["Description", "描述", "把需求說清楚：你是誰、給誰用、要什麼、不要什麼。", "第 1 輪：同一題問兩次"],
+  ["Discernment", "辨別", "判斷 AI 給的東西對不對、好不好、能不能用。", "第 2 輪檢查回答；第 3 輪對照簡報內容"],
+  ["Diligence", "盡責", "對用 AI 做出來的東西負責：守住隱私與規定，該說明時說明。", "不貼病人資料；簡報拿去用之前由你把關"],
+];
+
 export const aiFrameworkSource = {
   name: "AI Fluency Framework",
   url: "https://aifluencyframework.org/",
