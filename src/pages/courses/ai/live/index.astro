@@ -14,6 +14,7 @@ import {
   aiHealth,
   aiFamilies,
   aiEffort,
+  aiEffortLevels,
   aiProgress,
   aiHalluc,
   aiBoards,
@@ -245,17 +246,19 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
     <section class="panel">
       <div class="inner wide">
         <h2>同一個模型，想久一點就不一樣</h2>
-        <p class="asof">同一個模型，調整「想多久」（推理強度），綜合分數就變。空格是沒有測這一檔</p>
+        <p class="asof">綜合分數，依推理強度（想多久）分檔。空格是沒有這一檔</p>
         <table class="family effort">
           <thead>
-            <tr><th></th><th>低</th><th>中</th><th>高</th><th>最高</th></tr>
+            <tr><th></th>{aiEffortLevels.map((l) => <th>{l}</th>)}</tr>
           </thead>
           <tbody>
             {
-              aiEffort.map(([m, rows]) => (
-                <tr>
-                  <th scope="row">{m}</th>
-                  {rows.map(([, n]) => (
+              aiEffort.map(([who, m, vals], i) => (
+                <tr class:list={{ gap: i > 0 && aiEffort[i - 1][0] !== who }}>
+                  <th scope="row">
+                    <small>{who}</small> {m}
+                  </th>
+                  {vals.map((n) => (
                     <td>{n ? n : ""}</td>
                   ))}
                 </tr>
@@ -263,8 +266,8 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
             }
           </tbody>
         </table>
-        <p class="take">App 裡的「思考」「Thinking」「深入研究」按鈕，就是這一檔。難的問題，讓它想久一點；代價是比較慢。</p>
-        <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}，Google 三個模型各推理強度的綜合分數。各家都有類似的設定。</p>
+        <p class="take">App 裡的「思考」按鈕做的是類似的事：想久一點，分數較高，但比較慢。</p>
+        <p class="src">資料：artificialanalysis.ai 三家的模型頁，{aiLandscapeAsOf}。GPT-6 Luna 從最低到最高差了近 3 倍。</p>
       </div>
     </section>
 
@@ -977,10 +980,30 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
   .family .free {
     background: var(--sticky);
   }
+  .effort {
+    font-size: clamp(0.75rem, min(1.2vw, 1.85vh), 1.25rem);
+    margin: 0.2em 0;
+  }
+  .effort th,
+  .effort td {
+    padding: 0.1em 0.5em;
+    border-bottom-width: 1px;
+  }
   .effort td {
     font-variant-numeric: tabular-nums;
-    font-size: 1.25em;
     font-weight: 700;
+    text-align: right;
+  }
+  .effort thead th {
+    text-align: right;
+  }
+  .effort tr.gap th,
+  .effort tr.gap td {
+    border-top: 2px solid var(--ink);
+  }
+  .effort tbody th small {
+    color: var(--muted);
+    font-size: 0.8em;
   }
   .pairs {
     list-style: none;

@@ -256,13 +256,22 @@ export const aiHalluc: [string, string, number, number][] = [
 ];
 
 /**
- * 同一個模型，讓它想久一點（推理強度），分數就不一樣。Intelligence Index v5.0.1，2026-11-21。
- * [模型, [[強度, 分數], ...]]
+ * 同一個模型，讓它想久一點（推理強度），分數就不一樣。Intelligence Index v5.0.1，
+ * artificialanalysis.ai 三家的 providers 頁（2026-11-21）。0 表示沒有測這一檔。
+ * 檔位：低 low、中 medium、高 high、很高 xhigh、最高 max。[家族, 模型, [低, 中, 高, 很高, 最高]]
  */
-export const aiEffort: [string, [string, number][]][] = [
-  ["Gemini 4 Neon", [["低", 0], ["中", 55], ["高", 60], ["最高", 61]]],
-  ["Gemini 4 Carbon", [["低", 54], ["中", 58], ["高", 60], ["最高", 0]]],
-  ["Gemini 4 Hydrogen", [["低", 0], ["中", 0], ["高", 51], ["最高", 54]]],
+export const aiEffortLevels = ["低", "中", "高", "很高", "最高"];
+export const aiEffort: [string, string, number[]][] = [
+  ["OpenAI", "GPT-6.2 Astra", [46, 57, 60, 62, 62]],
+  ["OpenAI", "GPT-6.2 Sol", [41, 53, 55, 56, 57]],
+  ["OpenAI", "GPT-6 Luna", [10, 18, 21, 23, 28]],
+  ["Anthropic", "Claude Fable 5.2", [54, 56, 62, 62, 65]],
+  ["Anthropic", "Claude Opus 5.5", [35, 48, 52, 57, 59]],
+  ["Anthropic", "Claude Sonnet 5.5", [26, 31, 42, 50, 55]],
+  ["Anthropic", "Claude Haiku 5.5", [19, 25, 30, 35, 36]],
+  ["Google", "Gemini 4 Neon", [44, 55, 60, 61, 0]],
+  ["Google", "Gemini 4 Carbon", [54, 58, 60, 0, 0]],
+  ["Google", "Gemini 4 Hydrogen", [27, 41, 51, 54, 0]],
 ];
 
 /**
