@@ -15,6 +15,7 @@ import {
   aiNames,
   aiAgenda,
   aiScenarios,
+  aiTopics,
   aiRoundPages,
   aiRoundFrame,
   aiSessionFrame,
@@ -152,10 +153,6 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
         <Art name="magnifier" size={110} rotate={8} class="pin" />
         <h2>今天只做一件事，做四次</h2>
         <p class="task">{aiSession.task}</p>
-        <ul class="fill">
-          <li>我最懂的一個概念是 <span class="blank"></span></li>
-          <li>我要講給 <span class="blank"></span> 聽</li>
-        </ul>
         <p class="warn">題目裡不要有任何一位病人的資料。</p>
         <dl class="frame">
           <div>
@@ -167,6 +164,23 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
             <dd>{aiSessionFrame.have.join("、")}。</dd>
           </div>
         </dl>
+      </div>
+    </section>
+
+    <section class="panel kraft">
+      <div class="inner wide">
+        <h2>五個題目，挑一個</h2>
+        <ol class="topics">
+          {
+            aiTopics.map((t) => (
+              <li>
+                <b>{t.title}</b>
+                <span>{t.use}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="warn">選你最熟的那一題，等一下你要當它的考官。每一題的兩種問法都在講義上。</p>
       </div>
     </section>
 
@@ -884,6 +898,35 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     content: "↺　";
   }
 
+  .topics {
+    margin: 0.4em 0 0.6em;
+    padding: 0;
+    list-style: none;
+    counter-reset: topic;
+    display: grid;
+    gap: 0.25em;
+  }
+  .topics li {
+    counter-increment: topic;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2em 0.7em;
+    font-size: clamp(1.15rem, min(2.6vw, 4.4vh), 2.3rem);
+  }
+  .topics li::before {
+    content: counter(topic);
+    font-weight: 700;
+    color: var(--marker);
+    min-width: 1.2em;
+  }
+  .topics b {
+    font-weight: 700;
+  }
+  .topics span {
+    color: var(--muted, #555);
+    font-size: 0.8em;
+  }
   .start .task {
     font-size: clamp(1.6rem, min(3.6vw, 6vh), 3.2rem);
   }
