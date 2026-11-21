@@ -30,6 +30,8 @@ import {
   aiSessionFrame,
   aiFrameworkSource,
   aiFourD,
+  aiGame,
+  aiGameMissing,
 } from "../../../../data/ai-session";
 import { url } from "../../../../lib/url";
 
@@ -199,7 +201,12 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
         <section class="panel">
           <div class="inner wide">
             <h2>{f.who}：{f.family}</h2>
-            <p class="asof">長條是綜合分數。淺色：想最少時的分數；深色：讓它想久一點多出來的</p>
+            <p class="switch" data-think-switch>
+              讓它：
+              <button type="button" data-think="lo">想最少</button>
+              <button type="button" class="on" data-think="hi">想最久</button>
+              <span class="asof-in">　長條是綜合分數，深色是想久一點多出來的</span>
+            </p>
             <ul class="fam2">
               {f.models.map((m) => (
                 <li class:list={{ free: m.free }}>
@@ -210,7 +217,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
                   <span class="bar2">
                     <i class="base" style={`width:${(m.lo / 70) * 100}%`} />
                     <i class="more" style={`left:${(m.lo / 70) * 100}%;width:${((m.hi - m.lo) / 70) * 100}%`} />
-                    <b style={`left:calc(${(m.hi / 70) * 100}% + 0.4em)`}>{m.hi}</b>
+                    <b style={`left:calc(${(m.hi / 70) * 100}% + 0.4em)`} data-lo={m.lo} data-hi={m.hi} data-lo-left={`calc(${(m.lo / 70) * 100}% + 0.4em)`} data-hi-left={`calc(${(m.hi / 70) * 100}% + 0.4em)`}>{m.hi}</b>
                   </span>
                   {m.free ? <em>免費</em> : <span />}
                 </li>
@@ -243,11 +250,16 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
     <section class="panel">
       <div class="inner wide">
         <h2>現在有哪些：誰考得最好</h2>
-        <p class="asof">綜合考試分數，越高越好　查詢日期：{aiLandscapeAsOf}　下個月就過時了</p>
-        <ol class="hbars" aria-label="綜合考試分數">
+        <p class="switch" data-rank-switch>
+          換一份考卷：
+          <button type="button" class="on" data-rank="overall">綜合</button>
+          <button type="button" data-rank="health">醫療</button>
+          <span class="asof-in">　查詢日期：{aiLandscapeAsOf}</span>
+        </p>
+        <ol class="hbars" aria-label="綜合考試分數" data-rank-list>
           {
             aiIndex.map(([model, who, n, tag]) => (
-              <li class:list={[tag]} title={`${who} ${model}：${n} 分`}>
+              <li class:list={[tag]} title={`${who} ${model}：${n} 分`} data-overall={n} data-health={aiHealth.find(([m]) => m === model)?.[2] ?? 0}>
                 <span class="name">
                   <small>{who}</small>
                   {model}
@@ -257,13 +269,13 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
                 <span class="track">
                   <i style={`--w:${(n / 65) * 100}%`} />
                 </span>
-                <b>{n}</b>
+                <b data-num>{n}</b>
               </li>
             ))
           }
         </ol>
         <p class="src">
-          資料：<a href={aiIndexSource.url} lang="en">{aiIndexSource.name}</a>，9 項測驗合成的分數。只量它考題答得多好，不量它在你的專業上會不會講錯。
+          按「醫療」看排名怎麼變。資料：<a href={aiIndexSource.url} lang="en">artificialanalysis.ai</a> 綜合分數與 Healthcare &amp; Medical Index。只量考題答得多好，不量它在你的專業上會不會講錯。
         </p>
       </div>
     </section>
@@ -290,7 +302,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
             const [dx, dy, anchor] = labelAt[model] ?? [12, 5, "start"];
             const on = pareto.includes(model);
             return (
-              <g class:list={["pt", { on }]}>
+              <g class:list={["pt", { on }]} data-usd={usd} data-score={scoreOf(model)} data-name={model}>
                 <title>{`${who} ${model}：${scoreOf(model)} 分，每題 ${usd.toFixed(2)} 美元`}</title>
                 <circle cx={sx(usd)} cy={sy(scoreOf(model))} r="9" />
                 <text x={sx(usd) + dx} y={sy(scoreOf(model)) + dy} text-anchor={anchor}>{model}</text>
@@ -298,35 +310,14 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
             );
           })}
         </svg>
-        <p class="take">橘線是同樣的錢裡分數最高的。多 8 分，貴 26 倍。</p>
+        <p class="budget" data-budget>
+          每題預算
+          <input type="range" min="0" max="100" value="100" step="1" aria-label="每題預算" data-budget-range />
+          <b data-budget-out>$30</b>
+          <span data-budget-best></span>
+        </p>
+        <p class="take">拉一下預算：同樣的錢，能買到的最高分是哪一個？</p>
         <p class="src">資料：<a href={aiIndexSource.url} lang="en">artificialanalysis.ai</a>，{aiLandscapeAsOf}查詢。成本是用 API 計費，不是網頁版的月費。</p>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="inner wide">
-        <h2>換一份考卷：醫療</h2>
-        <p class="asof">Healthcare & Medical Index，越高越好。右邊小字是剛剛的綜合分數</p>
-        <ol class="hbars health" aria-label="醫療分數">
-          {
-            aiHealth.map(([model, who, n, overall]) => (
-              <li title={`${who} ${model}：醫療 ${n} 分（綜合 ${overall} 分）`}>
-                <span class="name">
-                  <small>{who}</small>
-                  {model}
-                </span>
-                <span class="track">
-                  <i style={`--w:${(n / 65) * 100}%`} />
-                </span>
-                <b>
-                  {n}<small class="was">{overall}</small>
-                </b>
-              </li>
-            ))
-          }
-        </ol>
-        <p class="take">換成醫療的考卷，排名就變了。看排行榜，先看它考什麼。</p>
-        <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}查詢。分數高不代表在你的病房不會講錯。</p>
       </div>
     </section>
 
@@ -438,6 +429,13 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
                   </div>
                 </dl>
               )}
+              {pg.timer && (
+                <div class="timer" data-timer={pg.timer * 60}>
+                  <button type="button" data-t-toggle aria-label="開始或暫停計時">▶</button>
+                  <output data-t-out>{pg.timer}:00</output>
+                  <button type="button" data-t-reset aria-label="重設計時">↺</button>
+                </div>
+              )}
               {pg.guess && (
                 <p class="guess">
                   <b>先想一想</b>
@@ -518,6 +516,38 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
               )}
               {pg.video && (
                 <video class="example-video" controls preload="none" poster={url("/video/ai/hyperframes-example.jpg")} src={url("/video/ai/hyperframes-example.mp4")}></video>
+              )}
+              {pg.builder && (
+                <div class="builder" data-builder>
+                  <label>我是<input data-b="0" value="病房護理師" /></label>
+                  <label>請幫我<input data-b="1" value="寫一份居家防跌衛教" /></label>
+                  <label>給誰用（他們的情況）<input data-b="2" value="75 歲、獨居、眼睛不好的阿嬤" /></label>
+                  <label>要（長度、格式）<input data-b="3" value="五件她做得到的事，每件一句話" /></label>
+                  <label>不要<input data-b="4" value="不要用專有名詞" /></label>
+                  <p class="b-out" data-b-out></p>
+                  <button type="button" class="btn btn-primary" data-b-copy>複製問法</button>
+                </div>
+              )}
+              {pg.game && (
+                <>
+                  <ol class="game">
+                    {aiGame.map(([text, bad, why]) => (
+                      <li>
+                        <button type="button" class:list={{ bad }} data-game>
+                          <span class="g-text">{text}</span>
+                          <span class="g-why">{bad ? "有問題：" : ""}{why}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                  <details class="g-miss">
+                    <summary>點完之後：有沒有漏掉的？</summary>
+                    <p>{aiGameMissing}</p>
+                  </details>
+                </>
+              )}
+              {pg.embed && (
+                <iframe class="embed" src={url("/files/ai/sample-deck.html")} title="範例簡報：居家防跌衛教" loading="lazy"></iframe>
               )}
               {pg.note && <p class="note">{pg.note}</p>}
               {pg.sample && (
@@ -787,6 +817,133 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
         else document.documentElement.requestFullscreen?.();
       }
     });
+    // ───── 互動元件 ─────
+    // 換考卷：綜合／醫療，長條重新排序
+    root.querySelectorAll<HTMLElement>("[data-rank-switch]").forEach((sw) => {
+      const list = sw.parentElement!.querySelector<HTMLElement>("[data-rank-list]")!;
+      const items = [...list.children] as HTMLElement[];
+      const apply = (key: string) => {
+        const first = new Map(items.map((li) => [li, li.getBoundingClientRect().top]));
+        const sorted = [...items].sort((a, b) => Number(b.dataset[key]) - Number(a.dataset[key]));
+        const max = Math.max(...items.map((li) => Number(li.dataset[key])));
+        sorted.forEach((li, k) => (li.style.order = String(k)));
+        sorted.forEach((li) => {
+          const v = Number(li.dataset[key]);
+          li.querySelector<HTMLElement>(".track i")!.style.setProperty("--w", `${(v / max) * 100}%`);
+          li.querySelector<HTMLElement>("[data-num]")!.textContent = String(v);
+          const dy = first.get(li)! - li.getBoundingClientRect().top;
+          li.style.transition = "none";
+          li.style.transform = `translateY(${dy}px)`;
+          requestAnimationFrame(() => {
+            li.style.transition = "";
+            li.style.transform = "";
+          });
+        });
+        sw.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.rank === key));
+      };
+      sw.querySelectorAll<HTMLButtonElement>("button").forEach((b) => b.addEventListener("click", () => apply(b.dataset.rank!)));
+    });
+    // 想最少／想最久
+    root.querySelectorAll<HTMLElement>("[data-think-switch]").forEach((sw) => {
+      const ul = sw.parentElement!.querySelector<HTMLElement>(".fam2")!;
+      sw.querySelectorAll<HTMLButtonElement>("button").forEach((b) =>
+        b.addEventListener("click", () => {
+          const lo = b.dataset.think === "lo";
+          ul.classList.toggle("lo", lo);
+          ul.querySelectorAll<HTMLElement>(".bar2 b").forEach((n) => {
+            n.textContent = (lo ? n.dataset.lo : n.dataset.hi) ?? "";
+            n.style.left = (lo ? n.dataset.loLeft : n.dataset.hiLeft) ?? "";
+          });
+          sw.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+        }),
+      );
+    });
+    // 預算滑桿：0–100 對應 0.5 到 30 美元（對數）
+    root.querySelectorAll<HTMLElement>("[data-budget]").forEach((box) => {
+      const range = box.querySelector<HTMLInputElement>("[data-budget-range]")!;
+      const out = box.querySelector<HTMLElement>("[data-budget-out]")!;
+      const best = box.querySelector<HTMLElement>("[data-budget-best]")!;
+      const pts = [...box.parentElement!.querySelectorAll<SVGGElement>(".pt")];
+      const update = () => {
+        const usd = Math.pow(10, Math.log10(0.5) + (Number(range.value) / 100) * (Math.log10(30) - Math.log10(0.5)));
+        out.textContent = `$${usd < 2 ? usd.toFixed(2) : usd.toFixed(0)}`;
+        let top: SVGGElement | null = null;
+        pts.forEach((g) => {
+          const ok = Number(g.dataset.usd) <= usd;
+          g.classList.toggle("dim", !ok);
+          g.classList.remove("best");
+          if (ok && (!top || Number(g.dataset.score) > Number(top.dataset.score))) top = g;
+        });
+        if (top) {
+          (top as SVGGElement).classList.add("best");
+          best.textContent = `這個預算內最高分：${(top as SVGGElement).dataset.name}`;
+        } else best.textContent = "這個預算內沒有模型";
+      };
+      range.addEventListener("input", update);
+      update();
+    });
+    // 倒數計時器
+    root.querySelectorAll<HTMLElement>("[data-timer]").forEach((t) => {
+      const total = Number(t.dataset.timer);
+      let left = total;
+      let id = 0;
+      const out = t.querySelector<HTMLOutputElement>("[data-t-out]")!;
+      const btn = t.querySelector<HTMLButtonElement>("[data-t-toggle]")!;
+      const draw = () => (out.value = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`);
+      const stop = () => {
+        clearInterval(id);
+        id = 0;
+        t.classList.remove("running");
+        btn.textContent = "▶";
+      };
+      btn.addEventListener("click", () => {
+        if (id) return stop();
+        t.classList.add("running");
+        t.classList.remove("done");
+        btn.textContent = "⏸";
+        id = window.setInterval(() => {
+          left = Math.max(0, left - 1);
+          draw();
+          if (!left) {
+            stop();
+            t.classList.add("done");
+          }
+        }, 1000);
+      });
+      t.querySelector("[data-t-reset]")!.addEventListener("click", () => {
+        stop();
+        t.classList.remove("done");
+        left = total;
+        draw();
+      });
+    });
+    // 組問法
+    root.querySelectorAll<HTMLElement>("[data-builder]").forEach((box) => {
+      const ins = [...box.querySelectorAll<HTMLInputElement>("[data-b]")];
+      const out = box.querySelector<HTMLElement>("[data-b-out]")!;
+      const btn = box.querySelector<HTMLButtonElement>("[data-b-copy]")!;
+      const text = () => {
+        const v = ins.map((i) => i.value.trim() || "＿＿");
+        return `我是${v[0]}。請幫我${v[1]}，給${v[2]}用。要${v[3]}。${v[4].startsWith("不要") ? v[4] : "不要" + v[4]}。`;
+      };
+      const update = () => (out.textContent = text());
+      ins.forEach((i) => i.addEventListener("input", update));
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(text());
+          btn.textContent = "已複製";
+          setTimeout(() => (btn.textContent = "複製問法"), 1500);
+        } catch {
+          btn.textContent = "請手動選取複製";
+        }
+      });
+      update();
+    });
+    // 點句子找問題
+    root.querySelectorAll<HTMLButtonElement>("[data-game]").forEach((b) => b.addEventListener("click", () => b.classList.toggle("shown")));
+    // 在輸入框、iframe 裡打字或操作時，不要換頁
+    root.querySelectorAll("input").forEach((i) => i.addEventListener("keydown", (e) => e.stopPropagation()));
+
     // 觸控：左右滑換頁
     let sx = 0;
     document.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
@@ -1454,6 +1611,185 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
     font-variant-numeric: tabular-nums;
     font-size: 0.9em;
   }
+  /* ───── 互動元件 ───── */
+  .switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4em;
+    margin: 0 0 0.5em;
+    font-size: clamp(0.9rem, min(1.4vw, 2.3vh), 1.4rem);
+    color: var(--red);
+  }
+  .switch button {
+    font: inherit;
+    padding: 0.15em 0.8em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .switch button.on {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .asof-in {
+    color: var(--red);
+    font-size: 0.85em;
+  }
+  [data-rank-list] li {
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  [data-rank-list] .track i,
+  .bar2 i,
+  .bar2 b {
+    transition: width 0.6s ease, left 0.6s ease, transform 0.6s ease;
+  }
+  .fam2.lo .bar2 .more {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .budget {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0.3em 0;
+    font-size: clamp(0.9rem, min(1.4vw, 2.3vh), 1.4rem);
+  }
+  .budget input {
+    width: min(40vw, 28rem);
+    accent-color: var(--marker);
+  }
+  .budget [data-budget-best] {
+    color: var(--muted);
+  }
+  .scatter .pt {
+    transition: opacity 0.3s;
+  }
+  .scatter .pt.dim {
+    opacity: 0.15;
+  }
+  .scatter .pt.best circle {
+    stroke: var(--ink);
+    stroke-width: 4;
+  }
+  .timer {
+    position: absolute;
+    top: clamp(0.6rem, 2vh, 1.4rem);
+    right: clamp(0.8rem, 2vw, 1.6rem);
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.2em 0.5em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--card);
+    font-size: clamp(1rem, min(1.8vw, 3vh), 1.8rem);
+    font-variant-numeric: tabular-nums;
+    z-index: 3;
+  }
+  .timer button {
+    font: inherit;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: 0 0.2em;
+  }
+  .timer.running {
+    background: var(--sticky);
+  }
+  .timer.done {
+    background: var(--marker);
+    color: #fff;
+  }
+  .builder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.5em 1em;
+    font-size: clamp(0.85rem, min(1.35vw, 2.2vh), 1.35rem);
+  }
+  .builder label {
+    display: grid;
+    gap: 0.15em;
+    color: var(--muted);
+  }
+  .builder input {
+    font: inherit;
+    color: var(--ink);
+    padding: 0.3em 0.5em;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: var(--card);
+  }
+  .b-out {
+    grid-column: 1 / -1;
+    margin: 0.3em 0 0;
+    padding: 0.6em 0.8em;
+    border: 2px dashed var(--marker);
+    border-radius: 8px;
+    background: var(--sticky);
+    font-size: 1.1em;
+    line-height: 1.5;
+  }
+  .builder [data-b-copy] {
+    justify-self: start;
+  }
+  .game {
+    list-style: none;
+    margin: 0.4em 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4em;
+    font-size: clamp(0.9rem, min(1.5vw, 2.5vh), 1.5rem);
+  }
+  .game button {
+    width: 100%;
+    display: grid;
+    gap: 0.2em;
+    text-align: left;
+    font: inherit;
+    padding: 0.35em 0.7em;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    background: var(--card);
+    cursor: pointer;
+  }
+  .game .g-why {
+    display: none;
+    font-size: 0.8em;
+  }
+  .game button.shown .g-why {
+    display: block;
+  }
+  .game button.shown {
+    background: color-mix(in srgb, #2f8f6b 14%, var(--card));
+    border-color: #2f8f6b;
+  }
+  .game button.shown.bad {
+    background: color-mix(in srgb, var(--marker) 16%, var(--card));
+    border-color: var(--marker);
+  }
+  .game button.shown.bad .g-text {
+    text-decoration: underline wavy var(--marker);
+  }
+  .g-miss {
+    font-size: clamp(0.85rem, min(1.3vw, 2.1vh), 1.3rem);
+  }
+  .g-miss summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .embed {
+    display: block;
+    width: min(100%, calc(52vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    background: #fff;
+    margin: 0.4em 0;
+  }
   .fourd {
     list-style: none;
     margin: 0.6em 0;
@@ -1624,7 +1960,7 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
   .scatter {
     width: 100%;
     height: auto;
-    max-height: 46vh;
+    max-height: 42vh;
     display: block;
     font-family: inherit;
   }

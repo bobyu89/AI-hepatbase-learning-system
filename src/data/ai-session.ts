@@ -139,6 +139,20 @@ export const aiFourD: [string, string, string, string][] = [
   ["Diligence", "盡責", "對用 AI 做出來的東西負責：守住隱私與規定，該說明時說明。", "不貼病人資料；簡報拿去用之前由你把關"],
 ];
 
+/**
+ * 第 2 輪的練習：一段 AI 可能寫出的居家防跌衛教，有三句有問題。
+ * [句子, 有沒有問題, 說明]。依一般居家防跌建議（如 CDC STEADI）判斷。
+ */
+export const aiGame: [string, boolean, string][] = [
+  ["跌倒是長輩常見的意外，在家裡也可能發生。", false, "沒問題。"],
+  ["每天散步一萬步，就能完全避免跌倒。", true, "說得太絕對。運動可以降低風險，不能「完全避免」；步數也不是建議的依據。"],
+  ["晚上起床時，先在床邊坐一下再站起來。", false, "沒問題。避免起身太快頭暈。"],
+  ["洗完澡地板濕，穿襪子走路比較不會滑。", true, "錯誤。穿襪子在濕地板上更滑，應該穿止滑的鞋，或鋪止滑墊。"],
+  ["地上的電線、雜物收好，走道保持暢通。", false, "沒問題。"],
+  ["如果跌倒了，要馬上自己站起來，免得家人擔心。", true, "錯誤，而且危險。應該先不要急著站，確認有沒有受傷，再叫人幫忙。"],
+];
+export const aiGameMissing = "有沒有漏掉的？這段沒提到：最近跌倒過、常頭暈、走路不穩，要告訴家人和醫護人員。";
+
 export const aiFrameworkSource = {
   name: "AI Fluency Framework",
   url: "https://aifluencyframework.org/",
@@ -423,12 +437,12 @@ export const aiStyles: { slug: string; name: string; zh: string; fit: string; se
 /** HTML 簡報和 PPT 的比較。[項目, HTML 簡報, PPT] */
 export const aiCompare: [string, string, string][] = [
   ["是什麼", "一個網頁檔（.html）", "一個簡報檔（.pptx）"],
-  ["怎麼打開", "瀏覽器就行，電腦、手機都可以", "PowerPoint、Keynote 或 Google 簡報"],
-  ["怎麼做", "用說的，AI 寫程式碼", "自己拖拉排版"],
-  ["怎麼改", "跟 AI 說哪裡要改", "自己點進去改"],
-  ["擅長", "版面一致、動畫、可以互動", "大家都會改、學校有範本"],
-  ["要注意", "改一個字也要靠 AI；字型多半要連網才會一樣", "換一台電腦，字型和版面可能跑掉"],
-];
+  ["怎麼做", "用說的，AI 寫程式碼", "自己拖拉排版、套版"],
+  ["怎麼改", "跟 AI 說哪裡要改", "改字、換圖都很直覺"],
+  ["互動", "可以放測驗、滑桿、點了才顯示答案，就像這份簡報", "超連結、觸發程序；複雜的互動要另外的工具"],
+  ["分享", "傳檔案，或放上網路給網址；手機也能開", "傳檔案或雲端分享"],
+  ["交接", "別人要改，多半也要靠 AI 或懂一點程式", "老師、同學、行政人員都能直接改"],
+]
 
 /**
  * 圖文頁上，每一輪拆成幾個畫面：先猜、動手的每一步各一頁、最後收這一輪。
@@ -458,6 +472,14 @@ export interface RoundPage {
   styles?: boolean;
   /** 放 HyperFrames 做的範例影片 */
   video?: boolean;
+  /** 倒數計時器（分鐘） */
+  timer?: number;
+  /** 現場組問法的小工具 */
+  builder?: boolean;
+  /** 點句子找問題的練習 */
+  game?: boolean;
+  /** 直接在頁面裡翻範例簡報 */
+  embed?: boolean;
   /** 這一頁最後揭曉這一輪的觀念 */
   idea?: boolean;
   /** 這一步為什麼這樣做 */
@@ -507,8 +529,14 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
     },
     {
       title: "第二次：開新對話，你多說明四件事",
+      timer: 5,
       type: ["你照這個格式打", "我是＿＿。請幫我＿＿，給＿＿用（他們的情況是＿＿）。要＿＿（長度、格式）。不要＿＿。"],
       note: "四件事：你是誰、給誰用、要什麼格式、不要什麼。每一題的完整範例在學習單第 2 頁。開新對話，是為了讓 AI 不受第一次的影響。",
+    },
+    {
+      title: "現場組一次：四個空格填起來",
+      builder: true,
+      note: "講師示範：填好四格，問法就組好了，按「複製」貼進 AI。這一頁本身就是 HTML，簡報裡可以直接操作。",
     },
     {
       title: "把兩次的回答並排",
@@ -524,7 +552,13 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
       guess: "你打算怎麼判斷 AI 寫的內容對不對？",
     },
     {
+      title: "先練習：哪一句有問題？",
+      game: true,
+      lead: "這是一段 AI 可能寫出的居家防跌衛教。點一下句子，看它有沒有問題。",
+    },
+    {
       title: "從頭讀一次，檢查三件事",
+      timer: 8,
       cards: [
         ["有沒有錯誤", "和你所學、或可信的資料不一致"],
         ["有沒有說得太絕對", "應該是「通常」「可能」，卻寫成「一定」「都會」"],
@@ -553,7 +587,7 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
     {
       title: "HTML 簡報和 PPT 差在哪",
       compare: true,
-      note: "不是誰取代誰。要大家一起改、要套學校範本，PPT 還是比較方便。",
+      note: "不是誰取代誰：要交給別人改、口試這類正式報告，PPT 比較方便；要互動、要展示，HTML 比較合適。",
     },
     {
       title: "HTML 簡報特別在哪",
@@ -564,6 +598,11 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
       ],
       note: "先看一份做好的範例：居家防跌衛教，7 頁，用左右鍵換頁。",
       sample: true,
+    },
+    {
+      title: "直接翻翻看：範例簡報",
+      embed: true,
+      note: "點一下簡報，再按左右鍵或點畫面左右兩側換頁。這就是等一下你要帶走的東西。",
     },
     {
       title: "先挑一個風格",
@@ -580,6 +619,7 @@ export const aiRoundPages: Record<number, RoundPage[]> = {
     },
     {
       title: "你把簡報存成檔案，打開",
+      timer: 5,
       items: [
         "AI 工具旁邊有預覽或下載按鈕：直接下載",
         "沒有：按程式碼右上角的「複製」，貼進記事本（Mac 用文字編輯，先選「格式 → 製作純文字」）",
