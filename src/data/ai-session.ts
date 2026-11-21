@@ -205,14 +205,35 @@ export const aiCost: [string, string, number][] = [
 ];
 
 /**
- * 三大家的模型家族：同一家都有大、中、小。分數是 Intelligence Index v5.0.1（2026-11-21）。
- * 免費版用到哪一個，來自各家方案說明的二手整理，課前請再看一次官方方案頁。
- * [公司, 最強, 主力, 輕量, 免費版用到的]，每格 [名稱, 分數]
+ * 三大家的模型家族：同一家都有大、中、小。分數是 Intelligence Index v5.0.1（2026-11-21），頁面只用來畫長度，不顯示數字。
+ * free：免費版用得到（來自各家方案說明的二手整理，課前請再看一次官方方案頁）。
  */
-export const aiFamilies: [string, [string, number], [string, number], [string, number], string][] = [
-  ["OpenAI", ["GPT-6.2 Astra", 62], ["GPT-6.2 Sol", 57], ["GPT-6 Luna", 28], "GPT-6 Luna（28）"],
-  ["Anthropic", ["Claude Fable 5.2", 65], ["Claude Opus 5.5", 59], ["Claude Haiku 5.5", 36], "Sonnet 5.5（55）、Haiku 5.5（36）"],
-  ["Google", ["Gemini 4 Carbon", 60], ["Gemini 4 Neon", 61], ["Gemini 4 Hydrogen", 54], "自動選，最多到 Hydrogen（54）"],
+export const aiFamilies: { who: string; models: { name: string; score: number; free?: boolean }[] }[] = [
+  {
+    who: "OpenAI",
+    models: [
+      { name: "GPT-6.2 Astra", score: 62 },
+      { name: "GPT-6.2 Sol", score: 57 },
+      { name: "GPT-6 Luna", score: 28, free: true },
+    ],
+  },
+  {
+    who: "Anthropic",
+    models: [
+      { name: "Claude Fable 5.2", score: 65 },
+      { name: "Claude Opus 5.5", score: 59 },
+      { name: "Claude Sonnet 5.5", score: 55, free: true },
+      { name: "Claude Haiku 5.5", score: 36, free: true },
+    ],
+  },
+  {
+    who: "Google",
+    models: [
+      { name: "Gemini 4 Carbon", score: 60 },
+      { name: "Gemini 4 Neon", score: 61 },
+      { name: "Gemini 4 Hydrogen", score: 54, free: true },
+    ],
+  },
 ];
 
 /**
