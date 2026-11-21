@@ -7,8 +7,10 @@ import {
   aiRounds,
   aiOpeningStats,
   aiTimeline,
-  aiLandscape,
   aiLandscapeAsOf,
+  aiIndex,
+  aiIndexSource,
+  aiCost,
   aiBoards,
   aiBoardQuestions,
   aiPolicyStats,
@@ -110,21 +112,54 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
 
     <section class="panel">
       <div class="inner wide">
-        <h2>現在有哪些</h2>
-        <p class="asof">查詢日期：{aiLandscapeAsOf}　這一頁下個月就過時了</p>
-        <ul class="cards">
+        <h2>現在有哪些：誰考得最好</h2>
+        <p class="asof">綜合考試分數，越高越好　查詢日期：{aiLandscapeAsOf}　下個月就過時了</p>
+        <ol class="hbars" aria-label="綜合考試分數">
           {
-            aiLandscape.map(([who, model, when, good], i) => (
-              <li style={`--tilt:${tilt[i % tilt.length]}deg`} class:list={{ open: i === aiLandscape.length - 1 }}>
-                <b class="who">{who}</b>
-                <span class="model">{model}</span>
-                <span class="when">{when}</span>
-                <span class="good">{good}</span>
+            aiIndex.map(([model, who, n, tag]) => (
+              <li class:list={[tag]} title={`${who} ${model}：${n} 分`}>
+                <span class="name">
+                  <small>{who}</small>
+                  {model}
+                  {tag === "open" && <em>開放權重</em>}
+                  {tag === "noapi" && <em>沒有公開 API</em>}
+                </span>
+                <span class="track">
+                  <i style={`--w:${(n / 65) * 100}%`} />
+                </span>
+                <b>{n}</b>
               </li>
             ))
           }
-        </ul>
-        <p class="src">整理自第三方的彙整網站，各站數字不一致。實際排名以 arena.ai 與 artificialanalysis.ai 當天的榜單為準。</p>
+        </ol>
+        <p class="src">
+          資料：<a href={aiIndexSource.url} lang="en">{aiIndexSource.name}</a>，9 項測驗合成的分數。只量它考題答得多好，不量它在你的專業上會不會講錯。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="inner wide">
+        <h2>做一題要多少錢</h2>
+        <p class="asof">同一份考題，每做一題的平均成本（美元），越低越便宜</p>
+        <ol class="hbars cost" aria-label="每題成本">
+          {
+            aiCost.map(([model, who, usd]) => (
+              <li title={`${who} ${model}：每題 ${usd.toFixed(2)} 美元`}>
+                <span class="name">
+                  <small>{who}</small>
+                  {model}
+                </span>
+                <span class="track">
+                  <i style={`--w:${(usd / 26.54) * 100}%`} />
+                </span>
+                <b>${usd.toFixed(2)}</b>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="take">分數最高的，做一題的成本是最便宜的四十幾倍。最強的不一定最適合你，看你要做什麼。</p>
+        <p class="src">資料：<a href={aiIndexSource.url} lang="en">artificialanalysis.ai</a>，{aiLandscapeAsOf}查詢。這是用 API 計費的成本，不是網頁版的月費。</p>
       </div>
     </section>
 
@@ -640,6 +675,68 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     background: var(--sticky);
     font-weight: 700;
     rotate: -1deg;
+  }
+
+  /* 橫條圖 */
+  .hbars {
+    list-style: none;
+    margin: 0.3em 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2px, 0.6vh, 6px);
+    font-size: clamp(0.85rem, min(1.45vw, 2.35vh), 1.45rem);
+  }
+  .hbars li {
+    display: grid;
+    grid-template-columns: minmax(12em, 38%) 1fr 3.4em;
+    align-items: center;
+    gap: 0.6em;
+    line-height: 1.15;
+  }
+  .hbars .name {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .hbars small {
+    color: var(--muted);
+    margin-right: 0.4em;
+    font-size: 0.85em;
+  }
+  .hbars em {
+    font-style: normal;
+    font-size: 0.75em;
+    margin-left: 0.4em;
+    padding: 0 0.35em;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .hbars .track {
+    height: 1.05em;
+    display: block;
+  }
+  .hbars i {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    background: var(--blue);
+    border-radius: 0 4px 4px 0;
+  }
+  .hbars li.open i {
+    background: #5b7fc4;
+  }
+  .hbars li.noapi i {
+    background: repeating-linear-gradient(45deg, var(--blue) 0 6px, #9fb3dc 6px 12px);
+  }
+  .hbars li:hover .name,
+  .hbars li:hover b {
+    color: var(--marker);
+  }
+  .hbars b {
+    font-variant-numeric: tabular-nums;
+  }
+  .hbars.cost i {
+    background: var(--marker);
   }
 
   /* 廠商卡 */

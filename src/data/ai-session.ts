@@ -165,13 +165,43 @@ export const aiTimeline: [string, string, string][] = [
  * [誰, 目前的旗艦, 何時, 常被提到的長處]
  */
 export const aiLandscapeAsOf = "2026 年 11 月 21 日";
-export const aiLandscape: [string, string, string, string][] = [
-  ["OpenAI", "GPT-6.2 Astra", "2026 年 11 月 17 日", "綜合考試分數排第二"],
-  ["Google", "Gemini 4 Carbon", "2026 年 10–11 月", "真人盲測投票排第一"],
-  ["Anthropic", "Claude Fable 5.2", "2026 年", "綜合考試分數排第一"],
-  ["Meta", "Muse Wonder", "2026 年 10 月", "綜合分數排前段"],
-  ["xAI", "Grok 4.7", "2026 年 9 月 21 日", "接在 X（推特）裡；4.8 已宣布，還沒推出"],
-  ["開放權重", "Kimi K3.1 Pro、DeepSeek V4.1 Flash", "2026 年", "可以下載到自己的機器上跑"],
+
+/**
+ * 「現在有哪些」的長條圖，數字取自 artificialanalysis.ai（Intelligence Index v5.0.1，2026-11-21 查詢）。
+ * 每列：[模型, 公司, 分數, 標記]。標記 open＝開放權重，noapi＝沒有公開 API。
+ */
+export const aiIndexSource = {
+  name: "Artificial Analysis Intelligence Index v5.0.1",
+  url: "https://artificialanalysis.ai/leaderboards/models",
+};
+export const aiIndex: [string, string, number, "" | "open" | "noapi"][] = [
+  ["Claude Fable 5.2", "Anthropic", 65, ""],
+  ["GPT-6.2 Astra", "OpenAI", 62, ""],
+  ["Gemini 4 Neon", "Google", 61, ""],
+  ["Gemini 4 Carbon", "Google", 60, ""],
+  ["Claude Opus 5.5", "Anthropic", 59, ""],
+  ["GPT-6.2 Sol", "OpenAI", 57, ""],
+  ["Muse Wonder Full", "Meta", 50, "noapi"],
+  ["Kimi K3.1 Pro", "Moonshot", 46, "open"],
+  ["Muse Wonder", "Meta", 44, ""],
+  ["Qwen4 Max", "阿里巴巴", 43, ""],
+  ["Grok 4.7", "xAI", 35, ""],
+  ["DeepSeek V4.1 Flash", "DeepSeek", 33, "open"],
+  ["GLM-5.3", "智譜", 32, ""],
+];
+/** 做一題 Intelligence Index 題目的平均成本（美元），同一來源。由便宜到貴。 */
+export const aiCost: [string, string, number][] = [
+  ["DeepSeek V4.1 Flash", "DeepSeek", 0.6],
+  ["GPT-6.2 Sol", "OpenAI", 1.01],
+  ["Qwen4 Max", "阿里巴巴", 3.27],
+  ["Kimi K3.1 Pro", "Moonshot", 3.68],
+  ["GPT-6.2 Astra", "OpenAI", 4.0],
+  ["GLM-5.3", "智譜", 5.01],
+  ["Gemini 4 Neon", "Google", 6.44],
+  ["Muse Wonder", "Meta", 6.95],
+  ["Grok 4.7", "xAI", 7.77],
+  ["Claude Opus 5.5", "Anthropic", 10.04],
+  ["Claude Fable 5.2", "Anthropic", 26.54],
 ];
 
 /** 同一個月，兩個榜，兩個第一名。[榜, 量的是什麼, 第一名] */
