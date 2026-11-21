@@ -205,34 +205,48 @@ export const aiCost: [string, string, number][] = [
 ];
 
 /**
- * 三大家的模型家族：同一家都有大、中、小。分數是 Intelligence Index v5.0.1（2026-11-21），頁面只用來畫長度，不顯示數字。
- * free：免費版用得到（來自各家方案說明的二手整理，課前請再看一次官方方案頁）。
+ * 各家的模型家族，一家一頁。分數：Intelligence Index v5.0.1（artificialanalysis.ai 各家模型頁，2026-11-21）。
+ * lo：推理強度最低的分數，hi：最高的分數。亂編率：AA-Omniscience v1.1。
+ * role、free 來自各家方案說明的二手整理，課前請再看一次官方方案頁。
  */
-export const aiFamilies: { who: string; models: { name: string; score: number; free?: boolean }[] }[] = [
+export interface FamilyModel {
+  name: string;
+  role: string;
+  lo: number;
+  hi: number;
+  free?: boolean;
+}
+export const aiFamilies: { who: string; family: string; models: FamilyModel[]; note: string }[] = [
   {
     who: "OpenAI",
+    family: "GPT 家族（ChatGPT）",
     models: [
-      { name: "GPT-6.2 Astra", score: 62 },
-      { name: "GPT-6.2 Sol", score: 57 },
-      { name: "GPT-6 Luna", score: 28, free: true },
+      { name: "GPT-6.2 Astra", role: "最強，長時間的複雜任務", lo: 46, hi: 62 },
+      { name: "GPT-6.2 Sol", role: "主力，付費版的日常對話", lo: 41, hi: 57 },
+      { name: "GPT-6 Luna", role: "輕量、快，免費版用這個", lo: 10, hi: 28, free: true },
     ],
+    note: "免費版和付費版差最多。Luna 不會的題目，將近八成會硬給答案。",
   },
   {
     who: "Anthropic",
+    family: "Claude 家族",
     models: [
-      { name: "Claude Fable 5.2", score: 65 },
-      { name: "Claude Opus 5.5", score: 59 },
-      { name: "Claude Sonnet 5.5", score: 55, free: true },
-      { name: "Claude Haiku 5.5", score: 36, free: true },
+      { name: "Claude Fable 5.2", role: "最強，最難、最長的工作", lo: 54, hi: 65 },
+      { name: "Claude Opus 5.5", role: "主力，付費版預設", lo: 35, hi: 59 },
+      { name: "Claude Sonnet 5.5", role: "速度和能力兼顧，免費版可用", lo: 26, hi: 55, free: true },
+      { name: "Claude Haiku 5.5", role: "最輕最快，免費版可用", lo: 19, hi: 36, free: true },
     ],
+    note: "答對率三家最高，但不會時也常硬答；想久一點，分數差很多。",
   },
   {
     who: "Google",
+    family: "Gemini 家族",
     models: [
-      { name: "Gemini 4 Carbon", score: 60 },
-      { name: "Gemini 4 Neon", score: 61 },
-      { name: "Gemini 4 Hydrogen", score: 54, free: true },
+      { name: "Gemini 4 Carbon", role: "最高階方案才有", lo: 54, hi: 60 },
+      { name: "Gemini 4 Neon", role: "11 月新出，中階方案可用", lo: 44, hi: 61 },
+      { name: "Gemini 4 Hydrogen", role: "輕量，免費版自動選用", lo: 27, hi: 54, free: true },
     ],
+    note: "三家裡最會說「不知道」，亂編率最低。免費版和付費版差距最小。",
   },
 ];
 
@@ -276,24 +290,6 @@ export const aiHalluc: [string, string, number, number][] = [
   ["Google", "Gemini 4 Hydrogen", 50.5, 8.5],
 ];
 
-/**
- * 同一個模型，讓它想久一點（推理強度），分數就不一樣。Intelligence Index v5.0.1，
- * artificialanalysis.ai 三家的 providers 頁（2026-11-21）。0 表示沒有測這一檔。
- * 檔位：低 low、中 medium、高 high、很高 xhigh、最高 max。[家族, 模型, [低, 中, 高, 很高, 最高]]
- */
-export const aiEffortLevels = ["低", "中", "高", "很高", "最高"];
-export const aiEffort: [string, string, number[]][] = [
-  ["OpenAI", "GPT-6.2 Astra", [46, 57, 60, 62, 62]],
-  ["OpenAI", "GPT-6.2 Sol", [41, 53, 55, 56, 57]],
-  ["OpenAI", "GPT-6 Luna", [10, 18, 21, 23, 28]],
-  ["Anthropic", "Claude Fable 5.2", [54, 56, 62, 62, 65]],
-  ["Anthropic", "Claude Opus 5.5", [35, 48, 52, 57, 59]],
-  ["Anthropic", "Claude Sonnet 5.5", [26, 31, 42, 50, 55]],
-  ["Anthropic", "Claude Haiku 5.5", [19, 25, 30, 35, 36]],
-  ["Google", "Gemini 4 Neon", [44, 55, 60, 61, 0]],
-  ["Google", "Gemini 4 Carbon", [54, 58, 60, 0, 0]],
-  ["Google", "Gemini 4 Hydrogen", [27, 41, 51, 54, 0]],
-];
 
 /**
  * Healthcare & Medical Index（artificialanalysis.ai，2026-11-21）。

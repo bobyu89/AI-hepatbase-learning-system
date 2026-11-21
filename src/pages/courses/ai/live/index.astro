@@ -13,7 +13,6 @@ import {
   aiCost,
   aiHealth,
   aiFamilies,
-  aiEffort,
   aiProgress,
   aiHalluc,
   aiBoards,
@@ -184,6 +183,52 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
       </div>
     </section>
 
+    {
+      aiFamilies.map((f) => (
+        <section class="panel">
+          <div class="inner wide">
+            <h2>{f.who}：{f.family}</h2>
+            <p class="asof">長條是綜合分數。淺色：想最少時的分數；深色：讓它想久一點多出來的</p>
+            <ul class="fam2">
+              {f.models.map((m) => (
+                <li class:list={{ free: m.free }}>
+                  <span class="who2">
+                    <b>{m.name}</b>
+                    <small>{m.role}</small>
+                  </span>
+                  <span class="bar2">
+                    <i class="base" style={`width:${(m.lo / 70) * 100}%`} />
+                    <i class="more" style={`left:${(m.lo / 70) * 100}%;width:${((m.hi - m.lo) / 70) * 100}%`} />
+                    <b style={`left:calc(${(m.hi / 70) * 100}% + 0.4em)`}>{m.hi}</b>
+                  </span>
+                  {m.free ? <em>免費</em> : <span />}
+                </li>
+              ))}
+            </ul>
+            <p class="sub2">知識題：<span class="k ok">答對率</span>　<span class="k bad">不會時硬答的比例</span></p>
+            <ul class="mini">
+              {aiHalluc
+                .filter(([w]) => w === f.who)
+                .map(([, m, ok, bad]) => (
+                  <li>
+                    <span class="mn">{m}</span>
+                    <span class="mb">
+                      <i class="ok" style={`width:${ok}%`} />
+                      <i class="bad" style={`width:${bad}%`} />
+                    </span>
+                    <span class="mv">
+                      {Math.round(ok)}%／{Math.round(bad)}%
+                    </span>
+                  </li>
+                ))}
+            </ul>
+            <p class="take">{f.note}</p>
+            <p class="src">分數：artificialanalysis.ai 綜合分數與 AA-Omniscience，{aiLandscapeAsOf}。誰在免費版，以官方方案頁為準。</p>
+          </div>
+        </section>
+      ))
+    }
+
     <section class="panel">
       <div class="inner wide">
         <h2>現在有哪些：誰考得最好</h2>
@@ -209,67 +254,6 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
         <p class="src">
           資料：<a href={aiIndexSource.url} lang="en">{aiIndexSource.name}</a>，9 項測驗合成的分數。只量它考題答得多好，不量它在你的專業上會不會講錯。
         </p>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="inner wide">
-        <h2>同一家，也有大中小</h2>
-        <p class="asof">長條越長，綜合分數越高。貼著「免費」的，是免費版用得到的</p>
-        <div class="fams">
-          {
-            aiFamilies.map((f) => (
-              <div class="fam">
-                <b class="fam-who">{f.who}</b>
-                <ul>
-                  {f.models.map((m) => (
-                    <li class:list={{ free: m.free }}>
-                      <span class="fam-name">{m.name}</span>
-                      <span class="fam-track">
-                        <i style={`--w:${(m.score / 65) * 100}%`} />
-                      </span>
-                      {m.free ? <em>免費</em> : <span />}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))
-          }
-        </div>
-        <p class="take">覺得「AI 好笨」之前，先看你用的是哪一個。</p>
-        <p class="src">長度依 artificialanalysis.ai 綜合分數（{aiLandscapeAsOf}）。免費版用得到哪些，各家常調整，以官方方案頁為準。</p>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="inner wide">
-        <h2>同一個模型，想久一點就不一樣</h2>
-        <p class="asof">每一列是一個模型。左邊的點是「想最少」，右邊的點是「想最久」；越右分數越高</p>
-        <ul class="effort-chart">
-          {
-            aiEffort.map(([who, m, vals], i) => {
-              const v = vals.filter((n) => n > 0);
-              const lo = Math.min(...v), hi = Math.max(...v);
-              const x = (n: number) => `${(n / 70) * 100}%`;
-              return (
-                <li class:list={{ gap: i > 0 && aiEffort[i - 1][0] !== who }}>
-                  <span class="name">
-                    <small>{who}</small> {m}
-                  </span>
-                  <span class="lane">
-                    <i class="span" style={`left:${x(lo)};width:calc(${x(hi)} - ${x(lo)})`} />
-                    {v.map((n, k) => (
-                      <i class="dot" style={`left:${x(n)};--k:${k / Math.max(1, v.length - 1)}`} />
-                    ))}
-                  </span>
-                </li>
-              );
-            })
-          }
-        </ul>
-        <p class="legend-line"><i class="dot lo" /> 想最少　<i class="dot hi" /> 想最久</p>
-        <p class="take">「思考」按鈕是類似的設計：想久一點分數較高，但比較慢。</p>
-        <p class="src">依 artificialanalysis.ai 三家模型頁的綜合分數畫成（{aiLandscapeAsOf}），推理強度分低到最高五檔。</p>
       </div>
     </section>
 
@@ -332,31 +316,6 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
         </ol>
         <p class="take">換成醫療的考卷，排名就變了。看排行榜，先看它考什麼。</p>
         <p class="src">資料：artificialanalysis.ai，{aiLandscapeAsOf}查詢。分數高不代表在你的病房不會講錯。</p>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="inner wide">
-        <h2>不會的時候，敢不敢編</h2>
-        <p class="asof">3,000 題知識題。藍：答對率。橘：不會的題目裡，硬給錯答案、不說「不知道」的比例</p>
-        <ol class="pairs" aria-label="答對率與亂編率">
-          {
-            aiHalluc.map(([who, model, ok, bad], i) => (
-              <li class:list={{ gap: i > 0 && aiHalluc[i - 1][0] !== who }} title={`${model}：答對 ${ok}%，亂編 ${bad}%`}>
-                <span class="name">
-                  <small>{who}</small>
-                  {model}
-                </span>
-                <span class="two">
-                  <span class="bar ok"><i style={`--w:${ok}%`} /><b>{ok}%</b></span>
-                  <span class="bar bad"><i style={`--w:${bad}%`} /><b>{bad}%</b></span>
-                </span>
-              </li>
-            ))
-          }
-        </ol>
-        <p class="take">Gemini 比較會說「不知道」；Claude、GPT 答得多，也比較敢編。</p>
-        <p class="src">資料：artificialanalysis.ai AA-Omniscience v1.1，{aiLandscapeAsOf}。免費版的 GPT-6 Luna，不會的題目近八成會硬答。所以第 2 輪要你當考官。</p>
       </div>
     </section>
 
@@ -1059,6 +1018,125 @@ const yearTicks: [number, string][] = [[2, "2023"], [14, "2024"], [26, "2025"], 
   .pairs .bar b {
     font-variant-numeric: tabular-nums;
     font-weight: 400;
+  }
+  .fam2 {
+    list-style: none;
+    margin: 0.6em 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5em;
+    font-size: clamp(0.9rem, min(1.55vw, 2.5vh), 1.6rem);
+  }
+  .fam2 li {
+    display: grid;
+    grid-template-columns: minmax(10em, 34%) 1fr 3.4em;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .who2 {
+    display: grid;
+    line-height: 1.25;
+  }
+  .who2 small {
+    color: var(--muted);
+    font-size: 0.78em;
+  }
+  .bar2 {
+    position: relative;
+    height: 1.3em;
+  }
+  .bar2 i {
+    position: absolute;
+    top: 0;
+    height: 100%;
+  }
+  .bar2 .base {
+    left: 0;
+    background: color-mix(in srgb, var(--blue) 30%, var(--card));
+    border-radius: 0;
+  }
+  .bar2 .more {
+    background: var(--blue);
+    border-radius: 0 5px 5px 0;
+  }
+  .fam2 li.free .bar2 .base {
+    background: color-mix(in srgb, var(--marker) 30%, var(--card));
+  }
+  .fam2 li.free .bar2 .more {
+    background: var(--marker);
+  }
+  .bar2 b {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85em;
+    font-variant-numeric: tabular-nums;
+  }
+  .fam2 em {
+    font-style: normal;
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 0.05em 0.4em;
+    background: var(--sticky);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    text-align: center;
+  }
+  .sub2 {
+    margin: 0.6em 0 0.2em;
+    font-size: clamp(0.85rem, min(1.3vw, 2.1vh), 1.3rem);
+    font-weight: 700;
+  }
+  .sub2 .k::before {
+    content: "";
+    display: inline-block;
+    width: 0.9em;
+    height: 0.6em;
+    margin-right: 0.3em;
+    border-radius: 2px;
+  }
+  .sub2 .ok::before {
+    background: var(--blue);
+  }
+  .sub2 .bad::before {
+    background: var(--marker);
+  }
+  .mini {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3em;
+    font-size: clamp(0.8rem, min(1.25vw, 2vh), 1.25rem);
+  }
+  .mini li {
+    display: grid;
+    grid-template-columns: minmax(10em, 34%) 1fr 6em;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .mini .mn {
+    white-space: nowrap;
+  }
+  .mini .mb {
+    display: grid;
+    gap: 2px;
+  }
+  .mini .mb i {
+    display: block;
+    height: 0.5em;
+    border-radius: 0 3px 3px 0;
+  }
+  .mini .mb .ok {
+    background: var(--blue);
+  }
+  .mini .mb .bad {
+    background: var(--marker);
+  }
+  .mini .mv {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9em;
   }
   .fams {
     display: grid;
