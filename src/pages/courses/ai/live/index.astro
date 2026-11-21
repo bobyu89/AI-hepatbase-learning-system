@@ -26,7 +26,7 @@ import { url } from "../../../../lib/url";
 const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
 ---
 
-<Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、四輪做法。`}>
+<Base bare title={`現場投影｜${aiCourse.title}`} description={`${aiCourse.title}現場課的圖文頁：AI 的歷程、現在有哪些、怎麼看排行榜、三輪做法。`}>
   <main class="live" data-live>
     <nav class="live-nav" aria-label="投影控制">
       <a class="home" href={url("/courses/ai/")}>課程首頁</a>
@@ -151,7 +151,7 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     <section class="panel kraft start">
       <div class="inner wide">
         <Art name="magnifier" size={110} rotate={8} class="pin" />
-        <h2>今天只做一件事，做四次</h2>
+        <h2>今天只做一件事，做三輪</h2>
         <p class="task">{aiSession.task}</p>
         <p class="warn">題目裡不要有任何一位病人的資料。</p>
         <dl class="frame">
@@ -251,6 +251,11 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
                 </p>
               )}
               {pg.note && <p class="note">{pg.note}</p>}
+              {pg.sample && (
+                <p class="sample">
+                  <a class="btn btn-primary" href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">打開範例簡報</a>
+                </p>
+              )}
               {pg.items && (
                 <ul class="todo">
                   {pg.items.map((t) => (
@@ -370,14 +375,14 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
 
     <section class="panel cover end">
       <div class="inner">
-        <h2>四個不太會過時的動作</h2>
+        <h2>三個不太會過時的動作</h2>
         <ol class="four">
           {aiRounds.map((r) => <li>{r.idea}</li>)}
         </ol>
         <p class="motto">{aiSession.motto}</p>
         <p class="carry">今天帶走的：{aiSessionFrame.have.join("、")}。</p>
         <p class="src">
-          四個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
+          三個動作的整理參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a>（Rick Dakan 與 Joseph Feller 提出；{aiFrameworkSource.credit}，
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a>）。這一頁依同樣的授權分享。
         </p>
       </div>
@@ -898,6 +903,12 @@ const tilt = [-1.2, 0.8, -0.6, 1.1, -0.9];
     content: "↺　";
   }
 
+  .sample {
+    margin: 0.6em 0 0;
+  }
+  .sample .btn {
+    font-size: clamp(1rem, min(1.8vw, 3vh), 1.6rem);
+  }
   .topics {
     margin: 0.4em 0 0.6em;
     padding: 0;

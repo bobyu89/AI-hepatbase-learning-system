@@ -6,7 +6,7 @@ import { aiSession, aiRounds, aiBring, aiNotBring, aiFrameworkSource, aiTopics }
 import { url } from "../../../lib/url";
 ---
 
-<Base title={aiCourse.title} current="ai" description={`${aiSession.motto}一場 ${aiSession.minutes} 分鐘的現場課，同一件事做四輪，看見四個不太會過時的觀念。`}>
+<Base title={aiCourse.title} current="ai" description={`${aiSession.motto}一場 ${aiSession.minutes} 分鐘的現場課，同一件事做三輪，最後做成一份 HTML 簡報帶走。`}>
   <main>
     <section class="top">
       <div class="wrap">
@@ -20,7 +20,7 @@ import { url } from "../../../lib/url";
           {aiCourse.workshopPlace && `　${aiCourse.workshopPlace}`}
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href="#rounds">看四輪怎麼做</a>
+          <a class="btn btn-primary" href="#rounds">看三輪怎麼做</a>
           <a class="btn btn-quiet" href="#bring">要帶什麼來</a>
           <a class="btn btn-quiet" href={url("/courses/ai/live/")}>現場投影用的圖文頁</a>
         </div>
@@ -30,10 +30,10 @@ import { url } from "../../../lib/url";
     <section class="section task">
       <div class="wrap">
         <Art name="magnifier" size={100} rotate={8} class="pinned" />
-        <h2>整堂課只做一件事，做四次</h2>
+        <h2>整堂課只做一件事，做三輪</h2>
         <p class="big">{aiSession.task}</p>
         <p class="lede">
-          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目從下面五個挑一個，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。選你最熟的那一題，它講錯的地方，你一眼就看得出來。
+          開頭先用十分鐘看 AI 這幾年走到哪裡，接著動手。題目從下面五個挑一個，工具你自己帶。每一輪只改一樣東西，然後看結果有什麼不同。選你最熟的那一題，它講錯的地方，你一眼就看得出來。最後一輪請 AI 把做好的內容變成一份 HTML 簡報，存在你自己的電腦裡帶走。<a href={url("/files/ai/sample-deck.html")} target="_blank" rel="noopener">先看一份範例</a>
         </p>
         <ol class="topic-list">
           {
@@ -50,7 +50,7 @@ import { url } from "../../../lib/url";
 
     <section class="section rounds" id="rounds">
       <div class="wrap">
-        <h2>四輪，每輪只改一樣</h2>
+        <h2>三輪，每輪只改一樣</h2>
         <ol class="round-list">
           {
             aiRounds.map((r) => (
@@ -85,7 +85,7 @@ import { url } from "../../../lib/url";
 
     <section class="section how ideas" id="ideas">
       <div class="wrap">
-        <h2>四個不太會過時的動作</h2>
+        <h2>三個不太會過時的動作</h2>
         <dl>
           {
             aiRounds.map((r) => (
@@ -99,7 +99,7 @@ import { url } from "../../../lib/url";
           }
         </dl>
         <p class="credit">
-          這四個動作的整理，參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a> 的四項能力：描述、辨別、委派、盡責，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
+          這三個動作的整理，參考 <a href={aiFrameworkSource.url} lang="en">{aiFrameworkSource.name}</a> 的四項能力：描述、辨別、委派、盡責，由 Rick Dakan 與 Joseph Feller 提出。{aiFrameworkSource.credit}，以
           <a href={aiFrameworkSource.licenseUrl}>{aiFrameworkSource.license}</a> 釋出；這一頁改寫的內容依同樣的授權分享。工具會進步，所以說的是「不太會過時」，不是永遠不變。
         </p>
       </div>
@@ -128,7 +128,7 @@ import { url } from "../../../lib/url";
         <Art name="notebook" size={96} rotate={-6} class="pinned" />
         <h2>講義</h2>
         <p class="lede">
-          A4 三頁。第 1 頁是四輪要打的話，上課照著做；第 2 頁是五個題目，每一題的兩種問法和第 2 輪常抓到的問題；第 3 頁留給你自己：今天改過的那份成果、你抓到的那一句、有一件事你不會交給 AI。不用交。
+          A4 三頁。第 1 頁是三輪要打的話，上課照著做；第 2 頁是五個題目，每一題的兩種問法、第 2 輪常抓到的問題和第 3 輪做簡報的那一句；第 3 頁留給你自己：你抓到的那一句、有一件事你不會交給 AI。不用交。
         </p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/files/ai/handout.pdf")} download="AI課_講義.pdf">下載 PDF（直接印）</a>
