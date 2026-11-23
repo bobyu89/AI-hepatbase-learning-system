@@ -1,0 +1,613 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import { aiCourse } from "../../../../data/ai-course";
+import { url } from "../../../../lib/url";
+import * as Script from "../../../../data/ai-script.md";
+
+// 講稿本身只存在 src/data/ai-script.md，這一頁只負責把它變成上課用的儀表板。
+---
+
+<Base title={`講稿｜${aiCourse.title}`} current="ai" description="AI 不只是聊天的上課講稿：即時時鐘、段落跳轉、只看口語稿、在【你的】處直接寫筆記。">
+  <div class="sc" data-sc data-mode="all">
+    <header class="sc-bar" aria-label="上課狀態">
+      <div class="clock">
+        <b data-now>--:--</b>
+        <span data-elapsed>還沒開始</span>
+      </div>
+      <div class="where">
+        <span data-should>照時間：—</span>
+        <span data-gap class="gap"></span>
+      </div>
+      <div class="ctl">
+        <div class="seg" role="group" aria-label="顯示">
+          <button type="button" data-mode-btn="all" aria-pressed="true">全部</button>
+          <button type="button" data-mode-btn="say" aria-pressed="false">只看口語稿</button>
+          <button type="button" data-mode-btn="cue" aria-pressed="false">只看提示</button>
+        </div>
+        <button type="button" data-big aria-pressed="false">大字</button>
+        <button type="button" data-start title="把現在當成第 0 分鐘，彩排或晚開始時用">從現在開始計時</button>
+        <button type="button" data-reset hidden>改回 14:00</button>
+        <a href={url("/courses/ai/live/")} target="_blank" rel="noopener">開投影頁 ↗</a>
+      </div>
+      <div class="bar" aria-hidden="true"><i data-bar></i></div>
+    </header>
+
+    <div class="sc-body">
+      <nav class="toc" aria-label="段落">
+        <p class="toc-h">段落　<small>（點一下跳過去）</small></p>
+        <ol data-toc></ol>
+        <p class="toc-note">你打的筆記只存在這台電腦的瀏覽器。這一頁沒有放在選單上，但網址是公開的，不要寫病人資料。</p>
+      </nav>
+      <article class="doc" data-doc>
+        <Script.Content />
+      </article>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const KEY = "ai-script-v1";
+  const START_H = 14,
+    START_M = 0,
+    LEN = 60;
+
+  let store: Record<string, any> = {};
+  try {
+    store = JSON.parse(localStorage.getItem(KEY) || "{}") || {};
+  } catch {
+    store = {};
+  }
+  const save = () => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(store));
+    } catch {}
+  };
+
+  const root = document.querySelector<HTMLElement>("[data-sc]")!;
+  const doc = document.querySelector<HTMLElement>("[data-doc]")!;
+  const toc = document.querySelector<HTMLOListElement>("[data-toc]")!;
+
+  // 1. 依 H2 切段，抓「a–b」分鐘
+  type Sec = { el: HTMLElement; a: number | null; b: number | null; title: string; li: HTMLLIElement };
+  const secs: Sec[] = [];
+  const kids = Array.from(doc.children);
+  let cur: HTMLElement | null = null;
+  const intro = document.createElement("section");
+  intro.className = "sec intro";
+  doc.prepend(intro);
+  cur = intro;
+  kids.forEach((k) => {
+    if (k.tagName === "H2") {
+      cur = document.createElement("section");
+      cur.className = "sec";
+      doc.insertBefore(cur, k);
+    }
+    cur!.appendChild(k);
+  });
+
+  doc.querySelectorAll<HTMLElement>("section.sec").forEach((el, i) => {
+    const h = el.querySelector("h2");
+    if (!h) return;
+    const raw = (h.textContent || "").trim();
+    const m = raw.match(/^(\d+)\s*[–-]\s*(\d+)\s*(.*)$/);
+    const a = m ? +m[1] : null,
+      b = m ? +m[2] : null;
+    const title = m ? m[3].trim() : raw;
+    const id = "s" + i;
+    el.id = id;
+    if (m) {
+      el.classList.add("timed");
+      h.innerHTML = `<span class="mins">${a}–${b} 分</span>${title}`;
+    } else el.classList.add("ref");
+    const done = document.createElement("label");
+    done.className = "done";
+    done.innerHTML = `<input type="checkbox"> 講完了`;
+    const cb = done.querySelector("input")!;
+    cb.checked = !!store["done-" + id];
+    if (m) h.after(done);
+    const li = document.createElement("li");
+    li.className = m ? "t" : "r";
+    li.innerHTML = m
+      ? `<a href="#${id}"><span class="mins">${a}–${b}</span><span class="tt">${title}</span><span class="len">${b! - a!} 分</span></a>`
+      : `<a href="#${id}"><span class="tt">${title}</span></a>`;
+    toc.appendChild(li);
+    const sync = () => {
+      el.classList.toggle("is-done", cb.checked);
+      li.classList.toggle("is-done", cb.checked);
+    };
+    cb.addEventListener("change", () => {
+      store["done-" + id] = cb.checked;
+      save();
+      sync();
+    });
+    sync();
+    secs.push({ el, a, b, title, li });
+  });
+
+  // 2. 「可以這樣說」標記，【你的】變成可以打字的框
+  doc.querySelectorAll("blockquote").forEach((q) => q.classList.add("say"));
+  let n = 0;
+  doc.querySelectorAll("code").forEach((c) => {
+    if (!(c.textContent || "").includes("【你的】")) return;
+    c.classList.add("mine-tag");
+    const host = c.closest("p, li") as HTMLElement | null;
+    if (!host || host.closest(".intro")) return;
+    const k = "mine-" + n++;
+    const box = document.createElement("div");
+    box.className = "mine";
+    box.innerHTML = `<label><span>我的版本</span><textarea rows="3" placeholder="在這裡寫你真的要講的例子，自動存在這台電腦"></textarea></label><small data-st></small>`;
+    const ta = box.querySelector("textarea")!;
+    const st = box.querySelector<HTMLElement>("[data-st]")!;
+    ta.value = store[k] || "";
+    let t: number | undefined;
+    ta.addEventListener("input", () => {
+      store[k] = ta.value;
+      clearTimeout(t);
+      t = window.setTimeout(() => {
+        save();
+        st.textContent = "已存";
+      }, 300);
+      st.textContent = "";
+    });
+    host.after(box);
+  });
+
+  // 3. 顯示模式、大字
+  const modeBtns = document.querySelectorAll<HTMLButtonElement>("[data-mode-btn]");
+  const setMode = (m: string) => {
+    root.dataset.mode = m;
+    modeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.modeBtn === m)));
+    store.mode = m;
+    save();
+  };
+  modeBtns.forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn!)));
+  setMode(store.mode || "all");
+
+  const bigBtn = document.querySelector<HTMLButtonElement>("[data-big]")!;
+  const setBig = (v: boolean) => {
+    root.classList.toggle("big", v);
+    bigBtn.setAttribute("aria-pressed", String(v));
+    store.big = v;
+    save();
+  };
+  bigBtn.addEventListener("click", () => setBig(!root.classList.contains("big")));
+  setBig(!!store.big);
+
+  // 4. 時鐘：預設今天 14:00 開始；可以「從現在開始」；網址 ?t=14:20 可以模擬時間（彩排用）
+  const qs = new URLSearchParams(location.search).get("t");
+  const fake = qs && /^\d{1,2}:\d{2}$/.test(qs) ? qs.split(":").map(Number) : null;
+  const fakeBase = Date.now();
+  const now = () => {
+    if (!fake) return new Date();
+    const d = new Date();
+    d.setHours(fake[0], fake[1], 0, 0);
+    return new Date(d.getTime() + (Date.now() - fakeBase));
+  };
+  const startAt = (): number => {
+    if (typeof store.start === "number") return store.start;
+    const d = now();
+    d.setHours(START_H, START_M, 0, 0);
+    return d.getTime();
+  };
+  const startBtn = document.querySelector<HTMLButtonElement>("[data-start]")!;
+  const resetBtn = document.querySelector<HTMLButtonElement>("[data-reset]")!;
+  startBtn.addEventListener("click", () => {
+    store.start = now().getTime();
+    save();
+    tick();
+  });
+  resetBtn.addEventListener("click", () => {
+    delete store.start;
+    save();
+    tick();
+  });
+
+  const $now = document.querySelector<HTMLElement>("[data-now]")!;
+  const $el = document.querySelector<HTMLElement>("[data-elapsed]")!;
+  const $should = document.querySelector<HTMLElement>("[data-should]")!;
+  const $gap = document.querySelector<HTMLElement>("[data-gap]")!;
+  const $bar = document.querySelector<HTMLElement>("[data-bar]")!;
+  const timed = secs.filter((s) => s.a !== null);
+
+  // 你正在看的段落 = 畫面上方三分之一碰到的那一段
+  let viewing: Sec | null = null;
+  const io = new IntersectionObserver(
+    (es) => {
+      es.forEach((e) => {
+        if (e.isIntersecting) viewing = secs.find((s) => s.el === e.target) || null;
+      });
+      secs.forEach((s) => s.li.classList.toggle("is-view", s === viewing));
+      tick();
+    },
+    { rootMargin: "-20% 0px -70% 0px" },
+  );
+  secs.forEach((s) => io.observe(s.el));
+
+  const pad = (x: number) => String(x).padStart(2, "0");
+  function tick() {
+    const d = now();
+    $now.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const custom = typeof store.start === "number";
+    resetBtn.hidden = !custom;
+    const el = (d.getTime() - startAt()) / 60000;
+    const sd = new Date(startAt());
+    const from = `從 ${pad(sd.getHours())}:${pad(sd.getMinutes())} 算`;
+    let should: Sec | undefined;
+    if (el < 0) {
+      $el.textContent = `還有 ${Math.ceil(-el)} 分開始（${from}）`;
+    } else if (el >= LEN) {
+      $el.textContent = `已經超過 ${Math.floor(el - LEN)} 分（${from}）`;
+    } else {
+      should = timed.find((s) => el >= s.a! && el < s.b!);
+      const left = should ? Math.ceil(should.b! - el) : 0;
+      $el.textContent = `第 ${Math.floor(el)} 分，全場剩 ${Math.ceil(LEN - el)} 分`;
+      $should.textContent = should ? `照時間：${should.title}（這段剩 ${left} 分）` : "照時間：—";
+    }
+    if (el < 0 || el >= LEN) $should.textContent = el < 0 ? "照時間：還沒開始" : "照時間：應該下課了";
+    $bar.style.width = `${Math.max(0, Math.min(100, (el / LEN) * 100))}%`;
+    timed.forEach((s) => s.li.classList.toggle("is-now", s === should));
+
+    $gap.className = "gap";
+    $gap.textContent = "";
+    if (viewing && viewing.a !== null && el >= 0 && el < LEN) {
+      if (el < viewing.a) {
+        $gap.textContent = `你在「${viewing.title}」，快 ${Math.round(viewing.a - el)} 分`;
+        $gap.classList.add("ahead");
+      } else if (el >= viewing.b!) {
+        $gap.textContent = `你在「${viewing.title}」，慢 ${Math.round(el - viewing.b!)} 分`;
+        $gap.classList.add("behind");
+      } else {
+        $gap.textContent = "你的進度剛好";
+        $gap.classList.add("ok");
+      }
+    }
+  }
+  tick();
+  setInterval(tick, 5000);
+</script>
+
+<style>
+  .sc {
+    --bar-h: 0px;
+  }
+  .sc-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    padding: 0.6rem clamp(1rem, 3vw, 2rem) 0.9rem;
+    background: var(--ink);
+    color: #fbf6e9;
+  }
+  .clock {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .clock b {
+    font-size: 1.9rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .clock span,
+  .where {
+    font-size: 0.95rem;
+  }
+  .where {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1 1 16rem;
+    min-width: 0;
+  }
+  .gap.ahead {
+    color: #9fd9a8;
+  }
+  .gap.behind {
+    color: #ffb39a;
+    font-weight: 700;
+  }
+  .gap.ok {
+    color: #f7e38a;
+  }
+  .ctl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .ctl button,
+  .ctl a {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #fbf6e955;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .ctl button[aria-pressed="true"] {
+    background: #fbf6e9;
+    color: var(--ink);
+  }
+  @media (max-width: 40rem) {
+    .ctl {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      width: 100%;
+      padding-bottom: 0.2rem;
+    }
+    .ctl > * {
+      flex: none;
+    }
+    .clock b {
+      font-size: 1.5rem;
+    }
+  }
+  .seg {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+  .bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: #fbf6e922;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--marker);
+    transition: width 0.6s;
+  }
+
+  .sc-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: 1.5rem clamp(1rem, 3vw, 2rem) 4rem;
+  }
+  @media (min-width: 60rem) {
+    .sc-body {
+      grid-template-columns: 17rem minmax(0, 1fr);
+    }
+    .toc {
+      position: sticky;
+      top: 6.5rem;
+      align-self: start;
+      max-height: calc(100vh - 8rem);
+      overflow: auto;
+    }
+  }
+  .toc {
+    background: var(--card);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    font-size: 0.92rem;
+  }
+  .toc-h {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+  }
+  .toc-h small {
+    font-weight: 400;
+    color: var(--pencil);
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc :global(li a) {
+    display: grid;
+    grid-template-columns: 3.6rem 1fr auto;
+    gap: 0.3rem;
+    padding: 0.35rem 0.4rem;
+    border-radius: 4px;
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.35;
+  }
+  .toc :global(li.r a) {
+    grid-template-columns: 1fr;
+    color: var(--pencil);
+    font-size: 0.85rem;
+    padding-block: 0.2rem;
+  }
+  .toc :global(li.t + li.r) {
+    margin-top: 0.6rem;
+    border-top: 1px dashed var(--kraft);
+    padding-top: 0.4rem;
+  }
+  .toc :global(.mins) {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    color: var(--blue);
+    font-variant-numeric: tabular-nums;
+  }
+  .toc :global(.len) {
+    color: var(--pencil);
+    font-size: 0.8rem;
+  }
+  .toc :global(li a:hover) {
+    background: var(--paper);
+  }
+  .toc :global(li.is-view a) {
+    outline: 2px solid var(--blue);
+  }
+  .toc :global(li.is-now a) {
+    background: var(--hi);
+  }
+  .toc :global(li.is-done .tt) {
+    text-decoration: line-through;
+    color: var(--pencil);
+  }
+  .toc-note {
+    margin: 0.8rem 0 0;
+    font-size: 0.8rem;
+    color: var(--pencil);
+  }
+
+  .doc {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: clamp(1rem, 3vw, 2.4rem);
+    min-width: 0;
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+  .doc :global(section.sec) {
+    scroll-margin-top: 7rem;
+  }
+  .doc :global(section.sec + section.sec) {
+    margin-top: 2rem;
+  }
+  .doc :global(h1) {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin-top: 0;
+  }
+  .doc :global(h2) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.3rem;
+  }
+  .doc :global(h2 .mins) {
+    font-size: 0.8em;
+    color: #fff;
+    background: var(--blue);
+    padding: 0.05em 0.5em;
+    border-radius: 4px;
+  }
+  .doc :global(hr) {
+    display: none;
+  }
+  .doc :global(.done) {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--pencil);
+    cursor: pointer;
+  }
+  .doc :global(.is-done > :not(h2):not(.done)) {
+    opacity: 0.45;
+  }
+  .doc :global(blockquote.say) {
+    margin: 0.8rem 0;
+    padding: 0.7rem 1rem;
+    border-left: 5px solid var(--marker);
+    background: var(--card);
+    font-size: 1.12em;
+  }
+  .doc :global(blockquote.say p) {
+    margin: 0.4em 0;
+  }
+  .doc :global(table) {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 1rem 0;
+  }
+  .doc :global(th),
+  .doc :global(td) {
+    border: 1px solid var(--kraft);
+    padding: 0.35rem 0.6rem;
+    vertical-align: top;
+  }
+  .doc :global(th) {
+    background: var(--paper);
+  }
+  .doc :global(pre) {
+    white-space: pre-wrap;
+    background: var(--paper);
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  .doc :global(code.mine-tag) {
+    background: var(--sticky);
+    padding: 0 0.3em;
+    font-weight: 700;
+    font-family: inherit;
+  }
+  .doc :global(.mine) {
+    margin: 0.4rem 0 1rem;
+    padding: 0.6rem 0.8rem;
+    background: var(--sticky);
+    box-shadow: 0 2px 0 #0001;
+  }
+  .doc :global(.mine label) {
+    display: grid;
+    gap: 0.3rem;
+    font-weight: 700;
+  }
+  .doc :global(.mine textarea) {
+    font: inherit;
+    font-weight: 400;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #0003;
+    background: #fffdf3;
+    resize: vertical;
+  }
+  .doc :global(.mine small) {
+    color: var(--pencil);
+  }
+  .doc :global(a) {
+    overflow-wrap: anywhere;
+  }
+  .doc :global(img) {
+    max-width: 100%;
+  }
+
+  /* 只看口語稿：每段只留標題、「可以這樣說」和我的版本 */
+  [data-mode="say"] .doc :global(section.sec > :not(h2):not(blockquote):not(.mine):not(.done)) {
+    display: none;
+  }
+  [data-mode="say"] .doc :global(section.ref),
+  [data-mode="say"] .doc :global(section.intro) {
+    display: none;
+  }
+  [data-mode="say"] .toc :global(li.r) {
+    display: none;
+  }
+  /* 只看提示：把口語稿收起來 */
+  [data-mode="cue"] .doc :global(blockquote.say) {
+    display: none;
+  }
+
+  .big .doc {
+    font-size: 1.4rem;
+  }
+  .big .doc :global(table) {
+    font-size: 1.05rem;
+  }
+
+  @media print {
+    .sc-bar,
+    .toc,
+    .doc :global(.done) {
+      display: none !important;
+    }
+    .sc-body {
+      display: block;
+      padding: 0;
+    }
+    .doc {
+      box-shadow: none;
+    }
+  }
+</style>
