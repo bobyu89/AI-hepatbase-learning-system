@@ -1,0 +1,127 @@
+---
+/**
+ * 風格範本的「手機檢視頁」：外部範本是固定 16:9 的橫式投影，手機直著看會縮得很小或跑版。
+ * 這一頁把每一頁截成圖（scripts/style-shots.cjs 產生），直式往下滑就能看，手指可以放大。
+ */
+import fs from "node:fs";
+import Base from "../../../../layouts/Base.astro";
+import { aiStyles, aiStylesSource } from "../../../../data/ai-session";
+import { url } from "../../../../lib/url";
+
+export function getStaticPaths() {
+  return aiStyles.map((st) => ({ params: { slug: st.slug }, props: { st } }));
+}
+const { st } = Astro.props as { st: (typeof aiStyles)[number] };
+let count = 0;
+try {
+  count = JSON.parse(fs.readFileSync(`public/files/ai/styles/${st.slug}/slides/slides.json`, "utf8")).count;
+} catch {
+  count = 0;
+}
+const pages = Array.from({ length: count }, (_, i) => String(i + 1).padStart(2, "0"));
+const tpl = url(`/files/ai/styles/${st.slug}/template.html`);
+---
+
+<Base title={`${st.zh}（${st.name}）範本｜AI 不只是聊天`} current="ai" description={`${st.zh} 風格的 HTML 簡報範本，手機直式也能一頁一頁看。適合：${st.fit}`}>
+  <main class="wrap sv">
+    <p class="crumb"><a href={url("/courses/ai/#styles")}>← 回六種風格</a></p>
+    <h1>{st.zh}<small lang="en">{st.name}</small></h1>
+    <p class="fit">適合：{st.fit}</p>
+    <p class="sentence"><b>風格句</b>{st.sentence}</p>
+    <p class="actions">
+      <a class="btn btn-primary" href={tpl} target="_blank" rel="noopener">打開互動版</a>
+      <a class="btn btn-quiet" href={tpl} download={`範本_${st.slug}.html`}>下載範本檔</a>
+    </p>
+    <p class="tip">互動版是橫式投影，建議用電腦打開，或把手機轉橫。下面是每一頁的畫面，直著往下滑就能看，手指可以放大。</p>
+
+    <ol class="pages">
+      {
+        pages.map((p, i) => (
+          <li>
+            <img
+              src={url(`/files/ai/styles/${st.slug}/slides/${p}.jpg`)}
+              width="1600"
+              height="900"
+              alt={`${st.zh} 範本第 ${i + 1} 頁`}
+              loading={i < 2 ? "eager" : "lazy"}
+              decoding="async"
+            />
+            <span>{i + 1} / {count}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="credit">
+      範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license} 授權）。
+    </p>
+  </main>
+</Base>
+
+<style>
+  .sv {
+    padding-block: 1.2rem 3rem;
+  }
+  .crumb {
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    margin: 0 0 0.3rem;
+  }
+  h1 small {
+    font-size: 0.5em;
+    margin-left: 0.6rem;
+    opacity: 0.7;
+  }
+  .fit {
+    margin: 0 0 0.6rem;
+  }
+  .sentence b {
+    display: block;
+    font-size: 0.9rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1rem 0 0.4rem;
+  }
+  .tip {
+    font-size: 0.95rem;
+    opacity: 0.8;
+  }
+  .pages {
+    list-style: none;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 60rem) {
+    .pages {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .pages li {
+    position: relative;
+  }
+  .pages img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px #0002;
+  }
+  .pages span {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    font-size: 0.8rem;
+    background: #fffc;
+    padding: 0 0.5rem;
+    border-radius: 999px;
+  }
+  .credit {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+</style>

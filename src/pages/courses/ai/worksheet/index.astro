@@ -5,7 +5,7 @@ import { aiSession, aiTopics, aiStyles, aiStylesSource, aiFourD, aiFrameworkSour
 import { url } from "../../../../lib/url";
 
 const deckRest =
-  "只用一個 HTML 檔，所有程式寫在同一個檔案裡。一頁一個重點，字要大，按鍵盤左右鍵可以換頁。內容只能用剛剛修改好的版本，不要加新的資訊。";
+  "只用一個 HTML 檔，所有程式寫在同一個檔案裡。一頁一個重點，字要大，按鍵盤左右鍵可以換頁。用手機直著看時，改成一頁一頁往下捲動，字也要夠大。內容只能用剛剛修改好的版本，不要加新的資訊。";
 ---
 
 <Base title={`學習單｜${aiCourse.title}`} current="ai" description="AI 不只是聊天的網頁版學習單：選題目、組問法、檢查、做成 HTML 簡報，寫的內容只存在你自己的瀏覽器。">
@@ -122,7 +122,7 @@ const deckRest =
           }
         </div>
         <p class="note">
-          想做得更像：<a href="#" data-style-dl>下載這個風格的範本檔</a>，附給 AI，再加一句「照附件範本的版型、配色和字體」。範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license}）。
+          <a href="#" data-style-view>看這個風格的每一頁</a>（手機直著也能看）。想做得更像：<a href="#" data-style-dl>下載這個風格的範本檔</a>，附給 AI，再加一句「照附件範本的版型、配色和字體」。範本取自 <a href={aiStylesSource.url} lang="en">{aiStylesSource.name}</a>（{aiStylesSource.credit}，{aiStylesSource.license}）。
         </p>
 
         <h3>在同一個對話裡，你打給 AI</h3>
@@ -180,7 +180,7 @@ const deckRest =
   </main>
 </Base>
 
-<script define:vars={{ topics: aiTopics, styles: aiStyles, deckRest, base: url("/files/ai/styles/") }}>
+<script define:vars={{ topics: aiTopics, styles: aiStyles, deckRest, base: url("/files/ai/styles/"), viewBase: url("/courses/ai/styles/") }}>
   const root = document.querySelector("[data-ws]");
   const KEY = "ai-worksheet-v1";
   let store = {};
@@ -219,6 +219,7 @@ const deckRest =
     const dl = root.querySelector("[data-style-dl]");
     dl.href = `${base}${st.slug}/template.html`;
     dl.setAttribute("download", `範本_${st.slug}.html`);
+    root.querySelector("[data-style-view]").href = `${viewBase}${st.slug}/`;
   };
   fields.forEach((el) =>
     el.addEventListener(el.type === "radio" || el.type === "checkbox" ? "change" : "input", () => {
