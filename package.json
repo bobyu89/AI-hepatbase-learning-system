@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "shots:styles": "node scripts/style-shots.cjs"
+    "shots:styles": "node scripts/style-shots.cjs",
+    "check:mobile": "node scripts/check-mobile.cjs --base /AI-hepatbase-learning-system"
   },
   "dependencies": {
     "astro": "^7.4.11"
